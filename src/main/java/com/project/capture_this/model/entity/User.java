@@ -25,6 +25,16 @@ public class User {
     private Long id;
 
     @Column(unique = true, nullable = false)
+    @NotBlank(message = "First name is mandatory")
+    @Size(max = 20, message = "First name must be less than 20 characters")
+    private String firstName;
+
+    @Column(unique = true, nullable = false)
+    @NotBlank(message = "Last name is mandatory")
+    @Size(max = 20, message = "Last name must be less than 20 characters")
+    private String lastName;
+
+    @Column(unique = true, nullable = false)
     @NotBlank(message = "Username is mandatory")
     @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
     private String username;
@@ -90,6 +100,22 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getUsername() {
