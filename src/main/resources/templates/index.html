@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"></head>
+<body>
+<header th:replace="fragments/commons::nav"></header>
+<main>
+    <div class="welcome">
+        <h1>Welcome to CaptureThis</h1>
+        <hr class="bg-white"/>
+
+        <p class="h4">
+            "CaptureThis" is a dynamic platform designed for art enthusiasts and collectors. Explore and manage your collection of art pieces with ease. Whether you're browsing through captivating artworks or adding your own masterpieces, CaptureThis offers a user-friendly and visually appealing experience.
+        </p>
+        <hr class="bg-white"/>
+
+        <h3>
+            <a class="primary-text" th:href="@{/login}">Login</a>
+            if you already have an account, or
+            <a class="primary-text" th:href="@{/register}">Register</a>
+            now to start discovering and managing art.
+        </h3>
+    </div>
+</main>
+<footer th:replace="fragments/commons::footer"></footer>
+</body>
+</html>

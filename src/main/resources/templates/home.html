@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head">
+</head>
+<body>
+<header th:replace="fragments/commons::nav"></header>
+<main>
+    <div class="home-container">
+        <div class="search-bar">
+            <form th:action="@{/search}" method="get">
+                <input type="text" id="userSearch" name="query" placeholder="Search users..." class="form-control"/>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+
+        <section class="posts">
+            <div class="post">
+                <div class="post-header">
+                    <div class="post-user-info">
+                        <img src="/img/profile-placeholder.png" alt="Profile Picture" class="post-profile-picture"/>
+                        <span class="post-username"></span>
+                    </div>
+                    <div class="post-date">
+                        <span>Posted on </span>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <h3></h3>
+                    <p></p>
+                    <img>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+<footer th:replace="fragments/commons::footer"></footer>
+</body>
+</html>
