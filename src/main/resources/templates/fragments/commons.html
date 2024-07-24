@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>CaptureThis</title>
+    <link rel="stylesheet" href="/css/reset-css.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header>
+    <nav>
+        <div class="logo">
+            CaptureThis
+        </div>
+        <div class="nav-links">
+            <li><a href="/about" th:href="@{/about}">About Us</a></li>
+            <li><a href="/login" th:href="@{/login}">Login</a></li>
+            <li><a href="/register" th:href="@{/register}">Register</a></li>
+            <li><a href="/contacts" th:href="@{/contacts}">Contacts</a></li>
+            <li><a href="/create-post" th:href="@{/create-post}">Create Post</a></li>
+            <li><a href="/profile" th:href="@{/profile}">Profile</a></li>
+            <li><a href="/home" th:href="@{/home}">Home</a></li>
+        </div>
+    </nav>
+</header>
+<footer class="footer bg-transparent">
+    <div class="container-fluid text-center">
+        <div class="footer-background footer-text fixed-bottom">
+            &copy; Daniel 2024. All rights reserved.
+        </div>
+    </div>
+</footer>
+</body>
+</html>
