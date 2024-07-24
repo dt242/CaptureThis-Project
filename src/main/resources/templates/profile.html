@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head">
+</head>
+<body>
+<header th:replace="fragments/commons::nav"></header>
+<main>
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-picture">
+                <img src="/img/profile-placeholder.png" alt="Profile Picture"/>
+            </div>
+            <h1 class="username"></h1>
+        </div>
+
+        <section class="personal-info">
+            <h2>Personal Information</h2>
+            <div class="friends-list-button">
+                <a href="/friends" th:href="@{/friends}" class="btn">View Friends List</a>
+            </div>
+        </section>
+
+        <section class="posts-summary">
+            <div class="posts-summary-item">
+                <h2><a href="/drafts" th:href="@{/drafts}">Draft Posts</a></h2>
+                <ul>
+                    <li><a href="#">Draft Post Title 1</a></li>
+                </ul>
+            </div>
+            <div class="posts-summary-item">
+                <h2><a href="/favorites" th:href="@{/favorites}">Favorite Posts</a></h2>
+                <ul>
+                    <li><a href="#"></a></li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="user-posts">
+            <h2>My Posts</h2>
+            <div class="post">
+                <h3></h3>
+                <p></p>
+                <a href="#" class="read-more"></a>
+            </div>
+        </section>
+    </div>
+</main>
+<footer th:replace="fragments/commons::footer"></footer>
+</body>
+</html>
