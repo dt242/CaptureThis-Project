@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head">
+</head>
+<body>
+<header th:replace="fragments/commons::nav"></header>
+<main>
+  <div class="container">
+    <h1>Draft Posts</h1>
+    <section class="draft-posts">
+      <div th:if="${drafts.size() == 0}">
+        <p>No drafts available</p>
+      </div>
+      <div th:each="draft : ${drafts}" class="post">
+        <div class="post-header">
+          <h3 th:text="${draft.title}">Draft Title</h3>
+        </div>
+        <div class="post-content">
+          <p th:text="${draft.description}">Draft description...</p>
+        </div>
+        <div class="post-actions">
+          <a th:href="@{/edit-post/{id}(id=${draft.id})}" class="btn btn-primary">Edit</a>
+          <a th:href="@{/delete-draft/{id}(id=${draft.id})}" class="btn btn-danger">Delete</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<footer th:replace="fragments/commons::footer"></footer>
+</body>
+</html>
