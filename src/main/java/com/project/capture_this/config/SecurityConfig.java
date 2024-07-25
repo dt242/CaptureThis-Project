@@ -39,12 +39,6 @@ public class SecurityConfig {
                             logout.invalidateHttpSession(true);
                         }
                 )
-                // TODO make it work or demonstrate it
-//                .exceptionHandling(
-//                        exceptionHandling -> {
-//                            exceptionHandling.accessDeniedPage("/access-denied");
-//                        }
-//                )
                 .build();
     }
 }
