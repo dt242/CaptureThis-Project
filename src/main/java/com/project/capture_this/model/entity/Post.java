@@ -4,10 +4,7 @@ import com.project.capture_this.model.enums.PostStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -19,6 +16,7 @@ import java.util.Set;
 @Entity
 @Table(name = "posts")
 @EntityListeners(AuditingEntityListener.class)
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -46,7 +44,7 @@ public class Post {
 
     @Enumerated(EnumType.STRING)
     @Column
-    private PostStatus status = PostStatus.PUBLISHED;
+    private PostStatus status = PostStatus.DRAFT;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments = new HashSet<>();
