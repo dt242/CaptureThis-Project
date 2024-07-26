@@ -4,6 +4,10 @@ import com.project.capture_this.model.enums.PostStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,6 +19,10 @@ import java.util.Set;
 @Entity
 @Table(name = "posts")
 @EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Post {
 
     @Id
@@ -64,104 +72,6 @@ public class Post {
 //            inverseJoinColumns = @JoinColumn(name = "tag_id"))
 //    private Set<Tag> tags = new HashSet<>();
 
-    public Post() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Set<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }
-
-    public Set<Like> getLikes() {
-        return likes;
-    }
-
-    public void setLikes(Set<Like> likes) {
-        this.likes = likes;
-    }
-
-    public Set<Favorite> getFavorites() {
-        return favorites;
-    }
-
-    public void setFavorites(Set<Favorite> favorites) {
-        this.favorites = favorites;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public PostStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(PostStatus status) {
-        this.status = status;
-    }
-
-//    public Set<Tag> getTags() {
-//        return tags;
-//    }
-//
-//    public void setTags(Set<Tag> tags) {
-//        this.tags = tags;
-//    }
 
     @PrePersist
     protected void onCreate() {

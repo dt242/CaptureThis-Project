@@ -1,11 +1,14 @@
 package com.project.capture_this.model.entity;
 
 import com.project.capture_this.model.enums.Gender;
-import com.project.capture_this.model.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -18,6 +21,10 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 @EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -49,9 +56,13 @@ public class User {
     @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")}
+    )
+    private Set<Role> roles = new HashSet<>();
 
     @Column
     private LocalDate birthDate;
@@ -93,150 +104,6 @@ public class User {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
-    }
-
-    public String getBio() {
-        return bio;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
-
-    public Set<User> getFollowers() {
-        return followers;
-    }
-
-    public void setFollowers(Set<User> followers) {
-        this.followers = followers;
-    }
-
-    public Set<User> getFollowing() {
-        return following;
-    }
-
-    public void setFollowing(Set<User> following) {
-        this.following = following;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public boolean isLocked() {
-        return isLocked;
-    }
-
-    public void setLocked(boolean locked) {
-        isLocked = locked;
-    }
-
-    public int getFailedLoginAttempts() {
-        return failedLoginAttempts;
-    }
-
-    public void setFailedLoginAttempts(int failedLoginAttempts) {
-        this.failedLoginAttempts = failedLoginAttempts;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 
     @PrePersist
     protected void onCreate() {
