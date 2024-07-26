@@ -1,6 +1,6 @@
 package com.project.capture_this.model.enums;
 
-public enum Role {
+public enum UserRoles {
     USER,
     ADMIN
 }
