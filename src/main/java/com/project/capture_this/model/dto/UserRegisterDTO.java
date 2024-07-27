@@ -3,6 +3,7 @@ package com.project.capture_this.model.dto;
 import com.project.capture_this.model.enums.Gender;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -32,9 +33,10 @@ public class UserRegisterDTO {
     @NotBlank(message = "Email is mandatory")
     private String email;
 
-    @NotBlank(message = "Gender is mandatory")
+    @NotNull(message = "Gender is mandatory")
     private Gender gender;
 
+    @NotNull(message = "Birth Date is mandatory")
     private LocalDate birthDate;
 
     @NotBlank(message = "Password is mandatory")
