@@ -1,5 +1,6 @@
 package com.project.capture_this.controller;
 
+import com.project.capture_this.config.SecurityUtil;
 import com.project.capture_this.model.dto.DisplayPostDTO;
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.service.PostService;
@@ -38,9 +39,14 @@ public class HomeController {
 
     @GetMapping("/home")
     public String home(Model model) {
-        List<DisplayPostDTO> allPosts = postService.findAllPosts();
+        List<DisplayPostDTO> allFollowedPosts = postService.findFollowedPosts();
+        if(SecurityUtil.getSessionUser() != null) {
+            model.addAttribute("user", userService.getLoggedUser());
+        }
+        model.addAttribute("posts", allFollowedPosts);
         return "home";
     }
+
 //
 //    @GetMapping("/home")
 //    @Transactional
@@ -62,11 +68,11 @@ public class HomeController {
 //
 //        return "home";
 //    }
-    @GetMapping("/search")
-    public String search(@RequestParam("query") String query, Model model) {
-        List<User> results = userService.searchUsers(query);
-        model.addAttribute("query", query);
-        model.addAttribute("results", results);
-        return "search";
-    }
+//    @GetMapping("/search")
+//    public String search(@RequestParam(value = "query") String query, Model model) {
+//        List<User> results = userService.searchUsers(query);
+//        model.addAttribute("query", query);
+//        model.addAttribute("results", results);
+//        return "search";
+//    }
 }

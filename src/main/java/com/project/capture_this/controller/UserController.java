@@ -31,10 +31,18 @@ public class UserController {
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes
     ) {
+//        User existingUserEmail = userService.findByEmail(data.getEmail());
+//        if(existingUserEmail != null && existingUserEmail.getEmail() != null && !existingUserEmail.getEmail().isEmpty()) {
+//            return "redirect:/register?fail";
+//        }
+//        User existingUserUsername = userService.findByUsername(data.getUsername());
+//        if(existingUserUsername != null && existingUserUsername.getUsername() != null && !existingUserUsername.getUsername().isEmpty()) {
+//            return "redirect:/register?fail";
+//        }
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("registerData", data);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerData", bindingResult);
-            return "redirect:/register?fail";
+            return "redirect:/register";
         }
 
         userService.register(data);

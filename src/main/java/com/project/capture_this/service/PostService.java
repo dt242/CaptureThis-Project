@@ -17,6 +17,14 @@ import static com.project.capture_this.service.LikeService.mapToLikeDTO;
 public class PostService {
     private PostRepository postRepository;
     private UserRepository userRepository;
+    private UserService userService;
+
+    public PostService(PostRepository postRepository, UserRepository userRepository, UserService userService) {
+        this.postRepository = postRepository;
+        this.userRepository = userRepository;
+        this.userService = userService;
+    }
+
     public List<DisplayPostDTO> findAllPosts() {
         return postRepository
                 .findAll()
@@ -26,12 +34,12 @@ public class PostService {
     }
 
     public List<DisplayPostDTO> findFollowedPosts() {
-        return findAllPosts()
-                .stream()
-                .filter(post -> userRepository.findByUsername(SecurityUtil.getSessionUser())
-                        .get().getFollowing().stream()
-                        .equals(post.getUser()))
-                .collect(Collectors.toList());
+                return findAllPosts()
+                        .stream()
+                        .filter(post -> userService.getLoggedUser()
+                                .getFollowing()
+                                .contains(post.getUser()))
+                        .collect(Collectors.toList());
     }
 
     public static DisplayPostDTO mapToDisplayPostDTO(Post post) {
