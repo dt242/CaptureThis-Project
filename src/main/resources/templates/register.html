@@ -4,36 +4,70 @@
 <body>
 <header th:replace="fragments/commons::nav"></header>
 <main>
-    <form class="form-container" th:method="POST" th:action="@{/register}" th:object="${registerData}">
+    <form
+            class="form-container"
+            th:method="POST"
+            th:action="@{/register}"
+            th:object="${registerData}">
         <h1 class="text-center"><span class="badge badge-pill badge-dark">Register</span></h1>
 
         <div class="form-row">
             <div class="form-group">
                 <label for="firstName" class="text-white">First Name</label>
-                <input type="text" id="firstName" name="firstName" th:field="*{firstName}" class="form-control"/>
+                <input
+                        type="text"
+                        id="firstName"
+                        name="firstName"
+                        th:field="*{firstName}"
+                        class="form-control"/>
             </div>
             <div class="form-group">
                 <label for="lastName" class="text-white">Last Name</label>
-                <input type="text" id="lastName" name="lastName" th:field="*{lastName}" class="form-control"/>
+                <input
+                        type="text"
+                        id="lastName"
+                        name="lastName"
+                        th:field="*{lastName}"
+                        class="form-control"/>
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group">
                 <label for="username" class="text-white">Username</label>
-                <input type="text" id="username" name="username" th:field="*{username}" class="form-control"/>
+                <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        th:field="*{username}"
+                        class="form-control"/>
             </div>
             <div class="form-group">
                 <label class="text-white">Gender</label>
                 <div>
                     <label class="form-check-inline">
-                        <input type="radio" name="gender" value="male" th:field="*{gender}" class="form-check-input"/> Male
+                        <input
+                                type="radio"
+                                name="gender"
+                                value="MALE"
+                                th:field="*{gender}"
+                                class="form-check-input"/> Male
                     </label>
                     <label class="form-check-inline">
-                        <input type="radio" name="gender" value="female" th:field="*{gender}" class="form-check-input"/> Female
+                        <input
+                                type="radio"
+                                name="gender"
+                                value="FEMALE"
+                                th:field="*{gender}"
+                                class="form-check-input"/> Female
                     </label>
                     <label class="form-check-inline">
-                        <input type="radio" name="gender" value="other" th:field="*{gender}" class="form-check-input"/> Other
+                        <input
+                                type="radio"
+                                name="gender"
+                                value="OTHER"
+                                th:field="*{gender}"
+                                class="form-check-input"/> Other
                     </label>
                 </div>
             </div>
@@ -42,22 +76,42 @@
         <div class="form-row">
             <div class="form-group">
                 <label for="email" class="text-white">Email</label>
-                <input type="email" id="email" name="email" th:field="*{email}" class="form-control"/>
+                <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        th:field="*{email}"
+                        class="form-control"/>
             </div>
             <div class="form-group">
                 <label for="birthDate" class="text-white">Birth Date</label>
-                <input type="date" id="birthDate" name="birthDate" th:field="*{birthDate}" class="form-control"/>
+                <input
+                        type="date"
+                        id="birthDate"
+                        name="birthDate"
+                        th:field="*{birthDate}"
+                        class="form-control"/>
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group">
                 <label for="password" class="text-white">Password</label>
-                <input type="password" id="password" name="password" th:field="*{password}" class="form-control"/>
+                <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        th:field="*{password}"
+                        class="form-control"/>
             </div>
             <div class="form-group">
                 <label for="confirmPassword" class="text-white">Confirm Password</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" th:field="*{confirmPassword}" class="form-control"/>
+                <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        th:field="*{confirmPassword}"
+                        class="form-control"/>
             </div>
         </div>
 
