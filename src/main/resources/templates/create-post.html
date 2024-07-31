@@ -6,18 +6,41 @@
 <main>
     <div class="create-post-container">
         <h1>Create a New Post</h1>
-        <form th:action="@{/create-post}" method="post" enctype="multipart/form-data">
+        <form
+                th:method="POST"
+                th:action="@{/create-post}"
+                th:object="${createPostData}"
+                enctype="multipart/form-data">
             <div class="form-group">
                 <label for="title">Title</label>
-                <input type="text" id="title" name="title" class="form-control" required />
+                <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        th:field="*{title}"
+                        class="form-control"/>
+                <small class="danger" style="font-size: 15px" th:each="error: ${#fields.errors('title')}" th:text="${error}">Title error message</small>
             </div>
             <div class="form-group">
                 <label for="description">Description</label>
-                <textarea id="description" name="description" class="form-control" rows="5" required></textarea>
+                <textarea
+                        id="description"
+                        name="description"
+                        th:field="*{description}"
+                        class="form-control"
+                        rows="5"></textarea>
+                <small class="danger" style="font-size: 15px" th:each="error: ${#fields.errors('description')}" th:text="${error}">Description error message</small>
             </div>
             <div class="form-group">
                 <label for="photo">Photo</label>
-                <input type="file" id="photo" name="photo" class="form-control" accept="image/*" required />
+                <input
+                        type="file"
+                        id="photo"
+                        name="photo"
+                        th:field="*{imageFile}"
+                        class="form-control"
+                        accept="image/*"/>
+                <small class="danger" style="font-size: 15px" th:each="error: ${#fields.errors('imageFile')}" th:text="${error}">Image file error message</small>
             </div>
             <div class="form-actions">
                 <button type="submit" name="action" value="post" class="btn btn-primary">Post</button>
