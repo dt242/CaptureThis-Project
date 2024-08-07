@@ -2,21 +2,21 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/commons::head"></head>
 <body>
-<header th:replace="fragments/commons::nav"></header>
+<header th:replace="fragments/commons::header"></header>
 <main>
     <div class="welcome">
-        <h1>Welcome to CaptureThis</h1>
+        <h1 th:text="#{welcome.title}">Welcome to CaptureThis</h1>
         <hr class="bg-white"/>
 
-        <p class="h4">
-            "CaptureThis" is a dynamic platform designed for art enthusiasts and collectors. Explore and manage your collection of art pieces with ease. Whether you're browsing through captivating artworks or adding your own masterpieces, CaptureThis offers a user-friendly and visually appealing experience.
+        <p class="h4" th:text="#{welcome.description}">
+            "CaptureThis" is a vibrant platform designed for individuals who cherish sharing and managing their personal memories. Dive into a world where you can explore and curate your collection of treasured moments effortlessly. Whether you’re reminiscing through cherished memories or adding new experiences to your collection, CaptureThis provides a seamless and engaging experience tailored to preserving and celebrating your unique journey.
         </p>
         <hr class="bg-white"/>
 
         <h3>
-            <a class="primary-text" th:href="@{/login}">Login</a>
+            <a class="primary-text" th:href="@{/login}" th:text="#{login.text}">Login</a>
             if you already have an account, or
-            <a class="primary-text" th:href="@{/register}">Register</a>
+            <a class="primary-text" th:href="@{/register}" th:text="#{register.text}">Register</a>
             now to start discovering and managing art.
         </h3>
     </div>

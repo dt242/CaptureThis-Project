@@ -16,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private AppUserDetailsService userDetailsService;
+    private final AppUserDetailsService userDetailsService;
 
     public SecurityConfig(AppUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
@@ -36,7 +36,7 @@ public class SecurityConfig {
                         authorizeRequest -> {
                             authorizeRequest
                                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                                    .requestMatchers("/", "/login", "/login-error", "/register", "/about", "/contacts").permitAll()
+                                    .requestMatchers("/", "/login", "/login-error", "/register", "/about", "/contacts", "/img/**").permitAll()
                                     .anyRequest().authenticated();
                         }
                 )

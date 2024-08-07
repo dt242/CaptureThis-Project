@@ -2,9 +2,6 @@ package com.project.capture_this.model.entity;
 
 import com.project.capture_this.model.enums.Gender;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,29 +28,19 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    @NotBlank(message = "First name is mandatory")
-    @Size(max = 20, message = "First name must be less than 20 characters")
+    @Column(nullable = false)
     private String firstName;
 
-    @Column(unique = true, nullable = false)
-    @NotBlank(message = "Last name is mandatory")
-    @Size(max = 20, message = "Last name must be less than 20 characters")
+    @Column(nullable = false)
     private String lastName;
 
     @Column(unique = true, nullable = false)
-    @NotBlank(message = "Username is mandatory")
-    @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
     private String username;
 
     @Column(unique = true, nullable = false)
-    @NotBlank(message = "Email is mandatory")
-    @Email(message = "Email should be valid")
     private String email;
 
     @Column(nullable = false)
-    @NotBlank(message = "Password is mandatory")
-    @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -70,20 +57,20 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column
-    private String profilePicture;
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] profilePicture;
 
     @Column
-    @Size(max = 250, message = "Bio must be less than 250 characters")
     private String bio;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_followers",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "follower_id"))
     private Set<User> followers = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_following",
             joinColumns = @JoinColumn(name = "follower_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))

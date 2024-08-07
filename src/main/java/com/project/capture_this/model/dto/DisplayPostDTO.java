@@ -16,14 +16,12 @@ import java.util.Set;
 
 @Data
 @Builder
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class DisplayPostDTO {
     private Long id;
     private User user;
-    private String url;
+    private byte[] image;
     private String description;
     private String title;
     private Set<CommentDTO> comments;

@@ -1,50 +1,184 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/commons::head">
-</head>
+<head th:replace="fragments/commons::head"></head>
 <body>
-<header th:replace="fragments/commons::nav"></header>
+<header th:replace="fragments/commons::header"></header>
 <main>
     <div class="profile-container">
         <div class="profile-header">
             <div class="profile-picture">
-                <img src="/img/profile-placeholder.png" alt="Profile Picture"/>
+                <img th:src="@{/profile-picture/{userId}(userId=${profileData.id})}" alt="Profile Picture" class="profile-picture-big"/>
             </div>
-            <h1 class="username"></h1>
+            <h1 class="name" th:text="${profileData.firstName} + ' ' + ${profileData.lastName}">Full name</h1>
+
+            <!-- Follow/Unfollow Button -->
+            <div th:if="${isOwnProfile == false}">
+                <button id="followButton" class="btn"
+                        th:text="${isFollowing ? 'profile.unfollow' : 'profile.follow'}"
+                        th:attr="data-user-id=${profileData.id}"
+                        th:classappend="${isFollowing} ? 'btn-danger' : 'btn-primary'">
+                </button>
+            </div>
+
+            <!-- Followers Button -->
+            <div class="post-actions">
+            <a class="btn btn-info" th:href="@{/followers/{userId}(userId=${profileData.id})}" th:text="#{profile.followers}">Followers</a>
+                </div>
         </div>
 
         <section class="personal-info">
-            <h2>Personal Information</h2>
-            <div class="friends-list-button">
-                <a href="/friends" th:href="@{/friends}" class="btn">View Friends List</a>
-            </div>
+            <h2 th:text="#{profile.personalInfo}">Personal Information</h2>
+
+            <!-- Conditionally display Bio -->
+            <p th:if="${profileData.bio}">
+                <strong th:text="#{profile.bio}"></strong> <span th:text="${profileData.bio}">Bio</span>
+            </p>
+
+            <!-- Conditionally display Birth Date -->
+            <p th:if="${formattedBirthDate}">
+                <strong th:text="#{profile.birthDate}"></strong> <span th:text="${formattedBirthDate}">Birth Date</span>
+            </p>
+
+            <!-- Conditionally display Gender -->
+            <p th:if="${profileData.gender}">
+                <strong th:text="#{profile.gender}"></strong> <span th:text="${profileData.gender}">Gender</span>
+            </p>
         </section>
 
+        <!-- Conditional rendering based on isOwnProfile -->
+        <div th:if="${isOwnProfile}">
+            <button id="editProfileBtn" class="btn btn-primary" th:text="#{profile.editProfile}" style="margin: 1rem 0;">Edit Profile</button>
+
+            <div id="editProfileForm" style="display: none;" class="edit-form">
+<!--                <h3 th:text="#{profile.editProfileTitle}">Edit Profile</h3>-->
+
+                <form th:action="@{/profile/add-profile-picture}" th:object="${profilePictureData}" method="post" enctype="multipart/form-data" s>
+                    <div class="form-group" style="margin-bottom: 5px;">
+                        <div class="input-container image">
+                            <img id="imagePreview" src="#" alt="Image Preview" style="display:none;" class="post-image"/>
+                            <input type="file" id="profilePicture" name="profilePicture" th:field="*{profilePicture}" class="form-control" accept="image/*" onchange="previewImage(event)" required />
+                            <label for="profilePicture" th:text="#{profile.changePicture}">Change Profile Picture</label>
+                        </div>
+                    </div>
+                    <div class="form-actions" style="margin-bottom: 1rem;">
+                        <button type="submit" class="btn btn-primary" th:text="#{profile.post}">Post</button>
+                    </div>
+                </form>
+
+                <form th:action="@{/profile/change-bio}" method="post" class="form-group">
+                    <div class="input-container">
+                        <textarea id="new-bio" name="bio" class="form-control" required></textarea>
+                        <label for="new-bio" th:text="#{profile.newBio}">New Bio</label>
+                    </div>
+                    <button type="submit" class="btn btn-secondary" th:text="#{profile.changeBio}">Change Bio</button>
+                </form>
+
+                <form th:action="@{/profile/change-first-name}" method="post" class="form-group">
+                    <div class="input-container">
+                        <input id="new-first-name" type="text" name="firstName" class="form-control" required/>
+                        <label for="new-first-name" th:text="#{profile.newFirstName}">New First Name</label>
+                    </div>
+                    <button type="submit" class="btn btn-secondary" th:text="#{profile.changeFirstName}" style="margin-top:5px;">Change First Name</button>
+                </form>
+
+                <form th:action="@{/profile/change-last-name}" method="post" class="form-group">
+                    <div class="input-container">
+                        <input id="new-last-name" type="text" name="lastName" class="form-control" required/>
+                        <label for="new-last-name" th:text="#{profile.newLastName}">New Last Name</label>
+                    </div>
+                    <button type="submit" class="btn btn-secondary" th:text="#{profile.changeLastName}" style="margin-top:5px;">Change Last Name</button>
+                </form>
+
+                <button id="closeEditForm" class="btn btn-danger" th:text="#{profile.close}" style="margin-bottom:10px;">Close</button>
+            </div>
+        </div>
+
         <section class="posts-summary">
-            <div class="posts-summary-item">
-                <h2><a href="/drafts" th:href="@{/drafts}">Draft Posts</a></h2>
-                <ul>
-                    <li><a href="#">Draft Post Title 1</a></li>
-                </ul>
+            <div class="posts-summary-item" th:if="${isOwnProfile}">
+                <a class="btn btn-info" th:href="@{/drafts}" th:text="#{profile.draftPosts}" style="margin: 1rem 0;">Draft Posts</a>
             </div>
-            <div class="posts-summary-item">
-                <h2><a href="/favorites" th:href="@{/favorites}">Favorite Posts</a></h2>
-                <ul>
-                    <li><a href="#"></a></li>
-                </ul>
-            </div>
+<!--            <div class="posts-summary-item">-->
+<!--                <a class="btn btn-info" th:href="@{/favorites}" th:text="#{profile.favoritePosts}">Favorite Posts</a>-->
+<!--            </div>-->
         </section>
 
         <section class="user-posts">
-            <h2>My Posts</h2>
-            <div class="post">
-                <h3></h3>
-                <p></p>
-                <a href="#" class="read-more"></a>
-            </div>
+            <h2 th:text="${profileData.firstName} + ' ' + ${profileData.lastName} + '\'s Posts'"></h2>
+            <div th:each="post : ${posts}" class="post full-post">
+                <div class="post-details">
+                <div class="post-header">
+                    <img th:src="@{/images/{postId}(postId=${post.id})}" alt="Post Image" class="post-image"/>
+                    <div class="post-info">
+                        <h1 th:text="${post.title}">Post Title</h1>
+                        <p th:text="${post.description}">Post Description</p>
+                    </div>
+                </div>
+                </div>
+                <div class="post-actions">
+                <a th:href="@{/edit-post/{id}(id=${post.id})}" class="btn btn-primary" th:text="#{profile.edit}">Edit</a>
+                <a th:href="@{/delete-post/{id}(id=${post.id})}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this post?');" th:text="#{profile.delete}">Delete</a>
+                <a th:href="@{/post/{id}(id=${post.id})}" class="btn btn-info" th:text="#{post.view}">View</a>
+                    </div>
+                </div>
         </section>
     </div>
 </main>
 <footer th:replace="fragments/commons::footer"></footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var followButton = document.getElementById('followButton');
+        if (followButton) {
+            followButton.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent default button behavior
+
+                var userId = this.getAttribute('data-user-id');
+                var action = this.textContent.trim() === '#{profile.follow}' ? 'follow' : 'unfollow';
+
+                fetch(`/profile/${action}/${userId}`, { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            this.textContent = action === 'follow' ? '#{profile.unfollow}' : '#{profile.follow}';
+                            this.classList.toggle('btn-primary');
+                            this.classList.toggle('btn-danger');
+                        } else {
+                            alert('#{profile.error}');
+                        }
+                    })
+                    .catch(error => {
+                        alert('#{profile.error}');
+                        console.error('Error:', error);
+                    });
+            });
+        }
+
+        var editProfileBtn = document.getElementById('editProfileBtn');
+        if (editProfileBtn) {
+            editProfileBtn.addEventListener('click', function() {
+                document.getElementById('editProfileForm').style.display = 'block';
+            });
+        }
+
+        var closeEditFormBtn = document.getElementById('closeEditForm');
+        if (closeEditFormBtn) {
+            closeEditFormBtn.addEventListener('click', function() {
+                document.getElementById('editProfileForm').style.display = 'none';
+            });
+        }
+    });
+
+    function previewImage(event) {
+    var input = event.target;
+    var reader = new FileReader();
+    reader.onload = function() {
+        var dataURL = reader.result;
+        var imagePreview = document.getElementById('imagePreview');
+        imagePreview.src = dataURL;
+        imagePreview.style.display = 'block';
+    };
+    reader.readAsDataURL(input.files[0]);
+}
+</script>
 </body>
 </html>

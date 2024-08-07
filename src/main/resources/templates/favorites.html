@@ -1,26 +1,23 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/commons::head">
-</head>
+<head th:replace="fragments/commons::head"></head>
 <body>
-<header th:replace="fragments/commons::nav"></header>
+<header th:replace="fragments/commons::header"></header>
 <main>
-  <div class="container">
-    <h1>Favorite Posts</h1>
+  <div class="favorites-container">
+    <h1 th:text="#{favorites.title}"></h1>
     <section class="favorite-posts">
       <div th:if="${favorites.size() == 0}">
-        <p>No favorite posts available</p>
+        <p th:text="#{favorites.noFavorites}"></p>
       </div>
       <div th:each="favorite : ${favorites}" class="post">
-        <div class="post-header">
-          <h3 th:text="${favorite.title}">Favorite Post Title</h3>
-        </div>
-        <div class="post-content">
-          <p th:text="${favorite.description}">Favorite post description...</p>
-        </div>
+        <h3 th:text="${favorite.title}">Post Title</h3>
+        <p th:text="${favorite.description}">Post Description</p>
+        <img th:src="@{/images/{postId}(postId=${favorite.id})}" alt="Post Image" class="post-image"/>
         <div class="post-actions">
-          <a th:href="@{/view-post/{id}(id=${favorite.id})}" class="btn btn-primary">View</a>
-          <a th:href="@{/remove-favorite/{id}(id=${favorite.id})}" class="btn btn-danger">Remove</a>
+          <a th:href="@{/view-post/{id}(id=${favorite.id})}" class="btn btn-primary" th:text="#{favorites.view}"></a>
+          <a th:href="@{/remove-favorite/{id}(id=${favorite.id})}" class="btn btn-danger" th:text="#{favorites.remove}"></a>
+          <a th:href="@{/post/{id}(id=${favorite.id})}" class="btn btn-info" th:text="#{post.view}">View</a>
         </div>
       </div>
     </section>

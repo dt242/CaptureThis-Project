@@ -1,6 +1,7 @@
 package com.project.capture_this.model.dto;
 
 import com.project.capture_this.model.enums.Gender;
+import com.project.capture_this.validation.PasswordMatches;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,10 +12,9 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@PasswordMatches
 public class UserRegisterDTO {
 
     @NotBlank(message = "First name is mandatory")

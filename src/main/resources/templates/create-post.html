@@ -2,53 +2,75 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/commons::head"></head>
 <body>
-<header th:replace="fragments/commons::nav"></header>
+<header th:replace="fragments/commons::header"></header>
 <main>
     <div class="create-post-container">
-        <h1>Create a New Post</h1>
+        <h1 class="text-center" th:text="#{createPost.title}"></h1>
         <form
                 th:method="POST"
                 th:action="@{/create-post}"
                 th:object="${createPostData}"
                 enctype="multipart/form-data">
             <div class="form-group">
-                <label for="title">Title</label>
+                <div class="input-container">
                 <input
                         type="text"
                         id="title"
                         name="title"
                         th:field="*{title}"
-                        class="form-control"/>
-                <small class="danger" style="font-size: 15px" th:each="error: ${#fields.errors('title')}" th:text="${error}">Title error message</small>
+                    class="form-control"/>
+                    <label for="title" th:text="#{createPost.titleLabel}"></label>
+                </div>
+                    <small class="danger" th:each="error: ${#fields.errors('title')}" th:text="#{createPost.titleError}">Title error message</small>
             </div>
             <div class="form-group">
-                <label for="description">Description</label>
+                <div class="input-container">
                 <textarea
                         id="description"
                         name="description"
                         th:field="*{description}"
                         class="form-control"
                         rows="5"></textarea>
-                <small class="danger" style="font-size: 15px" th:each="error: ${#fields.errors('description')}" th:text="${error}">Description error message</small>
-            </div>
+                    <label for="description" th:text="#{createPost.descriptionLabel}"></label>
+                </div>
+                    <small class="danger" th:each="error: ${#fields.errors('description')}" th:text="#{createPost.descriptionError}">Description error message</small>
+                </div>
             <div class="form-group">
-                <label for="photo">Photo</label>
+                <div class="input-container image">
+                <img id="imagePreview" src="#" alt="Image Preview" style="display:none;" class="post-image"/>
                 <input
                         type="file"
                         id="photo"
                         name="photo"
                         th:field="*{imageFile}"
-                        class="form-control"
-                        accept="image/*"/>
-                <small class="danger" style="font-size: 15px" th:each="error: ${#fields.errors('imageFile')}" th:text="${error}">Image file error message</small>
+                        class="form-control choose-file"
+                        accept="image/*"
+                onchange="previewImage(event)"/>
+                <label for="photo" th:text="#{createPost.photoLabel}"></label>
+                </div>
+                <small class="danger" th:each="error: ${#fields.errors('imageFile')}" th:text="#{createPost.imageFileError}">Image file error message</small>
             </div>
             <div class="form-actions">
-                <button type="submit" name="action" value="post" class="btn btn-primary">Post</button>
-                <button type="submit" name="action" value="draft" class="btn btn-secondary">Save as Draft</button>
+                <button type="submit" name="action" value="post" class="btn btn-primary" th:text="#{createPost.postButton}"></button>
+                <button type="submit" name="action" value="draft" class="btn btn-secondary" th:text="#{createPost.draftButton}"></button>
             </div>
         </form>
     </div>
 </main>
 <footer th:replace="fragments/commons::footer"></footer>
+
+<script>
+function previewImage(event) {
+    var input = event.target;
+    var reader = new FileReader();
+    reader.onload = function() {
+        var dataURL = reader.result;
+        var imagePreview = document.getElementById('imagePreview');
+        imagePreview.src = dataURL;
+        imagePreview.style.display = 'block';
+    };
+    reader.readAsDataURL(input.files[0]);
+}
+</script>
 </body>
 </html>

@@ -2,8 +2,6 @@ package com.project.capture_this.model.entity;
 
 import com.project.capture_this.model.enums.PostStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -31,15 +29,14 @@ public class Post {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(nullable = false)
-    @NotBlank(message = "URL is mandatory")
-    private String url;
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] image;
 
     @Column(nullable = false)
     private String description;
+
     @Column
-    @NotBlank(message = "Title is mandatory")
-    @Size(max = 20, message = "Title must be less than 20 characters")
     private String title;
 
     @Enumerated(EnumType.STRING)
@@ -61,14 +58,6 @@ public class Post {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
-
-
-//    @ManyToMany
-//    @JoinTable(
-//            name = "post_tags",
-//            joinColumns = @JoinColumn(name = "post_id"),
-//            inverseJoinColumns = @JoinColumn(name = "tag_id"))
-//    private Set<Tag> tags = new HashSet<>();
 
 
     @PrePersist
@@ -98,3 +87,10 @@ public class Post {
 //
 //    // Getters and setters
 //}
+
+//    @ManyToMany
+//    @JoinTable(
+//            name = "post_tags",
+//            joinColumns = @JoinColumn(name = "post_id"),
+//            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+//    private Set<Tag> tags = new HashSet<>();

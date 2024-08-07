@@ -14,6 +14,7 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     // Find posts by the user
+    List<Post> findByUserAndStatus(User user, PostStatus status);
     List<Post> findByUser(User user);
 
     // Find a post by its title
@@ -21,9 +22,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     // Find all posts with a specific status
     List<Post> findByStatus(PostStatus status);
-
-    // Find posts by URL (assuming URL is unique or should be unique)
-    Optional<Post> findByUrl(String url);
 
     // Find posts with a specific description (could use like query or exact match depending on requirements)
     List<Post> findByDescriptionContaining(String description);

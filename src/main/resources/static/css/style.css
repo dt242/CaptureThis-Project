@@ -1,0 +1,525 @@
+/* General Styles */
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font: 14px/1.5 'Arial', sans-serif;
+}
+
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+html, body {
+    background: rgb(171,233,165);
+    background: linear-gradient(135deg, rgba(171,233,165,1) 0%, rgba(38,212,160,1) 100%);
+}
+
+/* Centering the welcome content */
+main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    flex: 1;
+}
+
+.welcome,
+.about,
+.contacts,
+.login,
+.register,
+.edit-post-container,
+.create-post-container,
+.display-post-container,
+.drafts-container,
+.favorites-container,
+.followers-container,
+.home-container,
+.search-container,
+.profile-container {
+    background-color: #fff;
+    color: #333;
+    border-radius: 10px;
+    padding: 30px;
+    max-width: 100%; /* Responsive sizing */
+    width: 90vw; /* Adjust width to be responsive */
+    max-width: 800px; /* Maximum width to prevent it from getting too large */
+    text-align: center; /* Center text inside */
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Styling for headings and links */
+.welcome h1, .welcome h3 {
+    color: #333; /* Ensure text is readable on dark background */
+}
+
+.contact-section p,
+.about-section p {
+    margin: 1rem 0;
+}
+
+.contact-section h2 {
+    margin: 1rem 0;
+}
+
+.about-section h2 {
+    margin-top: 1rem;
+}
+
+.welcome hr.bg-white {
+    border: 0;
+    height: 2px;
+    background: #333;
+    margin: 20px 0;
+}
+
+.primary-text {
+    color: #333; /* Main color for links */
+    text-decoration: underline;
+}
+
+.primary-text:hover {
+    color: #26d4a0; /* Accent color for link hover */
+}
+
+.text-center {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+}
+.form-group {
+    flex: 1;
+    margin-right: 15px;
+}
+.form-group:last-child {
+    margin-right: 0;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.input-container {
+    position: relative;
+}
+
+.input-container input,
+.input-container textarea {
+    width: 100%;
+    padding: 10px 10px 10px 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: none;
+}
+
+.input-container.image {
+    width: 100%;
+    padding: 10px 10px 10px 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: none;
+}
+
+.input-container label {
+    position: absolute;
+    top: 10px;
+    left: 5px;
+    opacity: 0.5;
+    transition: all 0.3s;
+    pointer-events: none;
+    background-color: #fff;
+    padding: 0 5px;
+}
+
+.input-container input:focus + label,
+.input-container input:not(:placeholder-shown) + label,
+.input-container textarea:focus + label,
+.input-container textarea:not(:placeholder-shown) + label{
+    top: -10px;
+    left: 5px;
+    font-size: 12px;
+    opacity: 1;
+}
+
+.danger {
+    color: red;
+    font-style: italic;
+    font-size: 0.8em;
+    display:block;
+}
+
+.global-error {
+    font-size: 1em;
+    margin-bottom: 1rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background-color: #26d4a0;
+}
+
+header {
+    background-color: #333; /* Dark background for the header */
+    color: white;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.logo img {
+    max-width: 100%; /* Make sure it doesn't exceed the container's width */
+    height: auto; /* Maintain aspect ratio */
+    width: auto; /* Allows the logo to scale properly */
+    display: block; /* Ensure no extra spacing around the image */
+    margin: 0 auto; /* Center the logo horizontally if needed */
+}
+
+.logo a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.5rem; /* Adjust font size as needed */
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-links li {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #fff; /* White color for links */
+    font-size: 1rem;
+    padding: 8px 15px;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-links a:hover {
+    background-color: #26d4a0; /* Hover effect matching main theme */
+    color: white;
+}
+
+/* Button Styles */
+.logout-button {
+    background-color: transparent; /* Button color matching main theme */
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+    background-color: #26d4a0; /* Slightly darker green on hover */
+}
+
+/* Footer Styles */
+.footer {
+    background-color: #333; /* Background color for the footer */
+        color: #fff; /* Text color */
+        text-align: center; /* Center text */
+        padding: 10px; /* Padding */
+}
+
+.footer-background {
+    margin: 0 auto;
+}
+
+#contacts-list {
+    list-style-type: none;
+}
+
+/* Styles for the display-post page */
+.display-post-container {
+    display: flex;
+    flex-direction: column; /* Ensures everything is stacked vertically on small screens */
+    border: 1px solid #ccc; /* Border around the entire container */
+    border-radius: 10px; /* Rounded corners */
+    padding: 20px;
+}
+
+.full-post {
+    border: 1px solid #ccc; /* Border around post details */
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.post-details {
+    display: flex;
+    flex-direction: column; /* Stacked layout for smaller screens */
+    align-items: center; /* Center content horizontally */
+    margin-bottom: 5px; /* Space between post details and actions */
+    border: 1px solid #ccc; /* Border around post details */
+    border-radius: 10px; /* Rounded corners */
+    padding: 20px; /* Padding inside the border */
+}
+
+.post-header {
+    display: flex;
+    flex-direction: column; /* Stacked layout for smaller screens */
+    align-items: center; /* Center content horizontally */
+    width: 100%;
+}
+
+.post-image {
+    max-width: 100%; /* Ensure image does not exceed its container */
+    max-width: 50%; /* Ensure image does not exceed half the container width */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 10px; /* Rounded corners */
+    margin-bottom: 20px; /* Space between image and post info */
+}
+
+.post-info {
+    display: flex;
+    flex-direction: column; /* Ensure title and description are stacked vertically */
+    align-items: center; /* Center content horizontally */
+    text-align: center; /* Center text inside */
+    width: 100%;
+}
+
+.post-info h1 {
+    margin-bottom: 10px; /* Space between title and description */
+}
+
+.post-actions {
+    display: flex;
+    justify-content: center; /* Center actions horizontally */
+    gap: 2rem;
+    margin-bottom: 5px;
+}
+
+.post-sidebar {
+    margin-top: 20px; /* Space between post details and sidebar */
+    border: 1px solid #ccc; /* Border around the sidebar */
+    border-radius: 10px; /* Rounded corners */
+    padding: 20px; /* Padding inside the border */
+}
+
+.likes-section {
+    margin-bottom: 20px; /* Space between likes and comments sections */
+}
+
+.likes-section h2 {
+    margin-bottom: 10px; /* Space between heading and likes list */
+}
+
+.user-like {
+    display: flex;
+    align-items: center; /* Align user images and names horizontally */
+    margin-bottom: 10px; /* Space between users */
+}
+
+.user-like img {
+    width: 40px; /* Fixed size for profile pictures */
+    height: 40px; /* Fixed size for profile pictures */
+    border-radius: 50%; /* Circular profile pictures */
+    margin-right: 10px; /* Space between image and name */
+}
+
+.comments-section {
+    margin-top: 20px; /* Space between sidebar and comments section */
+    border: 1px solid #ccc; /* Border around comments section */
+    border-radius: 10px; /* Rounded corners */
+    padding: 20px; /* Padding inside the border */
+}
+
+.comments-section h2 {
+    margin-bottom: 10px; /* Space between heading and comments list */
+}
+
+.comment {
+    margin-bottom: 20px; /* Space between comments */
+}
+
+.comment-header,
+.result-header,
+.profile-picture,
+.post-header-details {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Align comment images and names horizontally */
+    margin-bottom: 10px; /* Space between header and comment content */
+}
+
+.comment-header img,
+.result-header img,
+.post-header-details img {
+    max-width: 50px; /* Fixed size for profile pictures */
+    max-height: 50px; /* Fixed size for profile pictures */
+    border-radius: 50%; /* Circular profile pictures */
+    margin-right: 10px; /* Space between image and name */
+}
+
+.profile-picture {
+overflow: hidden;
+    max-width: 200px; /* Fixed size for profile pictures */
+    max-height: 200px; /* Fixed size for profile pictures */
+    border-radius: 50%; /* Circular profile pictures */
+    border: 5px solid #ccc;
+}
+
+.add-comment-form {
+    margin-top: 20px; /* Space between comments and form */
+}
+
+.add-comment-form .form-group {
+    display: flex;
+    flex-direction: column; /* Stacked layout for form fields */
+    align-items: center; /* Center content horizontally */
+    width: 100%;
+}
+
+.add-comment-form textarea {
+    width: 100%; /* Ensure textarea takes full width */
+    margin-bottom: 10px; /* Space between textarea and label */
+}
+
+.personal-info,
+.edit-form {
+    border: 1px solid #ccc; /* Border around comments section */
+    border-radius: 10px; /* Rounded corners */
+}
+
+.search-button {
+    margin-bottom: 2rem;
+}
+
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-picture {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 50%;
+    border: 5px solid #ccc;
+}
+
+.profile-picture img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 50%;
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+    nav {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .logo {
+        margin-bottom: 10px;
+    }
+
+    .nav-links {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .nav-links li {
+        margin: 5px 0;
+    }
+
+    .nav-links li:nth-child(1),
+    .nav-links li:nth-child(2) {
+        display: block;
+    }
+
+    .nav-links li:nth-child(3),
+    .nav-links li:nth-child(4),
+    .nav-links li:nth-child(5),
+    .nav-links li:nth-child(6) {
+        display: block;
+    }
+
+        .logo img {
+            width: 150px; /* Set a fixed width for smaller screens */
+            height: auto; /* Maintain aspect ratio */
+        }
+
+}
+
+@media (min-width: 601px) {
+    nav {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .nav-links {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .nav-links li {
+        margin: 0 10px;
+    }
+
+    .logo img {
+            width: 200px; /* Adjust for larger screens */
+            height: auto; /* Maintain aspect ratio */
+        }
+
+        .post-details {
+                flex-direction: row; /* Side-by-side layout for larger screens */
+                align-items: flex-start; /* Align content to the top */
+            }
+
+            .post-header {
+                flex-direction: row; /* Side-by-side layout for larger screens */
+                align-items: flex-start; /* Align content to the top */
+            }
+
+            .post-image {
+                margin-right: 20px; /* Space between image and post info */
+                margin-bottom: 0; /* Remove bottom margin for side-by-side layout */
+            }
+
+
+            .post-info {
+                align-items: flex-start; /* Align content to the top */
+                text-align: left; /* Left-align text inside */
+            }
+}

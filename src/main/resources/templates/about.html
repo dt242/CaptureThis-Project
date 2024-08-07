@@ -1,35 +1,25 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/commons::head">
-</head>
+<head th:replace="fragments/commons::head"></head>
 <body>
-<header th:replace="fragments/commons::nav"></header>
+<header th:replace="fragments/commons::header"></header>
 <main class="about-container">
+    <div class="about">
     <section class="about-section">
-        <h1>About CaptureThis</h1>
-        <p>Welcome to CaptureThis! We are passionate about helping you capture and cherish your most precious moments. Our platform provides tools and services to preserve your memories beautifully and securely and share them with others.</p>
+        <h1 th:text="#{about.title}"></h1>
+        <p th:text="#{about.welcome}"></p>
     </section>
-
+    <hr>
     <section class="about-section">
-        <h2>Our Mission</h2>
-        <p>Our mission is to make capturing and preserving memories easy and accessible for everyone. We believe that every moment matters and should be remembered and shared with loved ones.</p>
+        <h2 th:text="#{about.mission.title}"></h2>
+        <p th:text="#{about.mission}"></p>
     </section>
-
+    <hr>
     <section class="about-section">
-        <h2>Our Vision</h2>
-        <p>We envision a world where memories are never forgotten and can be easily accessed and relived by future generations. We strive to continuously innovate and provide the best tools for memory preservation.</p>
+        <h2 th:text="#{about.vision.title}"></h2>
+        <p th:text="#{about.vision}"></p>
     </section>
-
-    <section class="about-section">
-        <h2>Meet the Team</h2>
-        <div class="team-members">
-            <div class="team-member">
-                <img src="img/member1.jpg" alt="Team Member 1">
-                <h3></h3>
-                <p></p>
-            </div>
-        </div>
-    </section>
+    </div>
 </main>
 <footer th:replace="fragments/commons::footer"></footer>
 </body>

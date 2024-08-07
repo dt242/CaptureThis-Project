@@ -3,36 +3,40 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>CaptureThis</title>
-    <link rel="stylesheet" href="/css/reset-css.css">
-    <link rel="stylesheet" href="/css/style.css">
+    <title th:text="#{app.title}">CaptureThis</title>
+    <!--    <link rel="stylesheet" href="/reset-css.css">-->
+        <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 <header>
     <nav>
         <div class="logo">
-            <a th:href="${#authentication.name == 'anonymousUser'} ? @{/} : @{/home}">CaptureThis</a>
+            <a th:href="${#authentication.name == 'anonymousUser'} ? @{/} : @{/home}">
+                <img th:src="@{/img/logo.png}" alt="CaptureThis Logo" class="logo-image"/>
+            </a>
         </div>
         <div class="nav-links">
-            <li th:if="${#authentication.name == 'anonymousUser'}"><a th:href="@{/register}">Register</a></li>
-            <li th:if="${#authentication.name == 'anonymousUser'}"><a th:href="@{/login}">Login</a></li>
-            <li th:if="${#authentication.name != 'anonymousUser'}"><a th:href="@{/create-post}">Create Post</a></li>
-            <li th:if="${#authentication.name != 'anonymousUser'}"><a th:href="@{/profile}">Profile</a></li>
-            <li th:if="${#authentication.name != 'anonymousUser'}"><a th:href="@{/home}">Home</a></li>
-            <li><a th:href="@{/about}">About Us</a></li>
-            <li><a th:href="@{/contacts}">Contacts</a></li>
-            <li th:if="${#authentication.name != 'anonymousUser'}">
-                <form th:action="@{/logout}" method="post" style="display: inline;">
-                    <button type="submit" class="logout-button">Logout</button>
-                </form>
-            </li>
+            <ul>
+                <li th:if="${#authentication.name == 'anonymousUser'}"><a th:href="@{/register}" th:text="#{nav.register}">Register</a></li>
+                <li th:if="${#authentication.name == 'anonymousUser'}"><a th:href="@{/login}" th:text="#{nav.login}">Login</a></li>
+                <li th:if="${#authentication.name != 'anonymousUser'}"><a th:href="@{/create-post}" th:text="#{nav.createPost}">Create Post</a></li>
+                <li th:if="${#authentication.name != 'anonymousUser'}"><a th:href="@{/profile}" th:text="#{nav.profile}">Profile</a></li>
+                <li th:if="${#authentication.name != 'anonymousUser'}"><a th:href="@{/home}" th:text="#{nav.home}">Home</a></li>
+                <li><a th:href="@{/about}" th:text="#{nav.aboutUs}">About Us</a></li>
+                <li><a th:href="@{/contacts}" th:text="#{nav.contacts}">Contacts</a></li>
+                <li th:if="${#authentication.name != 'anonymousUser'}">
+                    <form th:action="@{/logout}" method="post" style="display: inline;">
+                        <button type="submit" class="logout-button" th:text="#{nav.logout}">Logout</button>
+                    </form>
+                </li>
+            </ul>
         </div>
     </nav>
 </header>
 <footer class="footer bg-transparent">
     <div class="container-fluid text-center">
         <div class="footer-background footer-text fixed-bottom">
-            &copy; Daniel 2024. All rights reserved.
+            <span th:text="#{footer.copyright}">© Daniel 2024. All rights reserved.</span>
         </div>
     </div>
 </footer>

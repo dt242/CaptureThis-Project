@@ -1,28 +1,47 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/commons::head">
-</head>
+<head th:replace="fragments/commons::head"></head>
 <body>
-<header th:replace="fragments/commons::nav"></header>
+<header th:replace="fragments/commons::header"></header>
 <main>
-    <div class="search-results-container">
-        <h1>Search Results for "<span th:text="${query}">query</span>"</h1>
-        <section class="search-results">
-            <div th:if="${results.size() == 0}">
-                <p>No results found</p>
-            </div>
-            <div th:each="result : ${results}" class="search-result">
-                <div class="result-header">
-                    <div class="result-user-info">
-                        <img th:src="@{/img/{profilePicture}(profilePicture=${result.profilePicture})}" alt="Profile Picture" class="result-profile-picture"/>
-                        <span class="result-username" th:text="${result.username}">User Name</span>
+    <div class="search-container">
+        <div class="search-bar">
+            <form th:action="@{/search}" method="get">
+                <div class="form-group">
+                    <div class="input-container">
+                <input
+                        type="text"
+                        id="userSearch"
+                        name="query"
+                        class="form-control"/>
+                <label for="userSearch" th:text="#{search.placeholder}"></label>
+                    </div>
+                    </div>
+                <button type="submit" class="btn btn-primary" th:text="#{search.button}">Search</button>
+            </form>
+        </div>
+
+        <div class="search-results-container">
+            <!-- Correctly concatenate static and dynamic content -->
+            <h1>
+                <span th:text="#{search.resultsTitle}"></span> "<span th:text="${query}"></span>"
+            </h1>
+            <section class="search-results">
+                <div th:if="${#lists.isEmpty(results)}">
+                    <p th:text="#{search.noResults}">No results found</p>
+                </div>
+                <div th:each="result : ${results}" class="search-result">
+                    <div class="result-header">
+
+                            <img th:src="@{/profile-picture/{userId}(userId=${result.id})}" alt="Profile Picture" class="profile-picture-small"/>
+                            <span class="result-username">
+                                <a th:href="@{/profile/{userId}(userId=${result.id})}" th:text="${result.firstName} + ' ' + ${result.lastName}" style="text-decoration: none; color: #333; font-style:bold;">Full Name</a>
+                            </span>
+
                     </div>
                 </div>
-                <div class="result-content">
-                    <p th:text="${result.description}">User description or additional information...</p>
-                </div>
-            </div>
-        </section>
+            </section>
+        </div>
     </div>
 </main>
 <footer th:replace="fragments/commons::footer"></footer>
