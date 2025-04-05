@@ -5,10 +5,10 @@
 <header th:replace="fragments/commons::header"></header>
 <main>
   <div class="drafts-container">
-    <h1 th:text="#{drafts.title}"></h1>
+    <h1 th:text="#{drafts.title}" class="big-heading"></h1>
     <section class="draft-posts">
       <div th:if="${drafts.size() == 0}">
-        <p th:text="#{drafts.noDrafts}"></p>
+        <p th:text="#{drafts.noDrafts}" class="no-content"></p>
       </div>
       <div th:each="draft : ${drafts}" class="post full-post">
           <div class="post-details">
