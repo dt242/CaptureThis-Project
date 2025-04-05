@@ -11,19 +11,25 @@
             </div>
             <h1 class="name" th:text="${profileData.firstName} + ' ' + ${profileData.lastName}">Full name</h1>
 
-            <!-- Follow/Unfollow Button -->
-            <div th:if="${isOwnProfile == false}">
-                <button id="followButton" class="btn"
-                        th:text="${isFollowing ? 'profile.unfollow' : 'profile.follow'}"
-                        th:attr="data-user-id=${profileData.id}"
-                        th:classappend="${isFollowing} ? 'btn-danger' : 'btn-primary'">
-                </button>
-            </div>
-
-            <!-- Followers Button -->
             <div class="post-actions">
-            <a class="btn btn-info" th:href="@{/followers/{userId}(userId=${profileData.id})}" th:text="#{profile.followers}">Followers</a>
+                <div th:if="${isOwnProfile == false}">
+                    <button id="followButton" class="btn"
+                            th:text="${isFollowing} ? #{profile.unfollow} : #{profile.follow}"
+                            th:attr="data-user-id=${profileData.id}, data-follow-text=#{profile.follow}, data-unfollow-text=#{profile.unfollow}"
+                            th:classappend="${isFollowing} ? 'btn-danger' : 'btn-primary'">
+                    </button>
                 </div>
+                <a class="btn btn-info" th:href="@{/followers/{userId}(userId=${profileData.id})}" th:text="#{profile.followers}">Followers</a>
+                <a class="btn btn-info" th:href="@{/following/{userId}(userId=${profileData.id})}" th:text="#{profile.following}">Following</a>
+                <div th:if="${isOwnProfile == false && isAdmin}">
+                    <a th:href="@{/profile/make-admin/{userId}(userId=${profileData.id})}"
+                       class="btn"
+                       th:text="${userIsAdmin} ? #{profile.make.user} : #{profile.make.admin}"
+                       th:classappend="${userIsAdmin} ? 'btn-danger' : 'btn-primary'"
+                       th:onclick="|return confirm('Are you sure you want to make this user an admin?');|">
+                    </a>
+                </div>
+            </div>
         </div>
 
         <section class="personal-info">
