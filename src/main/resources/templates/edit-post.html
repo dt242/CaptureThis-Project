@@ -41,7 +41,7 @@
 <!--        <label for="currentImage" th:text="#{editPost.currentPhotoLabel}"></label>-->
         <div>
           <img id="currentImage" th:src="@{/images/{postId}(postId=${editPostData.id})}" alt="Post Image" class="post-image"/>
-          <img id="newImagePreview" src="#" alt="New Image Preview" style="display:none;"/>
+          <img id="newImagePreview" src="#" alt="New Image Preview" class="post-image" style="display:none;"/>
         </div>
         <input
                 type="file"
@@ -56,7 +56,8 @@
           <small class="danger" th:each="error: ${#fields.errors('imageFile')}" th:text="${error}">Image file error message</small>
       </div>
       <div class="form-actions">
-        <button type="submit" name="action" value="update" class="btn btn-primary" th:text="#{editPost.updateButton}"></button>
+          <button type="submit" name="action" value="update" class="btn btn-primary" th:text="#{editPost.updateButton}"></button>
+          <button th:if="${isAlreadyPosted == false}" type="submit" name="action" value="post" class="btn btn-primary" th:text="#{createPost.postButton}"></button>
       </div>
     </form>
   </div>
