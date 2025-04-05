@@ -56,7 +56,8 @@
           <small class="danger" th:each="error: ${#fields.errors('imageFile')}" th:text="${error}">Image file error message</small>
       </div>
       <div class="form-actions">
-        <button type="submit" name="action" value="update" class="btn btn-primary" th:text="#{editPost.updateButton}"></button>
+          <button type="submit" name="action" value="update" class="btn btn-primary" th:text="#{editPost.updateButton}"></button>
+          <button th:if="${isAlreadyPosted == false}" type="submit" name="action" value="post" class="btn btn-primary" th:text="#{createPost.postButton}"></button>
       </div>
     </form>
   </div>
