@@ -5,150 +5,150 @@
 <header th:replace="fragments/commons::header"></header>
 <main>
     <div class="register">
-    <form
-            class="form-container"
-            th:method="POST"
-            th:action="@{/register}"
-            th:object="${registerData}">
-        <h1 class="text-center">
-            <span class="badge badge-pill badge-dark" th:text="#{register.title}">Register</span>
-        </h1>
+        <form
+                class="form-container"
+                th:method="POST"
+                th:action="@{/register}"
+                th:object="${registerData}">
+            <h1 class="text-center">
+                <span class="badge badge-pill badge-dark" th:text="#{register.title}">Register</span>
+            </h1>
 
-        <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger danger global-error">
-            <span th:each="error : ${#fields.globalErrors()}" th:text="${error}">Global error message</span>
-        </div>
+            <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger danger global-error">
+                <span th:each="error : ${#fields.globalErrors()}" th:text="${error}">Global error message</span>
+            </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <div class="input-container">
-                <input
-                        type="text"
-                        id="firstName"
-                        name="firstName"
-                        th:field="*{firstName}"
-                class="form-control"/>
-                <label for="firstName" class="text-white" th:text="#{register.firstName}">First Name</label>
-                    </div>
-                <small class="danger" th:each="error: ${#fields.errors('firstName')}" th:text="${error}">First name error message</small>
-            </div>
-            <div class="form-group">
-                <div class="input-container">
-                <input
-                        type="text"
-                        id="lastName"
-                        name="lastName"
-                        th:field="*{lastName}"
-                class="form-control"/>
-                <label for="lastName" class="text-white" th:text="#{register.lastName}">Last Name</label>
-                    </div>
-                <small class="danger" th:each="error: ${#fields.errors('lastName')}" th:text="${error}">Last name error message</small>
-            </div>
-        </div>
-
-        <div class="form-row">
-            <div class="form-group">
-                <div class="input-container">
-                <input
-                        type="text"
-                        id="username"
-                        name="username"
-                        th:field="*{username}"
-                class="form-control"/>
-                <label for="username" class="text-white" th:text="#{register.username}">Username</label>
-                    </div>
-                <small class="danger" th:each="error: ${#fields.errors('username')}" th:text="${error}">Username error message</small>
-            </div>
-            <div class="form-group">
-                <label class="text-white" th:text="#{register.gender}">Gender</label>
-                <div>
-                    <label class="form-check-inline">
+            <div class="form-row">
+                <div class="form-group reg">
+                    <div class="input-container">
                         <input
-                                type="radio"
-                                name="gender"
-                                value="MALE"
-                                th:field="*{gender}"
-                                class="form-check-input"/> <span th:text="#{register.male}">Male</span>
-                    </label>
-                    <label class="form-check-inline">
+                                type="text"
+                                id="firstName"
+                                name="firstName"
+                                th:field="*{firstName}"
+                                class="form-control"/>
+                        <label for="firstName" class="text-white" th:text="#{register.firstName}">First Name</label>
+                    </div>
+                    <small class="danger" th:each="error: ${#fields.errors('firstName')}" th:text="${error}">First name error message</small>
+                </div>
+                <div class="form-group">
+                    <div class="input-container">
                         <input
-                                type="radio"
-                                name="gender"
-                                value="FEMALE"
-                                th:field="*{gender}"
-                                class="form-check-input"/> <span th:text="#{register.female}">Female</span>
-                    </label>
-                    <label class="form-check-inline">
-                        <input
-                                type="radio"
-                                name="gender"
-                                value="OTHER"
-                                th:field="*{gender}"
-                                class="form-check-input"/> <span th:text="#{register.other}">Other</span>
-                    </label>
-                    <small class="danger" th:each="error: ${#fields.errors('gender')}" th:text="${error}">Gender error message</small>
+                                type="text"
+                                id="lastName"
+                                name="lastName"
+                                th:field="*{lastName}"
+                                class="form-control"/>
+                        <label for="lastName" class="text-white" th:text="#{register.lastName}">Last Name</label>
+                    </div>
+                    <small class="danger" th:each="error: ${#fields.errors('lastName')}" th:text="${error}">Last name error message</small>
                 </div>
             </div>
-        </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <div class="input-container">
-                <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        th:field="*{email}"
-                    class="form-control"/>
-                    <label for="email" class="text-white" th:text="#{register.email}">Email</label>
+            <div class="form-row">
+                <div class="form-group reg">
+                    <div class="input-container">
+                        <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                th:field="*{username}"
+                                class="form-control"/>
+                        <label for="username" class="text-white" th:text="#{register.username}">Username</label>
+                    </div>
+                    <small class="danger" th:each="error: ${#fields.errors('username')}" th:text="${error}">Username error message</small>
                 </div>
+                <div class="form-group">
+                    <label class="text-white" th:text="#{register.gender}">Gender</label>
+                    <div>
+                        <label class="form-check-inline">
+                            <input
+                                    type="radio"
+                                    name="gender"
+                                    value="MALE"
+                                    th:field="*{gender}"
+                                    class="form-check-input"/> <span th:text="#{register.male}">Male</span>
+                        </label>
+                        <label class="form-check-inline">
+                            <input
+                                    type="radio"
+                                    name="gender"
+                                    value="FEMALE"
+                                    th:field="*{gender}"
+                                    class="form-check-input"/> <span th:text="#{register.female}">Female</span>
+                        </label>
+                        <label class="form-check-inline">
+                            <input
+                                    type="radio"
+                                    name="gender"
+                                    value="OTHER"
+                                    th:field="*{gender}"
+                                    class="form-check-input"/> <span th:text="#{register.other}">Other</span>
+                        </label>
+                        <small class="danger" th:each="error: ${#fields.errors('gender')}" th:text="${error}">Gender error message</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group reg">
+                    <div class="input-container">
+                        <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                th:field="*{email}"
+                                class="form-control"/>
+                        <label for="email" class="text-white" th:text="#{register.email}">Email</label>
+                    </div>
                     <small class="danger" th:each="error: ${#fields.errors('email')}" th:text="${error}">Email error message</small>
-            </div>
-            <div class="form-group">
-                <div class="input-container">
-                <input
-                        type="date"
-                        id="birthDate"
-                        name="birthDate"
-                        th:field="*{birthDate}"
-                class="form-control"/>
-                <label for="birthDate" class="text-white" th:text="#{register.birthDate}">Birth Date</label>
                 </div>
-                <small class="danger" th:each="error: ${#fields.errors('birthDate')}" th:text="${error}">Birth date error message</small>
+                <div class="form-group">
+                    <div class="input-container">
+                        <input
+                                type="date"
+                                id="birthDate"
+                                name="birthDate"
+                                th:field="*{birthDate}"
+                                class="form-control"/>
+                        <label for="birthDate" class="text-white" th:text="#{register.birthDate}">Birth Date</label>
+                    </div>
+                    <small class="danger" th:each="error: ${#fields.errors('birthDate')}" th:text="${error}">Birth date error message</small>
+                </div>
             </div>
-        </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <div class="input-container">
-                <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        th:field="*{password}"
-                    class="form-control"/>
-                    <label for="password" class="text-white" th:text="#{register.password}">Password</label>
-                </div>
+            <div class="form-row">
+                <div class="form-group reg">
+                    <div class="input-container">
+                        <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                th:field="*{password}"
+                                class="form-control"/>
+                        <label for="password" class="text-white" th:text="#{register.password}">Password</label>
+                    </div>
                     <small class="danger" th:each="error: ${#fields.errors('password')}" th:text="${error}">Password error message</small>
-            </div>
-            <div class="form-group">
-                <div class="input-container">
-                <input
-                        type="password"
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        th:field="*{confirmPassword}"
-                    class="form-control"/>
-                    <label for="confirmPassword" class="text-white" th:text="#{register.confirmPassword}">Confirm Password</label>
                 </div>
+                <div class="form-group">
+                    <div class="input-container">
+                        <input
+                                type="password"
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                th:field="*{confirmPassword}"
+                                class="form-control"/>
+                        <label for="confirmPassword" class="text-white" th:text="#{register.confirmPassword}">Confirm Password</label>
+                    </div>
                     <small class="danger" th:each="error: ${#fields.errors('confirmPassword')}" th:text="${error}">Confirm Password error message</small>
+                </div>
             </div>
-        </div>
-<!--        <small class="danger global-error" th:if="${#fields.hasErrors('password') || #fields.hasErrors('confirmPassword')}" th:text="#{register.passwordMismatch}">Passwords do not match</small>-->
+            <!--        <small class="danger global-error" th:if="${#fields.hasErrors('password') || #fields.hasErrors('confirmPassword')}" th:text="#{register.passwordMismatch}">Passwords do not match</small>-->
 
-        <div class="text-center">
-            <button type="submit" class="btn" th:text="#{register.submit}">Register</button>
-        </div>
-    </form>
+            <div class="text-center">
+                <button type="submit" class="btn" th:text="#{register.submit}">Register</button>
+            </div>
+        </form>
     </div>
 </main>
 <footer th:replace="fragments/commons::footer"></footer>

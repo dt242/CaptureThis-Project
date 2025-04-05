@@ -5,111 +5,117 @@
 <header th:replace="fragments/commons::header"></header>
 <main>
   <div class="display-post-container">
-    <!-- Post Details -->
     <div class="full-post">
-    <div class="post-details">
-      <div class="post-header">
-        <img th:src="@{/images/{postId}(postId=${post.id})}" alt="Post Image" class="post-image"/>
-        <div class="post-info">
-          <h1 th:text="${post.title}">Post Title</h1>
-          <p th:text="${post.description}">Post Description</p>
+      <div class="post-details">
+        <div class="post-header">
+          <img th:src="@{/images/{postId}(postId=${post.id})}" alt="Post Image" class="post-image"/>
+          <div class="post-info">
+            <h1 th:text="${post.title}">Post Title</h1>
+            <p th:text="${post.description}">Post Description</p>
+          </div>
         </div>
       </div>
-    </div>
       <div class="post-date" style="opacity: 0.6;">
         <span th:text="#{posted.on} + ' ' + ${#temporals.format(post.createdAt, 'dd MMMM, yyyy')}"></span>
         <span th:if="${post.updatedAt != null}" th:text="' (' + #{updated.on} + ' ' + ${#temporals.format(post.updatedAt, 'dd MMMM, yyyy')} + ')'"></span>
       </div>
-    <div class="post-actions">
-      <button id="likeButton" class="btn"
-              th:text="${isLiked ? '#{likes.unlike}' : '#{likes.like}'}"
-              th:attr="data-post-id=${post.id}"
-              th:classappend="${isLiked} ? 'btn-danger' : 'btn-primary'">
-      </button>
-      <!-- <a href="#commentSection" class="btn btn-secondary">Comment</a> -->
-    </div>
+      <div class="post-actions">
+        <button id="likeButton" class="btn"
+                th:text="${isLiked} ? #{likes.unlike} : #{likes.like}"
+                th:attr="data-post-id=${post.id}"
+                th:classappend="${isLiked} ? 'btn-danger' : 'btn-primary'">
+        </button>
+        <form id="commentForm" th:action="@{/post/{postId}/comment(postId=${post.id})}" method="post" class="add-comment-form">
+          <div class="form-group" style="margin-bottom: 0;">
+            <div class="input-container">
+              <input type="hidden" name="postId" th:value="${post.id}"/>
+              <textarea id="comment-text" name="commentText" class="form-control" required></textarea>
+              <label for="comment-text" th:text="#{comment.placeholder}"></label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" th:text="#{comment.submit}">Post Comment</button>
+        </form>
+      </div>
     </div>
 
-    <div class="post-sidebar">
-      <!-- Users Who Liked the Post -->
-      <section class="likes-section">
-        <h2 th:text="#{likes.title}">Liked By</h2>
-        <div th:if="${#lists.isEmpty(likes)}">
-          <p th:text="#{likes.none}">No likes yet</p>
+    <div id="like-comment">
+      <div class="post-sidebar">
+        <section class="likes-section">
+          <h2 th:text="#{likes.title} + '(' + ${likes.size()} + ')'">Liked By</h2>
+          <div th:if="${#lists.isEmpty(likes)}">
+            <p th:text="#{likes.none}" class="no-content">No likes yet</p>
+          </div>
+          <div th:each="user : ${likes}" class="user-like">
+            <img th:src="@{/profile-picture/{userId}(userId=${user.id})}" alt="User Profile Picture" class="profile-picture-small"/>
+            <span class="user-name">
+            <a th:href="@{/profile/{userId}(userId=${user.id})}" th:text="${user.firstName} + ' ' + ${user.lastName}" style="text-decoration: none; color: #333; font-weight:bold;">Full Name</a>
+          </span>
+          </div>
+        </section>
+      </div>
+
+      <section id="commentSection" class="comments-section">
+        <h2 th:text="#{comments.title} + '(' + ${comments.size()} + ')'">Comments</h2>
+        <div th:if="${#lists.isEmpty(comments)}">
+          <p th:text="#{comments.none}" class="no-content">No comments yet</p>
         </div>
-        <div th:each="user : ${likes}" class="user-like">
-          <img th:src="@{/profile-picture/{userId}(userId=${user.id})}" alt="User Profile Picture" class="profile-picture-small"/>
-          <span class="user-name" th:text="${user.firstName} + ' ' + ${user.lastName}">User Name</span>
+        <div th:each="comment : ${comments}" class="comment">
+          <div class="comment-header">
+            <img th:src="@{/profile-picture/{userId}(userId=${comment.userId})}" alt="User Profile Picture" class="profile-picture-small"/>
+            <span class="comment-author">
+                <a
+                        th:href="@{/profile/{userId}(userId=${comment.userId})}"
+                        th:text="${#lists.isEmpty(commentAuthors[comment.userId]) ? 'Unknown User' : commentAuthors[comment.userId].get(0).firstName + ' ' + commentAuthors[comment.userId].get(0).lastName}"
+                        style="text-decoration: none; color: #333; font-weight:bold;">Full Name</a>
+
+          </span>
+          </div>
+          <p th:text="${comment.content}">Comment Text</p>
+          <small th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm:ss')}">Comment Date</small>
+          <div class="post-actions">
+            <form th:if="${isOwnProfile || isAdmin}"
+                  th:action="@{/post/{postId}/comment/{commentId}(postId=${post.id}, commentId=${comment.id})}"
+                  method="post"
+                  onsubmit="return confirm('Are you sure you want to delete this comment?');">
+              <input type="hidden" name="_method" value="DELETE"/>
+              <button type="submit" class="btn btn-danger" th:text="#{profile.delete}"></button>
+            </form>
+          </div>
         </div>
       </section>
     </div>
-
-    <!-- Comment Section -->
-    <section id="commentSection" class="comments-section">
-      <h2 th:text="#{comments.title}">Comments</h2>
-      <div th:if="${#lists.isEmpty(comments)}">
-        <p th:text="#{comments.none}">No comments yet</p>
-      </div>
-      <div th:each="comment : ${comments}" class="comment">
-        <div class="comment-header">
-          <img th:src="@{/profile-picture/{userId}(userId=${comment.userId})}" alt="User Profile Picture" class="profile-picture-small"/>
-          <span class="comment-author" th:text="${comment.userId}">Comment Author</span>
-        </div>
-        <p th:text="${comment.content}">Comment Text</p>
-        <small th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm:ss')}">Comment Date</small>
-      </div>
-
-      <!-- Add Comment Form -->
-      <form th:action="@{/post/{postId}/comment(postId=${post.id})}" method="post" class="add-comment-form">
-        <div class="form-group">
-          <div class="input-container">
-        <input type="hidden" name="postId" th:value="${post.id}"/>
-        <textarea id="comment-text" name="commentText" class="form-control" required></textarea>
-            <label for="comment-text" th:text="#{comment.placeholder}"></label>
-          </div>
-        </div>
-        <button type="submit" class="btn btn-primary" th:text="#{comment.submit}">Post Comment</button>
-      </form>
-    </section>
   </div>
 </main>
 <footer th:replace="fragments/commons::footer"></footer>
-
-<script>
-    // Set message variables for JavaScript
-    var likeLabel = /*[[${'likes.like'}]]*/ 'Like'; // Fallback value
-    var unlikeLabel = /*[[${'likes.unlike'}]]*/ 'Unlike'; // Fallback value
+<script th:inline="javascript">
+    var likeLabel = /*[[#{likes.like}]]*/ 'Like'; // Fallback value for like label
+    var unlikeLabel = /*[[#{likes.unlike}]]*/ 'Unlike'; // Fallback value for unlike label
 
     document.addEventListener('DOMContentLoaded', function() {
-        var likeButton = document.getElementById('likeButton');
-        if (likeButton) {
-            // Correctly set the button's initial text
-            likeButton.textContent = likeButton.textContent.trim() === likeLabel ? unlikeLabel : likeLabel;
+    var likeButton = document.getElementById('likeButton');
+    if (likeButton) {
+        likeButton.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default form submission
 
-            likeButton.addEventListener('click', function(event) {
-                event.preventDefault(); // Prevent default button behavior
+            var postId = this.getAttribute('data-post-id');
+            var action = likeButton.textContent.trim() === likeLabel ? 'like' : 'unlike';
 
-                var postId = this.getAttribute('data-post-id');
-                var action = likeButton.textContent.trim() === likeLabel ? 'like' : 'unlike';
-
-                fetch(`/post/${action}/${postId}`, { method: 'POST' })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            likeButton.textContent = action === 'like' ? unlikeLabel : likeLabel;
-                            likeButton.classList.toggle('btn-primary');
-                            likeButton.classList.toggle('btn-danger');
-                        } else {
-                            alert('An error occurred: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        alert('An error occurred. Please try again.');
-                        console.error('Error:', error);
-                    });
-            });
-        }
-    });
+            fetch(`/post/${action}/${postId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        alert('An error occurred: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('An error occurred. Please try again.');
+                    console.error('Error:', error);
+                });
+        });
+    }
+});
 </script>
 </body>
 </html>

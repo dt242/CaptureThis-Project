@@ -12,29 +12,29 @@
         <section class="posts">
             <div th:each="post : ${posts}" class="post">
                 <div class="post-header-details" style="justify-content: flex-start; margin-top: 2rem">
-<!--                    <div class="post-user-info">-->
-<!--                        <img th:src="@{/profile-picture/{userId}(userId=${post.getUser().getId()})}" alt="Profile Picture" class="profile-picture-small"/>-->
-<!--                        <span class="post-username" th:text="${post.getUser().getUsername()}"></span>-->
-<!--                    </div>-->
+                    <!--                    <div class="post-user-info">-->
+                    <!--                        <img th:src="@{/profile-picture/{userId}(userId=${post.getUser().getId()})}" alt="Profile Picture" class="profile-picture-small"/>-->
+                    <!--                        <span class="post-username" th:text="${post.getUser().getUsername()}"></span>-->
+                    <!--                    </div>-->
                     <img th:src="@{/profile-picture/{userId}(userId=${post.getUser().getId()})}" alt="Profile Picture" class="profile-picture-small"/>
                     <span class="result-username">
-                        <a th:href="@{/profile/{userId}(userId=${post.getUser().getId()})}" th:text="${post.getUser().getFirstName()} + ' ' + ${post.getUser().getLastName()}" style="text-decoration: none; color: #333; font-style:bold;">Full Name</a>
+                        <a th:href="@{/profile/{userId}(userId=${post.getUser().getId()})}" th:text="${post.getUser().getFirstName()} + ' ' + ${post.getUser().getLastName()}" style="text-decoration: none; color: #333; font-weight:bold;">Full Name</a>
                     </span>
                 </div>
                 <div class="post-content full-post">
                     <div class="post-details">
-                    <div class="post-header">
-                        <img th:src="@{/images/{postId}(postId=${post.id})}" alt="Post Image" class="post-image"/>
-                        <div class="post-info">
-                            <h1 th:text="${post.title}">Post Title</h1>
-                            <p th:text="${post.description}">Post Description</p>
+                        <div class="post-header">
+                            <img th:src="@{/images/{postId}(postId=${post.id})}" alt="Post Image" class="post-image"/>
+                            <div class="post-info">
+                                <h1 th:text="${post.title}">Post Title</h1>
+                                <p th:text="${post.description}">Post Description</p>
+                            </div>
                         </div>
                     </div>
-                    </div>
-<!--                    <div class="post-date" style="opacity: 0.6;">-->
-<!--                        <span th:text="#{posted.on} + ' ' + ${#temporals.format(post.createdAt, 'dd MMMM, yyyy')}"></span>-->
-<!--                        <span th:if="${post.updatedAt != null}" th:text="' (' + #{updated.on} + ' ' + ${#temporals.format(post.updatedAt, 'dd MMMM, yyyy')} + ')'"></span>-->
-<!--                    </div>-->
+                    <!--                    <div class="post-date" style="opacity: 0.6;">-->
+                    <!--                        <span th:text="#{posted.on} + ' ' + ${#temporals.format(post.createdAt, 'dd MMMM, yyyy')}"></span>-->
+                    <!--                        <span th:if="${post.updatedAt != null}" th:text="' (' + #{updated.on} + ' ' + ${#temporals.format(post.updatedAt, 'dd MMMM, yyyy')} + ')'"></span>-->
+                    <!--                    </div>-->
                     <div class="post-actions">
                         <a th:href="@{/post/{id}(id=${post.id})}" class="btn btn-info" th:text="#{post.view}">View</a>
                     </div>
