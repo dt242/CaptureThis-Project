@@ -4,13 +4,10 @@ import com.project.capture_this.model.dto.CommentDTO;
 import com.project.capture_this.model.dto.CreatePostDTO;
 import com.project.capture_this.model.dto.DisplayPostDTO;
 import com.project.capture_this.model.dto.EditPostDTO;
-import com.project.capture_this.model.entity.Comment;
 import com.project.capture_this.model.entity.Post;
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.model.enums.PostStatus;
-import com.project.capture_this.service.CommentService;
-import com.project.capture_this.service.PostService;
-import com.project.capture_this.service.UserService;
+import com.project.capture_this.service.*;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,20 +18,24 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class PostController {
     private final PostService postService;
     private final UserService userService;
     private final CommentService commentService;
+//    private final FavoriteService favoriteService;
+    private final LikeService likeService;
 
-    public PostController(PostService postService, CommentService commentService, UserService userService) {
+    public PostController(PostService postService, CommentService commentService, UserService userService, LikeService likeService) {
         this.postService = postService;
         this.commentService = commentService;
         this.userService = userService;
+//        this.favoriteService = favoriteService;
+        this.likeService = likeService;
     }
 
     @GetMapping("/create-post")
@@ -88,12 +89,12 @@ public class PostController {
         return "drafts";
     }
 
-    @GetMapping("/favorites")
-    public String viewFavorites(Model model) {
-        List<DisplayPostDTO> favorites = postService.findFavoritePosts();
-        model.addAttribute("favorites", favorites);
-        return "favorites"; // Ensure this matches the name of your Thymeleaf template
-    }
+//    @GetMapping("/favorites")
+//    public String viewFavorites(Model model) {
+//        List<DisplayPostDTO> favorites = favoriteService.findFavoritePosts();
+//        model.addAttribute("favorites", favorites);
+//        return "favorites"; // Ensure this matches the name of your Thymeleaf template
+//    }
 
     @GetMapping("/edit-post/{id}")
     public String viewEditPost(@PathVariable Long id, Model model) {
@@ -104,6 +105,11 @@ public class PostController {
                 .description(post.getDescription())
                 .build();
         model.addAttribute("editPostData", dto);
+        if (post.getStatus().equals(PostStatus.PUBLISHED)) {
+            model.addAttribute("isAlreadyPosted", true);
+        } else {
+            model.addAttribute("isAlreadyPosted", false);
+        }
         return "edit-post"; // Ensure this matches the name of your Thymeleaf template
     }
 
@@ -120,7 +126,8 @@ public class PostController {
         }
 
         try {
-            postService.updatePost(data);
+            PostStatus status = "post".equals(action) ? PostStatus.PUBLISHED : PostStatus.DRAFT;
+            postService.updatePost(data, status);
         } catch (IOException e) {
             e.printStackTrace();
             // Handle the error appropriately
@@ -140,78 +147,36 @@ public class PostController {
         return "redirect:/profile"; // or wherever you want to redirect after deletion
     }
 
-    @GetMapping("/post/{postId}/comments")
-    public List<CommentDTO> getComments(@PathVariable Long postId) {
-        return commentService.getCommentsByPostId(postId);
-    }
-
-    @PostMapping("/post/{postId}/comment")
-    public String addComment(@PathVariable Long postId,
-                             @RequestParam("commentText") String commentText,
-//                             @RequestParam("userId") Long userId,
-                             RedirectAttributes redirectAttributes) {
-        CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setPostId(postId);
-        commentDTO.setUserId(userService.getLoggedUser().getId());
-        commentDTO.setContent(commentText);
-        try {
-            commentService.addComment(commentDTO);
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Could not add comment: " + e.getMessage());
-        }
-        return "redirect:/post/" + postId;
-    }
-
-    @PutMapping("/comment/{commentId}")
-    public CommentDTO updateComment(@PathVariable Long commentId, @RequestBody String content) {
-        return commentService.updateComment(commentId, content);
-    }
-
-    @DeleteMapping("/comment/{commentId}")
-    public void deleteComment(@PathVariable Long commentId) {
-        commentService.deleteComment(commentId);
-    }
-
     @GetMapping("/post/{id}")
     public String viewPost(@PathVariable Long id, Model model) {
         Post post = postService.findById(id);
         List<CommentDTO> comments = commentService.getCommentsByPostId(id);
-        List<User> likes = postService.getUsersWhoLikedPost(id);
 
-        boolean isLiked = postService.isUserLikedPost(id, userService.getLoggedUser());
+        Map<Long, List<User>> commentAuthors = comments.stream()
+                .map(comment -> userService.findById(comment.getUserId()))
+                .collect(Collectors.groupingBy(User::getId));
+
+        List<User> likes = likeService.getUsersWhoLikedPost(id);
+        User loggedUser = userService.getLoggedUser();
+
+        boolean isLiked = likeService.isUserLikedPost(id, loggedUser);
 
         model.addAttribute("post", post);
         model.addAttribute("comments", comments);
+        model.addAttribute("commentAuthors", commentAuthors); // Add this to the model
         model.addAttribute("likes", likes);
         model.addAttribute("isLiked", isLiked);
-
+        if (post.getUser().getId() == loggedUser.getId()) {
+            model.addAttribute("isOwnProfile", true);
+        } else {
+            model.addAttribute("isOwnProfile", false);
+        }
+        if (userService.getLoggedUser().isAdmin()) {
+            model.addAttribute("isAdmin", true);
+        } else {
+            model.addAttribute("isAdmin", false);
+        }
         return "display-post";
-    }
-
-    @PostMapping("/post/like/{postId}")
-    public ResponseEntity<Map<String, Object>> likePost(@PathVariable Long postId) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            postService.likePost(postId, userService.getLoggedUser().getId());
-            response.put("success", true);
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", e.getMessage());
-        }
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/post/unlike/{postId}")
-    public ResponseEntity<Map<String, Object>> unlikePost(@PathVariable Long postId) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            postService.unlikePost(postId, userService.getLoggedUser().getId());
-            response.put("success", true);
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", e.getMessage());
-        }
-        return ResponseEntity.ok(response);
     }
 
 }
