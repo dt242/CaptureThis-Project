@@ -26,6 +26,16 @@
               th:attr="data-post-id=${post.id}"
               th:classappend="${isLiked} ? 'btn-danger' : 'btn-primary'">
       </button>
+      <form id="commentForm" th:action="@{/post/{postId}/comment(postId=${post.id})}" method="post" class="add-comment-form">
+        <div class="form-group" style="margin-bottom: 0;">
+          <div class="input-container">
+            <input type="hidden" name="postId" th:value="${post.id}"/>
+            <textarea id="comment-text" name="commentText" class="form-control" required></textarea>
+            <label for="comment-text" th:text="#{comment.placeholder}"></label>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" th:text="#{comment.submit}">Post Comment</button>
+      </form>
       <!-- <a href="#commentSection" class="btn btn-secondary">Comment</a> -->
     </div>
     </div>
