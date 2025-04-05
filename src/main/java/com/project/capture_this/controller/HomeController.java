@@ -40,39 +40,10 @@ public class HomeController {
     @GetMapping("/home")
     public String home(Model model) {
         List<DisplayPostDTO> allFollowedPosts = postService.findFollowedPosts();
-        if(SecurityUtil.getSessionUser() != null) {
+        if (SecurityUtil.getSessionUser() != null) {
             model.addAttribute("user", userService.getLoggedUser());
         }
         model.addAttribute("posts", allFollowedPosts);
         return "home";
     }
-
-//
-//    @GetMapping("/home")
-//    @Transactional
-//    public String loggedInIndex(Model model) {
-//        if (!userSession.isLoggedIn()) {
-//            return "redirect:/";
-//        }
-//
-//        List<PaintingInfoDTO> allPaintings = postService.findAll().stream().map(PaintingInfoDTO::new).toList();
-//        List<PaintingInfoDTO> myAddedPaintings = postService.findAll().stream().filter(painting -> painting.getOwner().equals(userService.getLoggedUser())).map(PaintingInfoDTO::new).toList();
-//        List<PaintingInfoDTO> otherAddedPaintings = postService.findAll().stream().filter(painting -> !painting.getOwner().equals(userService.getLoggedUser())).map(PaintingInfoDTO::new).toList();
-//        List<PaintingInfoDTO> myFavouritePaintings = userService.getLoggedUser().getFavouritePaintings().stream().map(PaintingInfoDTO::new).toList();
-//        List<PaintingInfoDTO> myRatedPaintings = allPaintings.stream().filter(paintingInfoDTO -> paintingInfoDTO.getVotes() > 0).toList();
-//
-//        model.addAttribute("myAddedData", myAddedPaintings);
-//        model.addAttribute("otherAddedData", otherAddedPaintings);
-//        model.addAttribute("myFavouriteData", myFavouritePaintings);
-//        model.addAttribute("myRatedData", myRatedPaintings);
-//
-//        return "home";
-//    }
-//    @GetMapping("/search")
-//    public String search(@RequestParam(value = "query") String query, Model model) {
-//        List<User> results = userService.searchUsers(query);
-//        model.addAttribute("query", query);
-//        model.addAttribute("results", results);
-//        return "search";
-//    }
 }
