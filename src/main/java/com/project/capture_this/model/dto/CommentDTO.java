@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CommentDTO {
     private Long id;
-    private Long postId; // Only for external communication
-    private Long userId; // Only for external communication
+    private Long postId;
+    private Long userId;
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
