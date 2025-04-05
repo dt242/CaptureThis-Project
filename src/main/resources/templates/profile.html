@@ -125,21 +125,27 @@
 </main>
 <footer th:replace="fragments/commons::footer"></footer>
 
-<script>
+<script th:inline="javascript">
+    var followText = /*[[#{profile.follow}]]*/ 'Follow'; // Fallback value for follow text
+    var unfollowText = /*[[#{profile.unfollow}]]*/ 'Unfollow'; // Fallback value for unfollow text
+
     document.addEventListener('DOMContentLoaded', function() {
         var followButton = document.getElementById('followButton');
         if (followButton) {
+            var followText = followButton.getAttribute('data-follow-text');
+            var unfollowText = followButton.getAttribute('data-unfollow-text');
+
             followButton.addEventListener('click', function(event) {
                 event.preventDefault(); // Prevent default button behavior
 
                 var userId = this.getAttribute('data-user-id');
-                var action = this.textContent.trim() === '#{profile.follow}' ? 'follow' : 'unfollow';
+                var action = this.textContent.trim() === followText ? 'follow' : 'unfollow';
 
                 fetch(`/profile/${action}/${userId}`, { method: 'POST' })
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            this.textContent = action === 'follow' ? '#{profile.unfollow}' : '#{profile.follow}';
+                            this.textContent = action === 'follow' ? unfollowText : followText;
                             this.classList.toggle('btn-primary');
                             this.classList.toggle('btn-danger');
                         } else {
@@ -169,16 +175,16 @@
     });
 
     function previewImage(event) {
-    var input = event.target;
-    var reader = new FileReader();
-    reader.onload = function() {
-        var dataURL = reader.result;
-        var imagePreview = document.getElementById('imagePreview');
-        imagePreview.src = dataURL;
-        imagePreview.style.display = 'block';
-    };
-    reader.readAsDataURL(input.files[0]);
-}
+        var input = event.target;
+        var reader = new FileReader();
+        reader.onload = function() {
+            var dataURL = reader.result;
+            var imagePreview = document.getElementById('imagePreview');
+            imagePreview.src = dataURL;
+            imagePreview.style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
 </script>
 </body>
 </html>
