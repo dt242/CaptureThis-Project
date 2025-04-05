@@ -54,7 +54,7 @@ public class FollowController {
                 .collect(Collectors.toList());
 
         model.addAttribute("followers", followerDTOs);
-        return "followers"; // This should correspond to followers.html
+        return "followers";
     }
 
     @GetMapping("/following/{userId}")
@@ -65,6 +65,6 @@ public class FollowController {
                 .collect(Collectors.toList());
 
         model.addAttribute("following", followingDTOs);
-        return "following"; // This should correspond to followers.html
+        return "following";
     }
 }

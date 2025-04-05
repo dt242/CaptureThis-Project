@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.security.Principal;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
@@ -54,7 +53,6 @@ public class ProfileController {
         DisplayUserDTO userDTO = UserService.mapToDisplayUserDTO(loggedUser);
         model.addAttribute("profileData", userDTO);
         model.addAttribute("posts", postService.findPublishedPosts());
-//        model.addAttribute("draftPosts", postService.findDraftPosts());
         model.addAttribute("profilePictureData", new AddProfilePictureDTO());
         model.addAttribute("formattedBirthDate", formattedBirthDate);
         model.addAttribute("isOwnProfile", true);
@@ -96,16 +94,6 @@ public class ProfileController {
             model.addAttribute("userIsAdmin", false);
 
         }
-//        User loggedUser = userService.getLoggedUser();
-//        System.out.println("User id:" + loggedUser.getId());
-//        System.out.println("User first name:" + loggedUser.getFirstName());
-//        System.out.println("User last name:" + loggedUser.getLastName());
-//        System.out.println("User username:" + loggedUser.getUsername());
-//        System.out.println("User roles: " + loggedUser.getRoles());
-//        loggedUser.getRoles().forEach(role -> System.out.println("Role Name: " + role.getName()));
-//        System.out.println("Is Admin: " + loggedUser.isAdmin());
-
-
         return "profile";
     }
 
@@ -126,7 +114,6 @@ public class ProfileController {
             return "redirect:/login";
         }
 
-        // Determine whose profile picture should be updated
         User targetUser = (userId != null && loggedUser.isAdmin()) ? userService.findById(userId) : loggedUser;
 
         if (targetUser == null) {
@@ -151,15 +138,12 @@ public class ProfileController {
             return "redirect:/login";
         }
 
-        // If the logged-in user is an admin and a userId is provided, update that user's bio
-//        if (userId != null && loggedUser.isAdmin()) {
         if (true) {
             profileService.updateBio(userId, bio);
             redirectAttributes.addFlashAttribute("message", "User's bio updated successfully");
             return "redirect:/profile/" + userId;
         }
 
-        // Otherwise, update the logged-in user's bio
         profileService.updateBio(loggedUser.getId(), bio);
         redirectAttributes.addFlashAttribute("message", "Bio updated successfully");
         return "redirect:/profile";

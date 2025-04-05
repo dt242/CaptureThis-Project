@@ -79,7 +79,7 @@ public class PostService {
         post.setDescription(data.getDescription());
         post.setImage(data.getImageFile().getBytes());
         post.setUser(userService.getLoggedUser());
-        post.setStatus(status); // Set status based on button action
+        post.setStatus(status);
 
         postRepository.save(post);
     }
@@ -114,7 +114,7 @@ public class PostService {
                 .image(post.getImage())
                 .description(post.getDescription())
                 .title(post.getTitle())
-                .comments(new HashSet<>(commentService.getCommentsByPostId(post.getId())))  // Fetch dynamically
+                .comments(new HashSet<>(commentService.getCommentsByPostId(post.getId())))
                 .likes(post.getLikes().stream().map(LikeService::mapToLikeDTO).collect(Collectors.toSet()))
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())

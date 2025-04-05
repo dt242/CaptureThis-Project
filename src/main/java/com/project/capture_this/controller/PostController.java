@@ -63,12 +63,10 @@ public class PostController {
         }
 
         try {
-            // Determine the status based on the action
             PostStatus status = "post".equals(action) ? PostStatus.PUBLISHED : PostStatus.DRAFT;
             postService.savePost(data, status);
         } catch (IOException e) {
             e.printStackTrace();
-            // Handle the error appropriately
         }
 
         return "redirect:/profile";
@@ -93,7 +91,7 @@ public class PostController {
 //    public String viewFavorites(Model model) {
 //        List<DisplayPostDTO> favorites = favoriteService.findFavoritePosts();
 //        model.addAttribute("favorites", favorites);
-//        return "favorites"; // Ensure this matches the name of your Thymeleaf template
+//        return "favorites";
 //    }
 
     @GetMapping("/edit-post/{id}")
@@ -110,7 +108,7 @@ public class PostController {
         } else {
             model.addAttribute("isAlreadyPosted", false);
         }
-        return "edit-post"; // Ensure this matches the name of your Thymeleaf template
+        return "edit-post";
     }
 
     @PostMapping("/edit-post")
@@ -130,7 +128,6 @@ public class PostController {
             postService.updatePost(data, status);
         } catch (IOException e) {
             e.printStackTrace();
-            // Handle the error appropriately
         }
 
         return "redirect:/profile";
@@ -144,7 +141,7 @@ public class PostController {
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
-        return "redirect:/profile"; // or wherever you want to redirect after deletion
+        return "redirect:/profile";
     }
 
     @GetMapping("/post/{id}")
@@ -163,7 +160,7 @@ public class PostController {
 
         model.addAttribute("post", post);
         model.addAttribute("comments", comments);
-        model.addAttribute("commentAuthors", commentAuthors); // Add this to the model
+        model.addAttribute("commentAuthors", commentAuthors);
         model.addAttribute("likes", likes);
         model.addAttribute("isLiked", isLiked);
         if (post.getUser().getId() == loggedUser.getId()) {

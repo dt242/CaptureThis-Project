@@ -24,7 +24,6 @@ public class ProfileService {
             userRepository.save(user);
         } catch (IOException e) {
             e.printStackTrace();
-            // Handle the error appropriately
         }
     }
 

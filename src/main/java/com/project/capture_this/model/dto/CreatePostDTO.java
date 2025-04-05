@@ -20,8 +20,4 @@ public class CreatePostDTO {
 
     @NotNull(message = "Image is mandatory")
     private MultipartFile imageFile;
-
-//    public boolean hasImage() {
-//        return imageFile != null && !imageFile.isEmpty();
-//    }
 }

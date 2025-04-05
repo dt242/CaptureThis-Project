@@ -28,7 +28,6 @@ public class CommentController {
     @PostMapping("/post/{postId}/comment")
     public String addComment(@PathVariable Long postId,
                              @RequestParam("commentText") String commentText,
-//                             @RequestParam("userId") Long userId,
                              RedirectAttributes redirectAttributes) {
         CommentDTO commentDTO = new CommentDTO();
         commentDTO.setPostId(postId);

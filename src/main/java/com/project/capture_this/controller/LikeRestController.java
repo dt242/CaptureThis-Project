@@ -30,7 +30,7 @@ public class LikeRestController {
             response.put("success", false);
             response.put("message", e.getMessage());
         }
-        return response;  // No need for ResponseEntity if you want the default status code (200 OK)
+        return response;
     }
 
     @PostMapping("/post/unlike/{postId}")

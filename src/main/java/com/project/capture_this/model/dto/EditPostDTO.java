@@ -13,16 +13,16 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EditPostDTO {
-    private Long id; // Required for updates
+    private Long id;
 
     @NotBlank(message = "Title is mandatory")
     @Size(max = 20, message = "Title must be less than 20 characters")
     private String title;
 
-    @Size(max = 150, message = "Description must be less than 150 characters")
+    @Size(max = 300, message = "Description must be less than 300 characters")
     private String description;
 
-    private MultipartFile imageFile; // Optional for updates
+    private MultipartFile imageFile;
 
     public boolean hasImage() {
         return imageFile != null && !imageFile.isEmpty();
