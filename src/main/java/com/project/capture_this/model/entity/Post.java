@@ -67,27 +67,3 @@ public class Post {
         updatedAt = LocalDateTime.now();
     }
 }
-
-// Tag entity
-//@Entity
-//public class Tag {
-//
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
-//
-//    @Column(unique = true, nullable = false)
-//    private String name;
-//
-//    @ManyToMany(mappedBy = "tags")
-//    private Set<Post> posts = new HashSet<>();
-//
-//    // Getters and setters
-//}
-
-//    @ManyToMany
-//    @JoinTable(
-//            name = "post_tags",
-//            joinColumns = @JoinColumn(name = "post_id"),
-//            inverseJoinColumns = @JoinColumn(name = "tag_id"))
-//    private Set<Tag> tags = new HashSet<>();
