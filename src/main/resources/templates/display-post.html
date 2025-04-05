@@ -74,42 +74,35 @@
   </div>
 </main>
 <footer th:replace="fragments/commons::footer"></footer>
-
-<script>
-    // Set message variables for JavaScript
-    var likeLabel = /*[[${'likes.like'}]]*/ 'Like'; // Fallback value
-    var unlikeLabel = /*[[${'likes.unlike'}]]*/ 'Unlike'; // Fallback value
+<script th:inline="javascript">
+    var likeLabel = /*[[#{likes.like}]]*/ 'Like'; // Fallback value for like label
+    var unlikeLabel = /*[[#{likes.unlike}]]*/ 'Unlike'; // Fallback value for unlike label
 
     document.addEventListener('DOMContentLoaded', function() {
-        var likeButton = document.getElementById('likeButton');
-        if (likeButton) {
-            // Correctly set the button's initial text
-            likeButton.textContent = likeButton.textContent.trim() === likeLabel ? unlikeLabel : likeLabel;
+    var likeButton = document.getElementById('likeButton');
+    if (likeButton) {
+        likeButton.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default form submission
 
-            likeButton.addEventListener('click', function(event) {
-                event.preventDefault(); // Prevent default button behavior
+            var postId = this.getAttribute('data-post-id');
+            var action = likeButton.textContent.trim() === likeLabel ? 'like' : 'unlike';
 
-                var postId = this.getAttribute('data-post-id');
-                var action = likeButton.textContent.trim() === likeLabel ? 'like' : 'unlike';
-
-                fetch(`/post/${action}/${postId}`, { method: 'POST' })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            likeButton.textContent = action === 'like' ? unlikeLabel : likeLabel;
-                            likeButton.classList.toggle('btn-primary');
-                            likeButton.classList.toggle('btn-danger');
-                        } else {
-                            alert('An error occurred: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        alert('An error occurred. Please try again.');
-                        console.error('Error:', error);
-                    });
-            });
-        }
-    });
+            fetch(`/post/${action}/${postId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        alert('An error occurred: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('An error occurred. Please try again.');
+                    console.error('Error:', error);
+                });
+        });
+    }
+});
 </script>
 </body>
 </html>
