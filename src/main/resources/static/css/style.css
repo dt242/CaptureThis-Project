@@ -17,8 +17,13 @@ body {
 }
 
 html, body {
-    background: rgb(171,233,165);
-    background: linear-gradient(135deg, rgba(171,233,165,1) 0%, rgba(38,212,160,1) 100%);
+    background: lightblue;
+    /*background: linear-gradient(135deg, rgba(171,233,165,1) 0%, rgba(38,212,160,1) 100%);*/
+    height: 100%;
+}
+
+button {
+    line-height: inherit;
 }
 
 /* Centering the welcome content */
@@ -41,6 +46,7 @@ main {
 .drafts-container,
 .favorites-container,
 .followers-container,
+.following-container,
 .home-container,
 .search-container,
 .profile-container {
@@ -53,6 +59,15 @@ main {
     max-width: 800px; /* Maximum width to prevent it from getting too large */
     text-align: center; /* Center text inside */
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.search-result-heading {
+    margin: 1rem 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.result-header {
+    margin: 1rem 0;
 }
 
 /* Styling for headings and links */
@@ -86,7 +101,7 @@ main {
 }
 
 .primary-text:hover {
-    color: #26d4a0; /* Accent color for link hover */
+    color: lightblue; /* Accent color for link hover */
 }
 
 .text-center {
@@ -100,8 +115,13 @@ main {
 }
 .form-group {
     flex: 1;
-    margin-right: 15px;
+    /*margin-right: 15px;*/
 }
+
+.reg {
+    margin-right: 1rem;
+}
+
 .form-group:last-child {
     margin-right: 0;
 }
@@ -179,7 +199,8 @@ main {
 }
 
 .btn:hover {
-    background-color: #26d4a0;
+    background-color: lightblue;
+    color: #333;
 }
 
 header {
@@ -229,8 +250,8 @@ nav {
 }
 
 .nav-links a:hover {
-    background-color: #26d4a0; /* Hover effect matching main theme */
-    color: white;
+    background-color: lightblue; /* Hover effect matching main theme */
+    color: #333;
 }
 
 /* Button Styles */
@@ -245,7 +266,8 @@ nav {
 }
 
 .logout-button:hover {
-    background-color: #26d4a0; /* Slightly darker green on hover */
+    background-color: lightblue; /* Slightly darker green on hover */
+    color: #333;
 }
 
 /* Footer Styles */
@@ -254,6 +276,8 @@ nav {
         color: #fff; /* Text color */
         text-align: center; /* Center text */
         padding: 10px; /* Padding */
+        width: 100%;
+
 }
 
 .footer-background {
@@ -284,8 +308,8 @@ nav {
     flex-direction: column; /* Stacked layout for smaller screens */
     align-items: center; /* Center content horizontally */
     margin-bottom: 5px; /* Space between post details and actions */
-    border: 1px solid #ccc; /* Border around post details */
-    border-radius: 10px; /* Rounded corners */
+    border-bottom: 1px solid #ccc; /* Border around post details */
+    /*border-radius: 10px; Rounded corners */
     padding: 20px; /* Padding inside the border */
 }
 
@@ -301,6 +325,7 @@ nav {
     max-width: 50%; /* Ensure image does not exceed half the container width */
     height: auto; /* Maintain aspect ratio */
     border-radius: 10px; /* Rounded corners */
+    border: 1px solid #ccc;
     margin-bottom: 20px; /* Space between image and post info */
 }
 
@@ -319,8 +344,9 @@ nav {
 .post-actions {
     display: flex;
     justify-content: center; /* Center actions horizontally */
+    align-items: center;
     gap: 2rem;
-    margin-bottom: 5px;
+    margin: 0.5rem 0;
 }
 
 .post-sidebar {
@@ -328,6 +354,7 @@ nav {
     border: 1px solid #ccc; /* Border around the sidebar */
     border-radius: 10px; /* Rounded corners */
     padding: 20px; /* Padding inside the border */
+    flex: 1;
 }
 
 .likes-section {
@@ -341,6 +368,7 @@ nav {
 .user-like {
     display: flex;
     align-items: center; /* Align user images and names horizontally */
+    justify-content: center;
     margin-bottom: 10px; /* Space between users */
 }
 
@@ -356,6 +384,7 @@ nav {
     border: 1px solid #ccc; /* Border around comments section */
     border-radius: 10px; /* Rounded corners */
     padding: 20px; /* Padding inside the border */
+    flex: 1;
 }
 
 .comments-section h2 {
@@ -383,7 +412,55 @@ nav {
     max-height: 50px; /* Fixed size for profile pictures */
     border-radius: 50%; /* Circular profile pictures */
     margin-right: 10px; /* Space between image and name */
+    border: 1px solid #ccc;
 }
+
+.profile-heading {
+    margin-bottom: 1rem;
+}
+
+.personal-info-p {
+    margin-top: 0.5rem;
+}
+
+.no-content {
+    font-size: 1.2rem;
+    font-style: italic;
+    opacity: 0.6;
+}
+
+
+.big-heading {
+    margin: 1rem 0 2rem;
+}
+
+.name {
+    margin: 0.5rem 0 1rem;
+}
+
+.post-date {
+    opacity: 0.6;
+    font-style: italic;
+}
+
+#notification-popup {
+            display: none;
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        #notification-popup button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
 
 .profile-picture {
 overflow: hidden;
@@ -395,6 +472,7 @@ overflow: hidden;
 
 .add-comment-form {
     margin-top: 20px; /* Space between comments and form */
+    /* display: flex; */
 }
 
 .add-comment-form .form-group {
@@ -413,6 +491,7 @@ overflow: hidden;
 .edit-form {
     border: 1px solid #ccc; /* Border around comments section */
     border-radius: 10px; /* Rounded corners */
+    padding: 1em;
 }
 
 .search-button {
@@ -441,6 +520,29 @@ overflow: hidden;
     max-width: 100%;
     max-height: 100%;
     border-radius: 50%;
+}
+
+button {
+    padding: 0.3em 0;
+}
+
+textarea {
+    resize: none;
+}
+
+section.posts-summary {
+    justify-content: center;
+    display: flex;
+}
+
+#like-comment {
+    display: flex;
+    gap: 1em;
+    align-items: flex-start;
+}
+
+#likeButton {
+    height: fit-content;
 }
 
 /* Responsive Styles */
