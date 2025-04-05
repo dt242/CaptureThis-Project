@@ -33,20 +33,14 @@
         </div>
 
         <section class="personal-info">
-            <h2 th:text="#{profile.personalInfo}">Personal Information</h2>
-
-            <!-- Conditionally display Bio -->
-            <p th:if="${profileData.bio}">
+            <h2 th:text="#{profile.personalInfo}" class="profile-heading">Personal Information</h2>
+            <p th:if="${profileData.bio}" class="personal-info-p">
                 <strong th:text="#{profile.bio}"></strong> <span th:text="${profileData.bio}">Bio</span>
             </p>
-
-            <!-- Conditionally display Birth Date -->
-            <p th:if="${formattedBirthDate}">
+            <p th:if="${formattedBirthDate}" class="personal-info-p">
                 <strong th:text="#{profile.birthDate}"></strong> <span th:text="${formattedBirthDate}">Birth Date</span>
             </p>
-
-            <!-- Conditionally display Gender -->
-            <p th:if="${profileData.gender}">
+            <p th:if="${profileData.gender}" class="personal-info-p">
                 <strong th:text="#{profile.gender}"></strong> <span th:text="${profileData.gender}">Gender</span>
             </p>
         </section>
