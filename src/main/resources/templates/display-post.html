@@ -22,7 +22,7 @@
       </div>
     <div class="post-actions">
       <button id="likeButton" class="btn"
-              th:text="${isLiked ? '#{likes.unlike}' : '#{likes.like}'}"
+              th:text="${isLiked} ? #{likes.unlike} : #{likes.like}"
               th:attr="data-post-id=${post.id}"
               th:classappend="${isLiked} ? 'btn-danger' : 'btn-primary'">
       </button>
