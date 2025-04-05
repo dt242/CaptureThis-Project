@@ -16,7 +16,7 @@ public class CreatePostDTO {
     @Size(max = 20, message = "Title must be less than 20 characters")
     private String title;
 
-    @Size(max = 150, message = "Description must be less than 150 characters")
+    @Size(max = 300, message = "Description must be less than 300 characters")
     private String description;
 
     @NotNull(message = "Image is mandatory")

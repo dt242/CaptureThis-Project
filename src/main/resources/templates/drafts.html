@@ -5,10 +5,10 @@
 <header th:replace="fragments/commons::header"></header>
 <main>
   <div class="drafts-container">
-    <h1 th:text="#{drafts.title}"></h1>
+    <h1 th:text="#{drafts.title}" class="big-heading"></h1>
     <section class="draft-posts">
       <div th:if="${drafts.size() == 0}">
-        <p th:text="#{drafts.noDrafts}"></p>
+        <p th:text="#{drafts.noDrafts}" class="no-content"></p>
       </div>
       <div th:each="draft : ${drafts}" class="post full-post">
           <div class="post-details">
@@ -22,8 +22,7 @@
           </div>
         <div class="post-actions">
             <a th:href="@{/edit-post/{id}(id=${draft.id})}" class="btn btn-primary" th:text="#{drafts.editButton}"></a>
-            <a th:href="@{/delete-post/{id}(id=${draft.id})}" class="btn btn-danger" onclick="return confirm(/*[[${#messages['drafts.deleteConfirmation']}]]*/ '');">
-            <a th:href="@{/post/{id}(id=${draft.id})}" class="btn btn-info" th:text="#{post.view}">View</a>
+            <a th:href="@{/delete-post/{id}(id=${draft.id})}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this post?');">
             <span th:text="#{drafts.deleteButton}"></span>
           </a>
         </div>
