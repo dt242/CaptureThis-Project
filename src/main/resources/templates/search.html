@@ -23,19 +23,18 @@
 
         <div class="search-results-container">
             <!-- Correctly concatenate static and dynamic content -->
-            <h1>
+            <h1 class="search-result-heading">
                 <span th:text="#{search.resultsTitle}"></span> "<span th:text="${query}"></span>"
             </h1>
             <section class="search-results">
                 <div th:if="${#lists.isEmpty(results)}">
-                    <p th:text="#{search.noResults}">No results found</p>
+                    <p th:text="#{search.noResults}" class="no-content">No results found</p>
                 </div>
                 <div th:each="result : ${results}" class="search-result">
                     <div class="result-header">
-
                             <img th:src="@{/profile-picture/{userId}(userId=${result.id})}" alt="Profile Picture" class="profile-picture-small"/>
                             <span class="result-username">
-                                <a th:href="@{/profile/{userId}(userId=${result.id})}" th:text="${result.firstName} + ' ' + ${result.lastName}" style="text-decoration: none; color: #333; font-style:bold;">Full Name</a>
+                                <a th:href="@{/profile/{userId}(userId=${result.id})}" th:text="${result.firstName} + ' ' + ${result.lastName}" style="text-decoration: none; color: #333; font-weight:bold;">Full Name</a>
                             </span>
 
                     </div>
