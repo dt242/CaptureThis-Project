@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,15 +44,17 @@ public class PostService {
     @Transactional
     public List<DisplayPostDTO> findFollowedPosts() {
         User loggedUser = userService.getLoggedUser();
-        return findAllPosts()
-                .stream()
-                .filter(post -> loggedUser.getFollowing().contains(post.getUser()))
+        List<User> followedUsers = new ArrayList<>(loggedUser.getFollowing());
+
+        List<Post> posts = postRepository.findByUserInAndStatusOrderByCreatedAtDesc(followedUsers, PostStatus.PUBLISHED);
+        return posts.stream()
+                .map(post -> mapToDisplayPostDTO(post, commentService))
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public List<DisplayPostDTO> findPostsByUser(User user) {
-        List<Post> posts = postRepository.findByUser(user);
+        List<Post> posts = postRepository.findByUserAndStatusOrderByCreatedAtDesc(user, PostStatus.PUBLISHED);
         return posts.stream()
                 .map(post -> mapToDisplayPostDTO(post, commentService))
                 .collect(Collectors.toList());
@@ -60,7 +63,8 @@ public class PostService {
     @Transactional
     public List<DisplayPostDTO> findPublishedPosts() {
         User loggedUser = userService.getLoggedUser();
-        return postRepository.findByUserAndStatus(loggedUser, PostStatus.PUBLISHED).stream()
+        return postRepository.findByUserAndStatusOrderByCreatedAtDesc(loggedUser, PostStatus.PUBLISHED)
+                .stream()
                 .map(post -> mapToDisplayPostDTO(post, commentService))
                 .collect(Collectors.toList());
     }
