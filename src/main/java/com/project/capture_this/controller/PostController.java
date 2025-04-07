@@ -153,9 +153,9 @@ public class PostController {
                 .map(comment -> userService.findById(comment.getUserId()))
                 .collect(Collectors.groupingBy(User::getId));
 
-        List<User> likes = likeService.getUsersWhoLikedPost(id);
-        User loggedUser = userService.getLoggedUser();
+        List<Like> likes = likeService.getLikesByPostIdSortedDesc(id);
 
+        User loggedUser = userService.getLoggedUser();
         boolean isLiked = likeService.isUserLikedPost(id, loggedUser);
 
         model.addAttribute("post", post);
@@ -163,16 +163,9 @@ public class PostController {
         model.addAttribute("commentAuthors", commentAuthors);
         model.addAttribute("likes", likes);
         model.addAttribute("isLiked", isLiked);
-        if (post.getUser().getId() == loggedUser.getId()) {
-            model.addAttribute("isOwnProfile", true);
-        } else {
-            model.addAttribute("isOwnProfile", false);
-        }
-        if (userService.getLoggedUser().isAdmin()) {
-            model.addAttribute("isAdmin", true);
-        } else {
-            model.addAttribute("isAdmin", false);
-        }
+        model.addAttribute("isOwnProfile", post.getUser().getId().equals(loggedUser.getId()));
+        model.addAttribute("isAdmin", loggedUser.isAdmin());
+
         return "display-post";
     }
 
