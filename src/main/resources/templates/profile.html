@@ -7,7 +7,8 @@
     <div class="profile-container">
         <div class="profile-header">
             <div class="profile-picture">
-                <img th:src="@{/profile-picture/{userId}(userId=${profileData.id})}" alt="Profile Picture" class="profile-picture-big"/>
+                <img th:src="@{/profile-picture/{userId}(userId=${profileData.id})}" alt="Profile Picture"
+                     class="profile-picture-big"/>
             </div>
             <h1 class="name" th:text="${profileData.firstName} + ' ' + ${profileData.lastName}">Full name</h1>
 
@@ -19,8 +20,10 @@
                             th:classappend="${isFollowing} ? 'btn-danger' : 'btn-primary'">
                     </button>
                 </div>
-                <a class="btn btn-info" th:href="@{/followers/{userId}(userId=${profileData.id})}" th:text="#{profile.followers}">Followers</a>
-                <a class="btn btn-info" th:href="@{/following/{userId}(userId=${profileData.id})}" th:text="#{profile.following}">Following</a>
+                <a class="btn btn-info" th:href="@{/followers/{userId}(userId=${profileData.id})}"
+                   th:text="#{profile.followers}">Followers</a>
+                <a class="btn btn-info" th:href="@{/following/{userId}(userId=${profileData.id})}"
+                   th:text="#{profile.following}">Following</a>
                 <div th:if="${isOwnProfile == false && isAdmin}">
                     <a th:href="@{/profile/make-admin/{userId}(userId=${profileData.id})}"
                        class="btn"
@@ -45,19 +48,26 @@
             </p>
         </section>
         <div th:if="${isOwnProfile || isAdmin}">
-            <button id="editProfileBtn" class="btn btn-primary" th:text="#{profile.editProfile}" style="margin: 1rem 0;">Edit Profile</button>
+            <button id="editProfileBtn" class="btn btn-primary" th:text="#{profile.editProfile}"
+                    style="margin: 1rem 0;">Edit Profile
+            </button>
 
             <div id="editProfileForm" style="display: none;" class="edit-form">
-                <form th:action="@{/profile/add-profile-picture}" th:object="${profilePictureData}" method="post" enctype="multipart/form-data" s>
+                <form th:action="@{/profile/add-profile-picture}" th:object="${profilePictureData}" method="post"
+                      enctype="multipart/form-data" s>
                     <div class="form-group" style="margin-bottom: 5px;">
                         <div class="input-container image">
-                            <img id="imagePreview" src="#" alt="Image Preview" style="display:none;" class="post-image"/>
-                            <input type="file" id="profilePicture" name="profilePicture" th:field="*{profilePicture}" class="form-control" accept="image/*" onchange="previewImage(event)" required />
-                            <label for="profilePicture" th:text="#{profile.changePicture}">Change Profile Picture</label>
+                            <img id="imagePreview" src="#" alt="Image Preview" style="display:none;"
+                                 class="post-image"/>
+                            <input type="file" id="profilePicture" name="profilePicture" th:field="*{profilePicture}"
+                                   class="form-control" accept="image/*" onchange="previewImage(event)" required/>
+                            <label for="profilePicture" th:text="#{profile.changePicture}">Change Profile
+                                Picture</label>
                         </div>
                     </div>
                     <div class="form-actions" style="margin-bottom: 1rem;">
-                        <input type="hidden" name="userId" th:if="${!isOwnProfile && isAdmin}" th:value="${profileData.id}" />
+                        <input type="hidden" name="userId" th:if="${!isOwnProfile && isAdmin}"
+                               th:value="${profileData.id}"/>
                         <button type="submit" class="btn btn-primary" th:text="#{profile.post}">Post</button>
                     </div>
                 </form>
@@ -67,7 +77,8 @@
                         <textarea id="new-bio" name="bio" class="form-control" required></textarea>
                         <label for="new-bio" th:text="#{profile.newBio}">New Bio</label>
                     </div>
-                    <input type="hidden" name="userId" th:if="${!isOwnProfile && isAdmin}" th:value="${profileData.id}" />
+                    <input type="hidden" name="userId" th:if="${!isOwnProfile && isAdmin}"
+                           th:value="${profileData.id}"/>
                     <button type="submit" class="btn btn-secondary" th:text="#{profile.changeBio}">Change Bio</button>
                 </form>
 
@@ -76,8 +87,11 @@
                         <input id="new-first-name" type="text" name="firstName" class="form-control" required/>
                         <label for="new-first-name" th:text="#{profile.newFirstName}">New First Name</label>
                     </div>
-                    <input type="hidden" name="userId" th:if="${!isOwnProfile && isAdmin}" th:value="${profileData.id}" />
-                    <button type="submit" class="btn btn-secondary" th:text="#{profile.changeFirstName}" style="margin-top:5px;">Change First Name</button>
+                    <input type="hidden" name="userId" th:if="${!isOwnProfile && isAdmin}"
+                           th:value="${profileData.id}"/>
+                    <button type="submit" class="btn btn-secondary" th:text="#{profile.changeFirstName}"
+                            style="margin-top:5px;">Change First Name
+                    </button>
                 </form>
 
                 <form th:action="@{/profile/change-last-name}" method="post" class="form-group">
@@ -85,8 +99,11 @@
                         <input id="new-last-name" type="text" name="lastName" class="form-control" required/>
                         <label for="new-last-name" th:text="#{profile.newLastName}">New Last Name</label>
                     </div>
-                    <input type="hidden" name="userId" th:if="${!isOwnProfile && isAdmin}" th:value="${profileData.id}" />
-                    <button type="submit" class="btn btn-secondary" th:text="#{profile.changeLastName}" style="margin-top:5px;">Change Last Name</button>
+                    <input type="hidden" name="userId" th:if="${!isOwnProfile && isAdmin}"
+                           th:value="${profileData.id}"/>
+                    <button type="submit" class="btn btn-secondary" th:text="#{profile.changeLastName}"
+                            style="margin-top:5px;">Change Last Name
+                    </button>
                 </form>
 
                 <button id="closeEditForm" class="btn btn-danger" th:text="#{profile.close}">Close</button>
@@ -95,7 +112,8 @@
 
         <section class="posts-summary">
             <div class="posts-summary-item" th:if="${isOwnProfile || isAdmin}">
-                <a class="btn btn-info" th:href="@{/drafts}" th:text="#{profile.draftPosts}" style="margin: 1rem;">Draft Posts</a>
+                <a class="btn btn-info" th:href="@{/drafts}" th:text="#{profile.draftPosts}" style="margin: 1rem;">Draft
+                    Posts</a>
             </div>
             <!--            <div class="posts-summary-item">-->
             <!--                <a class="btn btn-info" th:href="@{/favorites}" th:text="#{profile.favoritePosts}">Favorite Posts</a>-->
@@ -103,7 +121,8 @@
         </section>
 
         <section class="user-posts">
-            <h2 th:text="${profileData.firstName} + ' ' + ${profileData.lastName} + '\'s Posts'" class="profile-heading"></h2>
+            <h2 th:text="${profileData.firstName} + ' ' + ${profileData.lastName} + '\'s Posts'"
+                class="profile-heading"></h2>
             <div th:each="post : ${posts}" class="post full-post">
                 <div class="post-details">
                     <div class="post-header">
@@ -116,8 +135,11 @@
                 </div>
                 <div class="post-actions">
                     <a th:href="@{/post/{id}(id=${post.id})}" class="btn btn-info" th:text="#{post.view}">View</a>
-                    <a th:if="${isOwnProfile || isAdmin}" th:href="@{/edit-post/{id}(id=${post.id})}" class="btn btn-primary" th:text="#{drafts.editButton}">Edit</a>
-                    <a th:if="${isOwnProfile || isAdmin}" th:href="@{/delete-post/{id}(id=${post.id})}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this post?');" th:text="#{profile.delete}">Delete</a>
+                    <a th:if="${isOwnProfile || isAdmin}" th:href="@{/edit-post/{id}(id=${post.id})}"
+                       class="btn btn-primary" th:text="#{drafts.editButton}">Edit</a>
+                    <a th:if="${isOwnProfile || isAdmin}" th:href="@{/delete-post/{id}(id=${post.id})}"
+                       class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this post?');"
+                       th:text="#{profile.delete}">Delete</a>
                 </div>
             </div>
         </section>
@@ -185,6 +207,7 @@
         };
         reader.readAsDataURL(input.files[0]);
     }
+
 </script>
 </body>
 </html>

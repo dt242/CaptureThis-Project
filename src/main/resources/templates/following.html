@@ -4,24 +4,27 @@
 <body>
 <header th:replace="fragments/commons::header"></header>
 <main>
-  <div class="following-container">
-    <h1 th:text="#{following.title}"></h1>
-    <p>
-      <strong th:text="#{following.totalFollowing}"></strong>
-      <span th:text="${following.size()}">Total Following</span>
-    </p>
+    <div class="following-container">
+        <h1 th:text="#{following.title}"></h1>
+        <p>
+            <strong th:text="#{following.totalFollowing}"></strong>
+            <span th:text="${following.size()}">Total Following</span>
+        </p>
 
-    <section class="following-list">
-      <div th:each="follow : ${following}" class="following-item">
-        <div class="result-header">
-        <img th:src="@{/profile-picture/{userId}(userId=${follow.id})}" alt="Profile Picture" class="profile-picture-small"/>
-        <span class="follow-name">
-            <a th:href="@{/profile/{userId}(userId=${follow.id})}" th:text="${follow.firstName} + ' ' + ${follow.lastName}" style="text-decoration: none; color: #333; font-weight:bold;">Full Name</a>
+        <section class="following-list">
+            <div th:each="follow : ${following}" class="following-item">
+                <div class="result-header">
+                    <img th:src="@{/profile-picture/{userId}(userId=${follow.id})}" alt="Profile Picture"
+                         class="profile-picture-small"/>
+                    <span class="follow-name">
+            <a th:href="@{/profile/{userId}(userId=${follow.id})}"
+               th:text="${follow.firstName} + ' ' + ${follow.lastName}"
+               style="text-decoration: none; color: #333; font-weight:bold;">Full Name</a>
         </span>
-        </div>
-      </div>
-    </section>
-  </div>
+                </div>
+            </div>
+        </section>
+    </div>
 </main>
 <footer th:replace="fragments/commons::footer"></footer>
 </body>

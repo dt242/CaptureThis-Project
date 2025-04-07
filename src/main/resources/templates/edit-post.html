@@ -22,7 +22,8 @@
                             class="form-control"/>
                     <label for="title" th:text="#{editPost.titleLabel}"></label>
                 </div>
-                <small class="danger"th:each="error: ${#fields.errors('title')}" th:text="${error}">Title error message</small>
+                <small class="danger" th:each="error: ${#fields.errors('title')}" th:text="${error}">Title error
+                    message</small>
             </div>
             <div class="form-group">
                 <div class="input-container">
@@ -34,14 +35,17 @@
                 rows="5"></textarea>
                     <label for="description" th:text="#{editPost.descriptionLabel}"></label>
                 </div>
-                <small class="danger" th:each="error: ${#fields.errors('description')}" th:text="${error}">Description error message</small>
+                <small class="danger" th:each="error: ${#fields.errors('description')}" th:text="${error}">Description
+                    error message</small>
             </div>
             <div class="form-group">
                 <div class="input-container image">
                     <!--        <label for="currentImage" th:text="#{editPost.currentPhotoLabel}"></label>-->
                     <div>
-                        <img id="currentImage" th:src="@{/images/{postId}(postId=${editPostData.id})}" alt="Post Image" class="post-image"/>
-                        <img id="newImagePreview" src="#" alt="New Image Preview" class="post-image" style="display:none;"/>
+                        <img id="currentImage" th:src="@{/images/{postId}(postId=${editPostData.id})}" alt="Post Image"
+                             class="post-image"/>
+                        <img id="newImagePreview" src="#" alt="New Image Preview" class="post-image"
+                             style="display:none;"/>
                     </div>
                     <input
                             type="file"
@@ -53,11 +57,14 @@
                             onchange="previewNewImage(event)"/>
                     <label for="photo" th:text="#{editPost.uploadNewPhotoLabel}"></label>
                 </div>
-                <small class="danger" th:each="error: ${#fields.errors('imageFile')}" th:text="${error}">Image file error message</small>
+                <small class="danger" th:each="error: ${#fields.errors('imageFile')}" th:text="${error}">Image file
+                    error message</small>
             </div>
             <div class="form-actions">
-                <button type="submit" name="action" value="update" class="btn btn-primary" th:text="#{editPost.updateButton}"></button>
-                <button th:if="${isAlreadyPosted == false}" type="submit" name="action" value="post" class="btn btn-primary" th:text="#{createPost.postButton}"></button>
+                <button type="submit" name="action" value="update" class="btn btn-primary"
+                        th:text="#{editPost.updateButton}"></button>
+                <button th:if="${isAlreadyPosted == false}" type="submit" name="action" value="post"
+                        class="btn btn-primary" th:text="#{createPost.postButton}"></button>
             </div>
         </form>
     </div>
@@ -82,6 +89,8 @@ function previewNewImage(event) {
     };
     reader.readAsDataURL(input.files[0]);
 }
+
+
 </script>
 </body>
 </html>

@@ -5,19 +5,19 @@
 <header th:replace="fragments/commons::header"></header>
 <main class="contact-container">
     <div class="contacts">
-    <section class="contact-section">
-        <h1 th:text="#{contact.title}"></h1>
-        <p th:text="#{contact.info}"></p>
-    </section>
+        <section class="contact-section">
+            <h1 th:text="#{contact.title}"></h1>
+            <p th:text="#{contact.info}"></p>
+        </section>
         <hr>
-    <section class="contact-section">
-        <h2 th:text="#{contact.contact.title}"></h2>
-        <ul id="contacts-list">
-            <li><strong th:text="#{contact.email}"></strong> <span th:text="#{contact.email.value}"></span></li>
-            <li><strong th:text="#{contact.phone}"></strong> <span th:text="#{contact.phone.value}"></span></li>
-            <li><strong th:text="#{contact.address}"></strong> <span th:text="#{contact.address.value}"></span></li>
-        </ul>
-    </section>
+        <section class="contact-section">
+            <h2 th:text="#{contact.contact.title}"></h2>
+            <ul id="contacts-list">
+                <li><strong th:text="#{contact.email}"></strong> <span th:text="#{contact.email.value}"></span></li>
+                <li><strong th:text="#{contact.phone}"></strong> <span th:text="#{contact.phone.value}"></span></li>
+                <li><strong th:text="#{contact.address}"></strong> <span th:text="#{contact.address.value}"></span></li>
+            </ul>
+        </section>
     </div>
 </main>
 <footer th:replace="fragments/commons::footer"></footer>

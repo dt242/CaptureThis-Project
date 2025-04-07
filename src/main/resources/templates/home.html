@@ -16,9 +16,12 @@
                     <!--                        <img th:src="@{/profile-picture/{userId}(userId=${post.getUser().getId()})}" alt="Profile Picture" class="profile-picture-small"/>-->
                     <!--                        <span class="post-username" th:text="${post.getUser().getUsername()}"></span>-->
                     <!--                    </div>-->
-                    <img th:src="@{/profile-picture/{userId}(userId=${post.getUser().getId()})}" alt="Profile Picture" class="profile-picture-small"/>
+                    <img th:src="@{/profile-picture/{userId}(userId=${post.getUser().getId()})}" alt="Profile Picture"
+                         class="profile-picture-small"/>
                     <span class="result-username">
-                        <a th:href="@{/profile/{userId}(userId=${post.getUser().getId()})}" th:text="${post.getUser().getFirstName()} + ' ' + ${post.getUser().getLastName()}" style="text-decoration: none; color: #333; font-weight:bold;">Full Name</a>
+                        <a th:href="@{/profile/{userId}(userId=${post.getUser().getId()})}"
+                           th:text="${post.getUser().getFirstName()} + ' ' + ${post.getUser().getLastName()}"
+                           style="text-decoration: none; color: #333; font-weight:bold;">Full Name</a>
                     </span>
                 </div>
                 <div class="post-content full-post">

@@ -32,9 +32,12 @@
                 </div>
                 <div th:each="result : ${results}" class="search-result">
                     <div class="result-header">
-                        <img th:src="@{/profile-picture/{userId}(userId=${result.id})}" alt="Profile Picture" class="profile-picture-small"/>
+                        <img th:src="@{/profile-picture/{userId}(userId=${result.id})}" alt="Profile Picture"
+                             class="profile-picture-small"/>
                         <span class="result-username">
-                                <a th:href="@{/profile/{userId}(userId=${result.id})}" th:text="${result.firstName} + ' ' + ${result.lastName}" style="text-decoration: none; color: #333; font-weight:bold;">Full Name</a>
+                                <a th:href="@{/profile/{userId}(userId=${result.id})}"
+                                   th:text="${result.firstName} + ' ' + ${result.lastName}"
+                                   style="text-decoration: none; color: #333; font-weight:bold;">Full Name</a>
                             </span>
 
                     </div>

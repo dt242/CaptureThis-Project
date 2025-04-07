@@ -13,15 +13,16 @@
                 enctype="multipart/form-data">
             <div class="form-group">
                 <div class="input-container">
-                <input
-                        type="text"
-                        id="title"
-                        name="title"
-                        th:field="*{title}"
-                    class="form-control"/>
+                    <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            th:field="*{title}"
+                            class="form-control"/>
                     <label for="title" th:text="#{createPost.titleLabel}"></label>
                 </div>
-                    <small class="danger" th:each="error: ${#fields.errors('title')}" th:text="#{createPost.titleError}">Title error message</small>
+                <small class="danger" th:each="error: ${#fields.errors('title')}" th:text="#{createPost.titleError}">Title
+                    error message</small>
             </div>
             <div class="form-group">
                 <div class="input-container">
@@ -33,26 +34,30 @@
                         rows="5"></textarea>
                     <label for="description" th:text="#{createPost.descriptionLabel}"></label>
                 </div>
-                    <small class="danger" th:each="error: ${#fields.errors('description')}" th:text="#{createPost.descriptionError}">Description error message</small>
-                </div>
+                <small class="danger" th:each="error: ${#fields.errors('description')}"
+                       th:text="#{createPost.descriptionError}">Description error message</small>
+            </div>
             <div class="form-group">
                 <div class="input-container image">
-                <img id="imagePreview" src="#" alt="Image Preview" style="display:none;" class="post-image"/>
-                <input
-                        type="file"
-                        id="photo"
-                        name="photo"
-                        th:field="*{imageFile}"
-                        class="form-control choose-file"
-                        accept="image/*"
-                onchange="previewImage(event)"/>
-                <label for="photo" th:text="#{createPost.photoLabel}"></label>
+                    <img id="imagePreview" src="#" alt="Image Preview" style="display:none;" class="post-image"/>
+                    <input
+                            type="file"
+                            id="photo"
+                            name="photo"
+                            th:field="*{imageFile}"
+                            class="form-control choose-file"
+                            accept="image/*"
+                            onchange="previewImage(event)"/>
+                    <label for="photo" th:text="#{createPost.photoLabel}"></label>
                 </div>
-                <small class="danger" th:each="error: ${#fields.errors('imageFile')}" th:text="#{createPost.imageFileError}">Image file error message</small>
+                <small class="danger" th:each="error: ${#fields.errors('imageFile')}"
+                       th:text="#{createPost.imageFileError}">Image file error message</small>
             </div>
             <div class="form-actions">
-                <button type="submit" name="action" value="post" class="btn btn-primary" th:text="#{createPost.postButton}"></button>
-                <button type="submit" name="action" value="draft" class="btn btn-secondary" th:text="#{createPost.draftButton}"></button>
+                <button type="submit" name="action" value="post" class="btn btn-primary"
+                        th:text="#{createPost.postButton}"></button>
+                <button type="submit" name="action" value="draft" class="btn btn-secondary"
+                        th:text="#{createPost.draftButton}"></button>
             </div>
         </form>
     </div>
@@ -71,6 +76,7 @@ function previewImage(event) {
     };
     reader.readAsDataURL(input.files[0]);
 }
+
 </script>
 </body>
 </html>
