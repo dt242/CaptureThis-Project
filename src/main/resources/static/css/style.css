@@ -370,14 +370,18 @@ nav {
     align-items: center; /* Align user images and names horizontally */
     justify-content: center;
     margin-bottom: 10px; /* Space between users */
+    flex-direction: column;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+    margin-top: 10px;
 }
 
-.user-like img {
-    width: 40px; /* Fixed size for profile pictures */
-    height: 40px; /* Fixed size for profile pictures */
-    border-radius: 50%; /* Circular profile pictures */
-    margin-right: 10px; /* Space between image and name */
-}
+/*.user-like img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}*/
 
 .comments-section {
     margin-top: 20px; /* Space between sidebar and comments section */
@@ -393,9 +397,13 @@ nav {
 
 .comment {
     margin-bottom: 20px; /* Space between comments */
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+    margin-top: 10px;
 }
 
 .comment-header,
+.user-like-header,
 .result-header,
 .profile-picture,
 .post-header-details {
@@ -406,6 +414,7 @@ nav {
 }
 
 .comment-header img,
+.user-like-header img,
 .result-header img,
 .post-header-details img {
     max-width: 50px; /* Fixed size for profile pictures */
