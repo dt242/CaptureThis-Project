@@ -132,18 +132,20 @@ public class PostController {
             e.printStackTrace();
         }
 
-        return "redirect:/profile";
+        return "redirect:/profile/" + postService.findById(data.getId()).getUser().getId();
     }
 
     @GetMapping("/delete-post/{id}")
     public String deletePost(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
+            Post post = postService.findById(id);
             postService.deletePost(id);
             redirectAttributes.addFlashAttribute("successMessage", "Post deleted successfully.");
+            return "redirect:/profile/" + post.getUser().getId();
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/profile";
         }
-        return "redirect:/profile";
     }
 
     @GetMapping("/post/{id}")
