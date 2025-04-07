@@ -150,8 +150,10 @@ public class PostController {
     public String viewPost(@PathVariable Long id, Model model) {
         Post post = postService.findById(id);
 
+        User loggedUser = userService.getLoggedUser();
         List<CommentDTO> comments = commentService.getCommentsByPostId(id).stream()
                 .sorted(Comparator.comparing(CommentDTO::getCreatedAt).reversed())
+                .peek(comment -> comment.setOwnComment(comment.getUserId().equals(loggedUser.getId())))
                 .toList();
 
         Map<Long, List<User>> commentAuthors = comments.stream()
@@ -160,7 +162,6 @@ public class PostController {
 
         List<Like> likes = likeService.getLikesByPostIdSortedDesc(id);
 
-        User loggedUser = userService.getLoggedUser();
         boolean isLiked = likeService.isUserLikedPost(id, loggedUser);
 
         model.addAttribute("post", post);
@@ -168,7 +169,6 @@ public class PostController {
         model.addAttribute("commentAuthors", commentAuthors);
         model.addAttribute("likes", likes);
         model.addAttribute("isLiked", isLiked);
-        model.addAttribute("isOwnProfile", post.getUser().getId().equals(loggedUser.getId()));
         model.addAttribute("isAdmin", loggedUser.isAdmin());
 
         return "display-post";
