@@ -4,6 +4,7 @@ import com.project.capture_this.model.dto.CommentDTO;
 import com.project.capture_this.model.dto.CreatePostDTO;
 import com.project.capture_this.model.dto.DisplayPostDTO;
 import com.project.capture_this.model.dto.EditPostDTO;
+import com.project.capture_this.model.entity.Like;
 import com.project.capture_this.model.entity.Post;
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.model.enums.PostStatus;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -147,7 +149,10 @@ public class PostController {
     @GetMapping("/post/{id}")
     public String viewPost(@PathVariable Long id, Model model) {
         Post post = postService.findById(id);
-        List<CommentDTO> comments = commentService.getCommentsByPostId(id);
+
+        List<CommentDTO> comments = commentService.getCommentsByPostId(id).stream()
+                .sorted(Comparator.comparing(CommentDTO::getCreatedAt).reversed())
+                .toList();
 
         Map<Long, List<User>> commentAuthors = comments.stream()
                 .map(comment -> userService.findById(comment.getUserId()))
