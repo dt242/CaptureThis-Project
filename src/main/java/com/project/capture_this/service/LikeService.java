@@ -59,6 +59,10 @@ public class LikeService {
         return likeRepository.existsByPostIdAndUserId(postId, user.getId());
     }
 
+    public List<Like> getLikesByPostIdSortedDesc(Long postId) {
+        return likeRepository.findAllByPostIdOrderByCreatedAtDesc(postId);
+    }
+
     public static LikeDTO mapToLikeDTO(Like like){
         return LikeDTO.builder()
                 .id(like.getId())
