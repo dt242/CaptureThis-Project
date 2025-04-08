@@ -49,6 +49,7 @@ main {
 .following-container,
 .home-container,
 .search-container,
+.notification-container,
 .profile-container {
     background-color: #fff;
     color: #333;
@@ -71,7 +72,7 @@ main {
 }
 
 /* Styling for headings and links */
-.welcome h1, .welcome h3 {
+.welcome h1, .welcome h3, .notification-feed {
     color: #333; /* Ensure text is readable on dark background */
 }
 
@@ -395,7 +396,7 @@ nav {
     margin-bottom: 10px; /* Space between heading and comments list */
 }
 
-.comment {
+.comment, .notification {
     margin-bottom: 20px; /* Space between comments */
     border-top: 1px solid #ccc;
     padding-top: 10px;
