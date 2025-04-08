@@ -3,6 +3,7 @@ package com.project.capture_this.controller;
 import com.project.capture_this.model.dto.DisplayUserDTO;
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.service.FollowService;
+import com.project.capture_this.service.NotificationService;
 import com.project.capture_this.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,20 +22,30 @@ public class FollowController {
 
     private final UserService userService;
     private final FollowService followService;
+    private final NotificationService notificationService;
 
-    public FollowController(UserService userService, FollowService followService) {
+    public FollowController(UserService userService, FollowService followService, NotificationService notificationService) {
         this.userService = userService;
         this.followService = followService;
+        this.notificationService = notificationService;
     }
 
     @PostMapping("/profile/follow/{userId}")
     public ResponseEntity<Map<String, Object>> followUser(@PathVariable("userId") Long userId) {
-        Long currentUserId = userService.getLoggedUser().getId();
-        followService.followUser(currentUserId, userId);
+        User follower = userService.getLoggedUser();
+
+        if (!follower.getId().equals(userId)) {
+            followService.followUser(follower.getId(), userId);
+
+            User followedUser = userService.findById(userId);
+            notificationService.notifyFollow(follower, followedUser);
+        }
+
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
         return ResponseEntity.ok(response);
     }
+
 
     @PostMapping("/profile/unfollow/{userId}")
     public ResponseEntity<Map<String, Object>> unfollowUser(@PathVariable("userId") Long userId) {
