@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"></head>
+<body>
+<header th:replace="fragments/commons::header"></header>
+<main>
+    <div class="notification-container">
+        <h1 th:text="#{notifications.title}" class="big-heading"></h1>
+        <section class="notifications">
+            <div th:if="${notifications.size() == 0}">
+                <p th:text="#{notifications.noNotifications}" class="no-content"></p>
+            </div>
+            <div th:if="${notifications.size() != 0}">
+                <form th:action="@{/notifications/read-all}" method="post">
+                    <button type="submit" class="btn btn-danger" th:text="#{notifications.markAllAsRead}">Mark All as Read</button>
+                </form>
+            </div>
+            <section class="notification-feed">
+            <div class="notification" th:each="notification : ${notifications}">
+                <div th:if="${notification.type.name() == 'LIKE'}">
+                    <h3>
+                        <a class="primary-text"
+                           th:href="@{/profile/{id}(id=${notification.sender.id})}"
+                           th:text="|${notification.sender.firstName} ${notification.sender.lastName}|">User</a>
+                        liked
+                        <a class="primary-text" th:href="@{/post/{id}(id=${notification.post.id})}">this post</a>
+                    </h3>
+                </div>
+                <div th:if="${notification.type.name() == 'COMMENT'}">
+                    <h3>
+                        <a class="primary-text"
+                           th:href="@{/profile/{id}(id=${notification.sender.id})}"
+                           th:text="|${notification.sender.firstName} ${notification.sender.lastName}|">User</a>
+                        commented on
+                        <a class="primary-text" th:href="@{/post/{id}(id=${notification.post.id})}">this post</a>
+                    </h3>
+                </div>
+                <div th:if="${notification.type.name() == 'FOLLOW'}">
+                    <h3>
+                        <a class="primary-text"
+                           th:href="@{/profile/{id}(id=${notification.sender.id})}"
+                           th:text="|${notification.sender.firstName} ${notification.sender.lastName}|">User</a>
+                        started following you
+                    </h3>
+                </div>
+                <div class="post-actions">
+                    <form th:action="@{/notifications/{id}/read(id=${notification.id})}" method="post"
+                          class="inline-form">
+                        <button type="submit" class="btn btn-danger" th:text="#{notifications.markAsRead}">Mark as Read</button>
+                    </form>
+                </div>
+            </div>
+            </section>
+        </section>
+    </div>
+</main>
+<footer th:replace="fragments/commons::footer"></footer>
+</body>
+</html>
