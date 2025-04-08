@@ -28,6 +28,14 @@
                 <li th:if="${#authentication.name != 'anonymousUser'}"><a th:href="@{/create-post}"
                                                                           th:text="#{nav.createPost}">Create Post</a>
                 </li>
+                <li th:if="${#authentication.name != 'anonymousUser'}">
+                    <a th:href="@{/notifications}">
+                        <span th:text="#{nav.notifications}">Notifications</span>
+<!--                        <span th:if="${unreadCount != 0}"> (</span>-->
+                        <span th:if="${unreadCount == 0 ? 0 : unreadCount}" th:text="${unreadCount}" style="color: red;">0</span>
+<!--                        <span th:if="${unreadCount != 0}">)</span>-->
+                    </a>
+                </li>
                 <li><a th:href="@{/about}" th:text="#{nav.aboutUs}">About Us</a></li>
                 <li><a th:href="@{/contacts}" th:text="#{nav.contacts}">Contacts</a></li>
                 <li th:if="${#authentication.name != 'anonymousUser'}">
