@@ -1,7 +1,10 @@
 package com.project.capture_this.controller;
 
+import com.project.capture_this.model.entity.Post;
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.service.LikeService;
+import com.project.capture_this.service.NotificationService;
+import com.project.capture_this.service.PostService;
 import com.project.capture_this.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,17 +17,28 @@ public class LikeRestController {
 
     private final LikeService likeService;
     private final UserService userService;
+    private final NotificationService notificationService;
+    private final PostService postService;
 
-    public LikeRestController(LikeService likeService, UserService userService) {
+    public LikeRestController(LikeService likeService, UserService userService, NotificationService notificationService, PostService postService) {
         this.likeService = likeService;
         this.userService = userService;
+        this.notificationService = notificationService;
+        this.postService = postService;
     }
 
     @PostMapping("/post/like/{postId}")
     public Map<String, Object> likePost(@PathVariable Long postId) {
         Map<String, Object> response = new HashMap<>();
         try {
-            likeService.likePost(postId, userService.getLoggedUser().getId());
+            User loggedUser = userService.getLoggedUser();
+            likeService.likePost(postId, loggedUser.getId());
+
+            Post likedPost = postService.findById(postId);
+            if (!likedPost.getUser().equals(loggedUser)) {
+                notificationService.notifyLike(loggedUser, likedPost);
+            }
+
             response.put("success", true);
         } catch (Exception e) {
             response.put("success", false);
@@ -32,6 +46,7 @@ public class LikeRestController {
         }
         return response;
     }
+
 
     @PostMapping("/post/unlike/{postId}")
     public Map<String, Object> unlikePost(@PathVariable Long postId) {
