@@ -33,7 +33,8 @@ public class Post {
     @Column(columnDefinition = "LONGBLOB")
     private byte[] image;
 
-    @Column(nullable = false)
+    @Lob
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
     @Column
