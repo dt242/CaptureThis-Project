@@ -12,12 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-
-    @Query("SELECT u.id FROM User u")
-    List<Long> findAllUserIds();
     Optional<User> findByUsername(String username);
-
-    Optional<User> findByEmail(String email);
 
     Optional<User> findByUsernameOrEmail(String username, String email);
 
@@ -26,5 +21,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.id = :userId")
     Optional<User> findByIdWithRoles(@Param("userId") Long userId);
 
-    List<User> findByUpdatedAtBeforeAndIsActiveTrue(LocalDateTime lastActiveBefore);
 }

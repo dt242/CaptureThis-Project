@@ -45,7 +45,6 @@ public class PostService {
     public List<DisplayPostDTO> findFollowedPosts() {
         User loggedUser = userService.getLoggedUser();
         List<User> followedUsers = new ArrayList<>(loggedUser.getFollowing());
-
         List<Post> posts = postRepository.findByUserInAndStatusOrderByCreatedAtDesc(followedUsers, PostStatus.PUBLISHED);
         return posts.stream()
                 .map(post -> mapToDisplayPostDTO(post, commentService))
@@ -84,7 +83,6 @@ public class PostService {
         post.setImage(data.getImageFile().getBytes());
         post.setUser(userService.getLoggedUser());
         post.setStatus(status);
-
         postRepository.save(post);
     }
 
@@ -92,10 +90,8 @@ public class PostService {
     public void updatePost(EditPostDTO data, PostStatus status) throws IOException {
         Post post = postRepository.findById(data.getId())
                 .orElseThrow(() -> new RuntimeException("Post not found"));
-
         post.setTitle(data.getTitle());
         post.setDescription(data.getDescription());
-
         if (data.hasImage()) {
             post.setImage(data.getImageFile().getBytes());
         }
@@ -107,7 +103,6 @@ public class PostService {
     public void deletePost(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
-
         postRepository.delete(post);
     }
 

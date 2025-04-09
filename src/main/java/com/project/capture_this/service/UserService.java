@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -69,15 +68,6 @@ public class UserService {
         return true;
     }
 
-    public User findByUsername(String sessionUser) {
-        return userRepository.findByUsername(sessionUser).get();
-    }
-
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email).get();
-    }
-
-
     public List<DisplayUserDTO> searchUsers(String query) {
         List<User> users = userRepository.findByFirstNameContainingOrLastNameContaining(query, query);
         return users.stream().map(UserService::mapToDisplayUserDTO).collect(Collectors.toList());
@@ -109,16 +99,8 @@ public class UserService {
                 .build();
     }
 
-    public List<User> findInactiveUsers(LocalDateTime lastActiveBefore) {
-        return userRepository.findByUpdatedAtBeforeAndIsActiveTrue(lastActiveBefore);
-    }
-
     public void save(User user) {
         userRepository.save(user);
-    }
-
-    public List<Long> getAllUserIds() {
-        return userRepository.findAllUserIds();
     }
 
     public List<User> findAllUsers() {

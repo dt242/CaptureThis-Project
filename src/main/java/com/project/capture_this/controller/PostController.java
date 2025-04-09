@@ -89,13 +89,6 @@ public class PostController {
         return "drafts";
     }
 
-//    @GetMapping("/favorites")
-//    public String viewFavorites(Model model) {
-//        List<DisplayPostDTO> favorites = favoriteService.findFavoritePosts();
-//        model.addAttribute("favorites", favorites);
-//        return "favorites";
-//    }
-
     @GetMapping("/edit-post/{id}")
     public String viewEditPost(@PathVariable Long id, Model model) {
         Post post = postService.findById(id);
@@ -138,10 +131,10 @@ public class PostController {
     @GetMapping("/delete-post/{id}")
     public String deletePost(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            Post post = postService.findById(id);
+            long postUserId = postService.findById(id).getUser().getId();
             postService.deletePost(id);
             redirectAttributes.addFlashAttribute("successMessage", "Post deleted successfully.");
-            return "redirect:/profile/" + post.getUser().getId();
+            return "redirect:/profile/" + postUserId;
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/profile";
@@ -165,7 +158,6 @@ public class PostController {
         List<Like> likes = likeService.getLikesByPostIdSortedDesc(id);
 
         boolean isLiked = likeService.isUserLikedPost(id, loggedUser);
-
         model.addAttribute("post", post);
         model.addAttribute("comments", comments);
         model.addAttribute("commentAuthors", commentAuthors);

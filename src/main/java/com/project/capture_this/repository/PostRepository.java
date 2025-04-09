@@ -12,7 +12,6 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findByUserAndStatus(User user, PostStatus status);
-    List<Post> findByUser(User user);
     List<Post> findByUserAndStatusOrderByCreatedAtDesc(User user, PostStatus status);
     List<Post> findByUserInAndStatusOrderByCreatedAtDesc(List<User> users, PostStatus status);
 
