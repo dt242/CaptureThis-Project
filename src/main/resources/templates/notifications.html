@@ -19,24 +19,28 @@
             <div class="notification" th:each="notification : ${notifications}">
                 <div th:if="${notification.type.name() == 'LIKE'}">
                     <h3>
+                        <i class="fa-solid fa-thumbs-up"></i>
                         <a class="primary-text"
                            th:href="@{/profile/{id}(id=${notification.sender.id})}"
                            th:text="|${notification.sender.firstName} ${notification.sender.lastName}|">User</a>
-                        liked
-                        <a class="primary-text" th:href="@{/post/{id}(id=${notification.post.id})}">this post</a>
+                        just dropped a like on
+                        <a class="primary-text" th:href="@{/post/{id}(id=${notification.post.id})}">your post</a>!
                     </h3>
                 </div>
                 <div th:if="${notification.type.name() == 'COMMENT'}">
                     <h3>
+                        <i class="fa-solid fa-comments"></i>
                         <a class="primary-text"
                            th:href="@{/profile/{id}(id=${notification.sender.id})}"
                            th:text="|${notification.sender.firstName} ${notification.sender.lastName}|">User</a>
-                        commented on
-                        <a class="primary-text" th:href="@{/post/{id}(id=${notification.post.id})}">this post</a>
+                        couldn't resist and left a comment on
+                        <a class="primary-text" th:href="@{/post/{id}(id=${notification.post.id})}">your post</a>!
                     </h3>
                 </div>
                 <div th:if="${notification.type.name() == 'FOLLOW'}">
                     <h3>
+                        <i class="fa-solid fa-user-plus"></i>
+                        You’ve got a new fan!
                         <a class="primary-text"
                            th:href="@{/profile/{id}(id=${notification.sender.id})}"
                            th:text="|${notification.sender.firstName} ${notification.sender.lastName}|">User</a>

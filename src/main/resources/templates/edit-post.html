@@ -61,10 +61,14 @@
                     error message</small>
             </div>
             <div class="form-actions">
-                <button type="submit" name="action" value="update" class="btn btn-primary"
-                        th:text="#{editPost.updateButton}"></button>
+                <button type="submit" name="action" value="update" class="btn btn-primary">
+                    <i class="fa-solid fa-download"></i>
+                    <span th:text="#{editPost.updateButton}">Update</span>
+                </button>
                 <button th:if="${isAlreadyPosted == false}" type="submit" name="action" value="post"
-                        class="btn btn-primary" th:text="#{createPost.postButton}"></button>
+                        class="btn btn-primary">
+                    <i class="fa-solid fa-upload"></i>
+                    <span th:text="#{createPost.postButton}">Post</span></button>
             </div>
         </form>
     </div>

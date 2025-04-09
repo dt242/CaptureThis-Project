@@ -21,27 +21,38 @@
                                                                           th:text="#{nav.register}">Register</a></li>
                 <li th:if="${#authentication.name == 'anonymousUser'}"><a th:href="@{/login}" th:text="#{nav.login}">Login</a>
                 </li>
-                <li th:if="${#authentication.name != 'anonymousUser'}"><a th:href="@{/home}"
-                                                                          th:text="#{nav.home}">Home</a></li>
-                <li th:if="${#authentication.name != 'anonymousUser'}"><a th:href="@{/profile}"
-                                                                          th:text="#{nav.profile}">Profile</a></li>
-                <li th:if="${#authentication.name != 'anonymousUser'}"><a th:href="@{/create-post}"
-                                                                          th:text="#{nav.createPost}">Create Post</a>
+                <li th:if="${#authentication.name != 'anonymousUser'}"><a th:href="@{/home}">
+                    <i class="fa-solid fa-house"></i>
+                    <span th:text="#{nav.home}">Home</span>
+                </a></li>
+                <li th:if="${#authentication.name != 'anonymousUser'}"><a th:href="@{/profile}">
+                    <i class="fa-solid fa-user"></i>
+                    <span th:text="#{nav.profile}">Profile</span>
+                </a></li>
+                <li th:if="${#authentication.name != 'anonymousUser'}"><a th:href="@{/create-post}">
+                    <i class="fa-solid fa-plus"></i>
+                    <span th:text="#{nav.createPost}">Create Post</span>
+                </a>
                 </li>
                 <li th:if="${#authentication.name != 'anonymousUser'}">
                     <a th:href="@{/notifications}">
+                        <i class="fa-solid fa-bell"></i>
                         <span th:text="#{nav.notifications}">Notifications</span>
-<!--                        <span th:if="${unreadCount != 0}"> (</span>-->
-                        <span th:if="${unreadCount == 0 ? 0 : unreadCount}" th:text="${unreadCount}" style="color: red;">0</span>
-<!--                        <span th:if="${unreadCount != 0}">)</span>-->
+                        <span th:if="${unreadCount != 0}" style="font-style: italic;"> (</span><span
+                            th:if="${unreadCount == 0 ? 0 : unreadCount}" th:text="${unreadCount}"
+                            style="font-style: italic;">0</span><span
+                            th:if="${unreadCount != 0}" style="font-style: italic;">)</span>
                     </a>
                 </li>
-                <li><a th:href="@{/about}" th:text="#{nav.aboutUs}">About Us</a></li>
-                <li><a th:href="@{/contacts}" th:text="#{nav.contacts}">Contacts</a></li>
+                <li><a th:href="@{/about}"><i class="fa-solid fa-address-card icon-space"></i><span th:text="#{nav.aboutUs}">About Us</span></a>
+                </li>
+                <li><a th:href="@{/contacts}"><i class="fa-solid fa-phone icon-space"></i><span th:text="#{nav.contacts}">Contacts</span></a>
+                </li>
                 <li th:if="${#authentication.name != 'anonymousUser'}">
                     <form th:action="@{/logout}" method="post" style="display: inline;">
-                        <button type="submit" class="logout-button" th:text="#{nav.logout}" style="font-size: 1rem;">
-                            Logout
+                        <button type="submit" class="logout-button" style="font-size: 1rem;">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span th:text="#{nav.logout}">Logout</span>
                         </button>
                     </form>
                 </li>

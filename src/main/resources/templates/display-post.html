@@ -22,9 +22,10 @@
             </div>
             <div class="post-actions">
                 <button id="likeButton" class="btn"
-                        th:text="${isLiked} ? #{likes.unlike} : #{likes.like}"
                         th:attr="data-post-id=${post.id}"
                         th:classappend="${isLiked} ? 'btn-danger' : 'btn-primary'">
+                    <i class="fa-solid fa-thumbs-up"></i>
+                    <span th:text="${isLiked} ? #{likes.unlike} : #{likes.like}">Like</span>
                 </button>
                 <form id="commentForm" th:action="@{/post/{postId}/comment(postId=${post.id})}" method="post"
                       class="add-comment-form">
@@ -35,8 +36,19 @@
                             <label for="comment-text" th:text="#{comment.placeholder}"></label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" th:text="#{comment.submit}">Post Comment</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-upload"></i>
+                        <span th:text="#{comment.submit}">Post Comment</span>
+                    </button>
                 </form>
+<!--                <button id="favoriteButton"-->
+<!--                        class="btn"-->
+<!--                        th:text="${isFavorite} ? #{favorites.remove} : #{favorites.add}"-->
+<!--                        th:attr="data-post-id=${post.id},-->
+<!--                 data-favorite-text=#{favorites.add},-->
+<!--                 data-unfavorite-text=#{favorites.remove}"-->
+<!--                        th:classappend="${isFavorite} ? 'btn-danger' : 'btn-primary'">-->
+<!--                </button>-->
             </div>
         </div>
 
@@ -85,7 +97,9 @@
                               method="post"
                               onsubmit="return confirm('Are you sure you want to delete this comment?');">
                             <input type="hidden" name="_method" value="DELETE"/>
-                            <button type="submit" class="btn btn-danger" th:text="#{profile.delete}"></button>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fa-solid fa-trash"></i>
+                                <span th:text="#{profile.delete}">Delete</span></button>
                         </form>
                     </div>
                 </div>
@@ -125,5 +139,50 @@
 });
 
 </script>
+<!--<script th:inline="javascript">-->
+<!--    var addFavoriteText = /*[[#{favorites.add}]]*/ 'Add Favorite';-->
+<!--    var removeFavoriteText = /*[[#{favorites.remove}]]*/ 'Remove Favorite';-->
+
+<!--    document.addEventListener('DOMContentLoaded', function () {-->
+<!--        var favoriteButton = document.getElementById('favoriteButton');-->
+<!--        if (favoriteButton) {-->
+<!--            var addText = favoriteButton.getAttribute('data-favorite-text');-->
+<!--            var removeText = favoriteButton.getAttribute('data-unfavorite-text');-->
+
+<!--            favoriteButton.addEventListener('click', function (event) {-->
+<!--                event.preventDefault();-->
+
+<!--                var postId = this.getAttribute('data-post-id');-->
+<!--                var isCurrentlyFavorite = this.textContent.trim() === removeText;-->
+<!--                var action = isCurrentlyFavorite ? 'unfavorite' : 'favorite';-->
+
+<!--                fetch(`/post/${action}/${postId}`, {-->
+<!--                    method: 'POST'-->
+<!--                })-->
+<!--                    .then(response => response.json())-->
+<!--                    .then(data => {-->
+<!--                        if (data.success) {-->
+<!--                            // Toggle button text and styling-->
+<!--                            if (action === 'favorite') {-->
+<!--                                this.textContent = removeText;-->
+<!--                                this.classList.remove('btn-primary');-->
+<!--                                this.classList.add('btn-danger');-->
+<!--                            } else {-->
+<!--                                this.textContent = addText;-->
+<!--                                this.classList.remove('btn-danger');-->
+<!--                                this.classList.add('btn-primary');-->
+<!--                            }-->
+<!--                        } else {-->
+<!--                            alert(/*[[#{favorites.error}]]*/ 'Error occurred while updating favorites.');-->
+<!--                        }-->
+<!--                    })-->
+<!--                    .catch(error => {-->
+<!--                        alert(/*[[#{favorites.error}]]*/ 'Error occurred while updating favorites.');-->
+<!--                        console.error('Error:', error);-->
+<!--                    });-->
+<!--            });-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
 </body>
 </html>

@@ -6,7 +6,7 @@
 <main>
     <div class="home-container">
         <div class="search-button">
-            <a href="/search" class="btn btn-primary" th:text="#{search.users}">Search Users</a>
+            <a href="/search" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass icon-space"></i><span th:text="#{search.users}">Search Users</span></a>
         </div>
 
         <section class="posts">
@@ -39,7 +39,9 @@
                     <!--                        <span th:if="${post.updatedAt != null}" th:text="' (' + #{updated.on} + ' ' + ${#temporals.format(post.updatedAt, 'dd MMMM, yyyy')} + ')'"></span>-->
                     <!--                    </div>-->
                     <div class="post-actions">
-                        <a th:href="@{/post/{id}(id=${post.id})}" class="btn btn-info" th:text="#{post.view}">View</a>
+                        <a th:href="@{/post/{id}(id=${post.id})}" class="btn btn-info">
+                            <i class="fa-solid fa-eye"></i>
+                            <span th:text="#{post.view}">View</span></a>
                     </div>
                 </div>
             </div>
