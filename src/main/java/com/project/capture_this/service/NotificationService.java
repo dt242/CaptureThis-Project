@@ -7,6 +7,7 @@ import com.project.capture_this.model.entity.User;
 import com.project.capture_this.model.enums.NotificationType;
 import com.project.capture_this.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -89,6 +90,17 @@ public class NotificationService {
         notificationRepository.saveAll(notifications);
     }
 
+    @Scheduled(cron = "0 0 10 * * *")
+    public void sendEngagementNotifications() {
+        List<User> allUsers = userService.findAllUsers();
+
+        for (User user : allUsers) {
+            Notification notification = new Notification();
+            notification.setReceiver(user);
+            notification.setType(NotificationType.ENGAGE);
+            notificationRepository.save(notification);
+        }
+    }
 
 
     public static DisplayNotificationDTO mapToDisplayNotificationDTO(Notification notification) {

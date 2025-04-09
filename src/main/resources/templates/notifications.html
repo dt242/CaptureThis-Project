@@ -44,7 +44,17 @@
                         <a class="primary-text"
                            th:href="@{/profile/{id}(id=${notification.sender.id})}"
                            th:text="|${notification.sender.firstName} ${notification.sender.lastName}|">User</a>
-                        started following you
+                        started following you!
+                    </h3>
+                </div>
+                <div th:if="${notification.type.name() == 'ENGAGE'}">
+                    <h3>
+                        <i class="fa-solid fa-magnifying-glass icon-space"></i>
+                        Ready to meet someone new? Dive into
+                        <a class="primary-text"
+                           th:href="@{/search}"
+                           th:text="#{search.button}">Dive into Search</a>
+                        and explore fresh faces on CaptureThis!
                     </h3>
                 </div>
                 <div class="post-actions">
