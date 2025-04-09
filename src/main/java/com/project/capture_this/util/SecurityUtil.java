@@ -1,4 +1,4 @@
-package com.project.capture_this.config;
+package com.project.capture_this.util;
 
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;

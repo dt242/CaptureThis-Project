@@ -1,6 +1,6 @@
 package com.project.capture_this.controller;
 
-import com.project.capture_this.config.SecurityUtil;
+import com.project.capture_this.util.SecurityUtil;
 import com.project.capture_this.model.dto.DisplayNotificationDTO;
 import com.project.capture_this.service.NotificationService;
 import com.project.capture_this.service.UserService;

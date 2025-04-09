@@ -1,6 +1,6 @@
 package com.project.capture_this.controller;
 
-import com.project.capture_this.config.SecurityUtil;
+import com.project.capture_this.util.SecurityUtil;
 import com.project.capture_this.model.dto.DisplayPostDTO;
 import com.project.capture_this.service.PostService;
 import com.project.capture_this.service.UserService;

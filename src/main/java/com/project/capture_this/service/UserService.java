@@ -1,6 +1,6 @@
 package com.project.capture_this.service;
 
-import com.project.capture_this.config.SecurityUtil;
+import com.project.capture_this.util.SecurityUtil;
 import com.project.capture_this.model.dto.DisplayUserDTO;
 import com.project.capture_this.model.dto.UserRegisterDTO;
 import com.project.capture_this.model.entity.Role;
@@ -119,5 +119,9 @@ public class UserService {
 
     public List<Long> getAllUserIds() {
         return userRepository.findAllUserIds();
+    }
+
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
     }
 }
