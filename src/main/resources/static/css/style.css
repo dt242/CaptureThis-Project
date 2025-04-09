@@ -1,3 +1,5 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css');
+
 /* General Styles */
 * {
     padding: 0;
@@ -14,6 +16,7 @@ body {
     font-family: 'Arial', sans-serif;
     display: flex;
     flex-direction: column;
+    padding-top: 70px;
 }
 
 html, body {
@@ -204,12 +207,22 @@ main {
     color: #333;
 }
 
+.btn:hover i {
+    color: #333;
+}
+
 header {
     background-color: #333; /* Dark background for the header */
     color: white;
 }
 
 nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999; /* Ensure it's above other elements */
+    background-color: #333; /* Or whatever background your nav has */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -254,6 +267,9 @@ nav {
     background-color: lightblue; /* Hover effect matching main theme */
     color: #333;
 }
+.nav-links a:hover i{
+    color: #333;
+}
 
 /* Button Styles */
 .logout-button {
@@ -266,8 +282,12 @@ nav {
     transition: background-color 0.3s;
 }
 
-.logout-button:hover {
+.logout-button:hover{
     background-color: lightblue; /* Slightly darker green on hover */
+    color: #333;
+}
+
+.logout-button:hover i{
     color: #333;
 }
 
@@ -553,6 +573,14 @@ section.posts-summary {
 
 #likeButton {
     height: fit-content;
+}
+
+i {
+    color: lightblue;
+}
+
+.icon-space {
+    margin-right: 6px;
 }
 
 /* Responsive Styles */
