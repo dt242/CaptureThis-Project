@@ -138,7 +138,7 @@ public class ProfileController {
             return "redirect:/login";
         }
 
-        if (true) {
+        if (userId != null && loggedUser.isAdmin()) {
             profileService.updateBio(userId, bio);
             redirectAttributes.addFlashAttribute("message", "User's bio updated successfully");
             return "redirect:/profile/" + userId;

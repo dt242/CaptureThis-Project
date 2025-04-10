@@ -73,7 +73,7 @@ public class UserService {
         return users.stream().map(UserService::mapToDisplayUserDTO).collect(Collectors.toList());
     }
 
-    private byte[] getDefaultProfilePicture() {
+    public byte[] getDefaultProfilePicture() {
         try {
             Path path = Paths.get("src/main/resources/static/img/default-profile-picture.jpg");
             return Files.readAllBytes(path);
@@ -81,6 +81,57 @@ public class UserService {
             throw new RuntimeException("Failed to load default profile picture", e);
         }
     }
+
+    public List<byte[]> getPostPictures() {
+        try {
+            List<byte[]> postPictures = new ArrayList<>();
+
+            // List of file names
+            List<String> fileNames = List.of(
+                    "rand1.avif", "rand2.avif", "rand3.avif", "rand4.avif", "rand5.avif",
+                    "rand6.avif", "rand7.avif", "rand8.avif", "rand9.avif", "rand10.avif",
+                    "rand11.avif", "rand12.avif", "rand13.avif", "rand14.avif", "rand15.avif",
+                    "rand16.avif", "rand17.avif", "rand18.avif", "rand19.avif", "rand20.avif",
+                    "rand21.avif", "rand22.avif", "rand23.avif", "rand24.avif", "rand25.avif",
+                    "rand26.avif", "rand27.avif", "rand28.avif", "rand29.avif", "rand30.avif",
+                    "rand31.avif", "rand32.avif", "rand33.avif", "rand34.avif", "rand35.avif"
+            );
+
+            // Loop through file names and read them into the list
+            for (String fileName : fileNames) {
+                Path filePath = Paths.get("src/main/resources/static/img/" + fileName);
+                postPictures.add(Files.readAllBytes(filePath));
+            }
+
+            return postPictures;
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load post pictures", e);
+        }
+    }
+
+    public List<byte[]> getProfilePictures() {
+        try {
+            List<byte[]> profilePictures = new ArrayList<>();
+
+            // List of file names
+            List<String> fileNames = List.of(
+                    "pfp1.avif", "pfp2.avif", "pfp3.avif", "pfp4.avif", "pfp5.avif",
+                    "pfp6.avif", "pfp7.avif", "pfp8.avif", "pfp9.avif", "pfp10.avif",
+                    "pfp11.avif", "pfp12.avif"
+            );
+
+            // Loop through file names and read them into the list
+            for (String fileName : fileNames) {
+                Path filePath = Paths.get("src/main/resources/static/img/" + fileName);
+                profilePictures.add(Files.readAllBytes(filePath));
+            }
+
+            return profilePictures;
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load post pictures", e);
+        }
+    }
+
     public static DisplayUserDTO mapToDisplayUserDTO(User user) {
         return DisplayUserDTO.builder()
                 .id(user.getId())

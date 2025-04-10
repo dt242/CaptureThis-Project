@@ -1,29 +1,36 @@
 spring:
   application:
     name: capture-this
+
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     open-in-view: false
-    sql:
-      init:
-        mode: always
-  mvc:
-    hidden-method:
-      filter:
-        enabled: true
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
     password: Dani
     username: root
-    url: jdbc:mysql://localhost:3306/capture-this?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/capture-this-app?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
+
+  mvc:
+    hidden-method:
+      filter:
+        enabled: true
+
   messages:
     basename: "messages,config.i18n.messages"
     fallback-to-system-locale: false
+
 logging:
   level:
     org:
@@ -33,5 +40,6 @@ logging:
         SQL: DEBUG
       nodeValue: WARN
     blog: WARN
+
 server:
   port: 8080

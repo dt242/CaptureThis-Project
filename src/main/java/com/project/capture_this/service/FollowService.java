@@ -47,11 +47,13 @@ public class FollowService {
         }
     }
 
+    @Transactional
     public List<User> getFollowers(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         return new ArrayList<>(user.getFollowers());
     }
 
+    @Transactional
     public List<User> getFollowing(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         return new ArrayList<>(user.getFollowing());
