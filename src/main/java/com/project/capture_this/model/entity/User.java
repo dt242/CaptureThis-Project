@@ -59,7 +59,7 @@ public class User {
     private Gender gender;
 
     @Lob
-    @Column(columnDefinition = "LONGBLOB")
+//    @Column(columnDefinition = "LONGBLOB")
     private byte[] profilePicture;
 
     @Column

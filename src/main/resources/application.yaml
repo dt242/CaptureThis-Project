@@ -5,8 +5,9 @@ spring:
   jpa:
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+        default_schema: capturethis
     hibernate:
       ddl-auto: create
     open-in-view: false
@@ -17,10 +18,10 @@ spring:
       mode: always
 
   datasource:
-    driverClassName: com.mysql.cj.jdbc.Driver
-    password: Dani
-    username: root
-    url: jdbc:mysql://localhost:3306/capture-this-app?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://dpg-d00ifhidbo4c7393er6g-a:5432/capturethis_db
+    username: capturethis_db_user
+    password: aFtpyGiXukm14LLk354aL7rLhMgyYLKy
 
   mvc:
     hidden-method:

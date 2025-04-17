@@ -30,7 +30,7 @@ public class Post {
     private User user;
 
     @Lob
-    @Column(columnDefinition = "LONGBLOB")
+//    @Column(columnDefinition = "LONGBLOB")
     private byte[] image;
 
     @Lob
