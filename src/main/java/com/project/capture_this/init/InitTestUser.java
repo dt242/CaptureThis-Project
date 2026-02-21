@@ -78,18 +78,6 @@ public class InitTestUser implements CommandLineRunner {
             post.setImage(imageToSet);
             postRepository.save(post);
         }
-//        createAndSaveLike(user, posts.get(0));
-//        createAndSaveLike(user, posts.get(1));
-//        createAndSaveLike(user, posts.get(2));
-//        createAndSaveLike(user, posts.get(3));
-//        createAndSaveLike(user, posts.get(0));
-//        createAndSaveLike(user, posts.get(1));
-//        createAndSaveLike(user, posts.get(2));
-//        createAndSaveLike(user, posts.get(3));
-//        createAndSaveLike(user, posts.get(0));
-//        createAndSaveLike(user, posts.get(1));
-//        createAndSaveLike(user, posts.get(2));
-//        createAndSaveLike(user, posts.get(3));
 
         Role adminRole = roleRepository.findByName(UserRoles.ADMIN).orElseThrow();
 
@@ -135,11 +123,4 @@ public class InitTestUser implements CommandLineRunner {
         post.setUpdatedAt(createdAt);
         return post;
     }
-
-//    private void createAndSaveLike(User user, Post post) {
-//        Like like = new Like();
-//        like.setUser(user);
-//        like.setPost(post);
-//        likeRepository.save(like);
-//    }
 }
