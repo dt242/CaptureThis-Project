@@ -18,8 +18,8 @@ spring:
 
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    password: Dani
-    username: root
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
     url: jdbc:mysql://localhost:3306/capture-this-app?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
 
   mvc:

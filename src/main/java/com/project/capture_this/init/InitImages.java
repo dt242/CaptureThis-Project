@@ -35,27 +35,26 @@ public class InitImages implements CommandLineRunner {
         List<byte[]> profilePictures = userService.getProfilePictures();
         byte[] defaultProfilePicture = userService.getDefaultProfilePicture();
 
-        // Assign profile pictures to users
+
         for (int i = 0; i < users.size(); i++) {
             User user = users.get(i);
             if (i < 12) {
-                user.setProfilePicture(profilePictures.get(i)); // First 12 users get unique pictures
+                user.setProfilePicture(profilePictures.get(i));
             } else if (i < 24) {
-                user.setProfilePicture(profilePictures.get(i - 12)); // Next 12 users get the second set of unique pictures
+                user.setProfilePicture(profilePictures.get(i - 12));
             } else {
-                user.setProfilePicture(defaultProfilePicture); // Remaining users get the default profile picture
+                user.setProfilePicture(defaultProfilePicture);
             }
-            userRepository.save(user); // Save user with updated profile picture
+            userRepository.save(user);
         }
 
         List<Post> posts = postRepository.findAll();
-        List<byte[]> postPictures = userService.getPostPictures(); // Fetch 35 post pictures
-        byte[] defaultPostPicture = userService.getDefaultProfilePicture(); // Optional default post picture
+        List<byte[]> postPictures = userService.getPostPictures();
+        byte[] defaultPostPicture = userService.getDefaultProfilePicture();
 
         for (int i = 0; i < posts.size(); i++) {
             Post post = posts.get(i);
 
-            // Use modulus to cycle through the post pictures
             byte[] imageToSet = (i < 194) ? postPictures.get(i % 35) : defaultPostPicture;
 
             post.setImage(imageToSet);
