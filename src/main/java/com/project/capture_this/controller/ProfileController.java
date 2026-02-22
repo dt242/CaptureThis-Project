@@ -4,7 +4,7 @@ import com.project.capture_this.model.dto.AddProfilePictureDTO;
 import com.project.capture_this.model.dto.DisplayUserDTO;
 import com.project.capture_this.model.entity.Role;
 import com.project.capture_this.model.entity.User;
-import com.project.capture_this.model.enums.UserRoles;
+import com.project.capture_this.model.enums.UserRole;
 import com.project.capture_this.service.*;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
@@ -216,8 +216,8 @@ public class ProfileController {
             return "redirect:/profile";
         }
 
-        Role adminRole = roleService.findByName(UserRoles.ADMIN);
-        Role userRole = roleService.findByName(UserRoles.USER);
+        Role adminRole = roleService.findByName(UserRole.ADMIN);
+        Role userRole = roleService.findByName(UserRole.USER);
 
         if (targetUser.isAdmin()) {
             targetUser.getRoles().clear();

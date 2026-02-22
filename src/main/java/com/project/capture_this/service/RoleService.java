@@ -1,7 +1,7 @@
 package com.project.capture_this.service;
 
 import com.project.capture_this.model.entity.Role;
-import com.project.capture_this.model.enums.UserRoles;
+import com.project.capture_this.model.enums.UserRole;
 import com.project.capture_this.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ public class RoleService {
         this.roleRepository = roleRepository;
     }
 
-    public Role findByName(UserRoles roleName) {
+    public Role findByName(UserRole roleName) {
         return roleRepository.findByName(roleName)
                 .orElseThrow(() -> new RuntimeException("Role not found: " + roleName));
     }

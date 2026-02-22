@@ -3,7 +3,7 @@ package com.project.capture_this.model.dto;
 import com.project.capture_this.model.entity.Role;
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.model.enums.Gender;
-import com.project.capture_this.model.enums.UserRoles;
+import com.project.capture_this.model.enums.UserRole;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -18,7 +18,7 @@ class DisplayUserDTOTest {
     @Test
     void testFullConstructorAndGetters() {
         Set<Role> roles = new HashSet<>();
-        roles.add(new Role(1L, UserRoles.USER));
+        roles.add(new Role(1L, UserRole.USER));
 
         Set<User> followers = new HashSet<>();
         Set<User> following = new HashSet<>();

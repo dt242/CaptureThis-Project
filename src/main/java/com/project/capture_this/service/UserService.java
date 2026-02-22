@@ -5,7 +5,7 @@ import com.project.capture_this.model.dto.DisplayUserDTO;
 import com.project.capture_this.model.dto.UserRegisterDTO;
 import com.project.capture_this.model.entity.Role;
 import com.project.capture_this.model.entity.User;
-import com.project.capture_this.model.enums.UserRoles;
+import com.project.capture_this.model.enums.UserRole;
 import com.project.capture_this.repository.RoleRepository;
 import com.project.capture_this.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,7 +57,7 @@ public class UserService {
         user.setEmail(data.getEmail());
         user.setBirthDate(data.getBirthDate());
         user.setPassword(passwordEncoder.encode(data.getPassword()));
-        Role role = roleRepository.findByName(UserRoles.USER)
+        Role role = roleRepository.findByName(UserRole.USER)
                 .orElseThrow(() -> new RuntimeException("Role not found"));
 
         user.setRoles(Set.of(role));
