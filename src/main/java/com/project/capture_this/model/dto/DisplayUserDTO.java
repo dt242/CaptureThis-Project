@@ -1,7 +1,6 @@
 package com.project.capture_this.model.dto;
 
 import com.project.capture_this.model.entity.Role;
-import com.project.capture_this.model.entity.User;
 import com.project.capture_this.model.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,17 +24,8 @@ public class DisplayUserDTO {
     private Set<Role> roles;
     private LocalDate birthDate;
     private Gender gender;
-    private byte[] profilePicture;
     private String bio;
-    private Set<User> followers;
-    private Set<User> following;
+    private int followersCount;
+    private int followingCount;
     private LocalDateTime createdAt;
-
-    @Builder
-    public DisplayUserDTO(Long id, String firstName, String lastName, byte[] profilePicture) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.profilePicture = profilePicture;
-    }
 }

@@ -56,11 +56,7 @@ public class ProfileController {
         model.addAttribute("profilePictureData", new AddProfilePictureDTO());
         model.addAttribute("formattedBirthDate", formattedBirthDate);
         model.addAttribute("isOwnProfile", true);
-        if (loggedUser.isAdmin()) {
-            model.addAttribute("isAdmin", true);
-        } else {
-            model.addAttribute("isAdmin", false);
-        }
+        model.addAttribute("isAdmin", loggedUser.isAdmin());
 
         return "profile";
     }
@@ -88,12 +84,7 @@ public class ProfileController {
         } else {
             model.addAttribute("isAdmin", false);
         }
-        if (user.isAdmin()) {
-            model.addAttribute("userIsAdmin", true);
-        } else {
-            model.addAttribute("userIsAdmin", false);
-
-        }
+        model.addAttribute("userIsAdmin", user.isAdmin());
         return "profile";
     }
 

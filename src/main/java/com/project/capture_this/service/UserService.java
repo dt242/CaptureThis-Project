@@ -142,10 +142,9 @@ public class UserService {
                 .roles(user.getRoles())
                 .birthDate(user.getBirthDate())
                 .gender(user.getGender())
-                .profilePicture(user.getProfilePicture())
                 .bio(user.getBio())
-                .followers(user.getFollowers())
-                .following(user.getFollowing())
+                .followersCount(user.getFollowers() != null ? user.getFollowers().size() : 0)
+                .followingCount(user.getFollowing() != null ? user.getFollowing().size() : 0)
                 .createdAt(user.getCreatedAt())
                 .build();
     }

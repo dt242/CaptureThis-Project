@@ -61,7 +61,7 @@ public class FollowController {
     public String viewFollowers(@PathVariable Long userId, Model model) {
         List<User> followers = followService.getFollowers(userId);
         List<DisplayUserDTO> followerDTOs = followers.stream()
-                .map(user -> new DisplayUserDTO(user.getId(), user.getFirstName(), user.getLastName(), user.getProfilePicture()))
+                .map(UserService::mapToDisplayUserDTO)
                 .collect(Collectors.toList());
 
         model.addAttribute("followers", followerDTOs);
@@ -72,7 +72,7 @@ public class FollowController {
     public String viewFollowing(@PathVariable Long userId, Model model) {
         List<User> following = followService.getFollowing(userId);
         List<DisplayUserDTO> followingDTOs = following.stream()
-                .map(user -> new DisplayUserDTO(user.getId(), user.getFirstName(), user.getLastName(), user.getProfilePicture()))
+                .map(UserService::mapToDisplayUserDTO)
                 .collect(Collectors.toList());
 
         model.addAttribute("following", followingDTOs);
