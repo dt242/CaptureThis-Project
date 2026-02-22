@@ -64,10 +64,16 @@ public class LikeService {
     }
 
     public static LikeDTO mapToLikeDTO(Like like){
-        return LikeDTO.builder()
+        LikeDTO.LikeDTOBuilder builder = LikeDTO.builder()
                 .id(like.getId())
-                .user(like.getUser())
-                .createdAt(like.getCreatedAt())
-                .build();
+                .createdAt(like.getCreatedAt());
+
+        if (like.getUser() != null) {
+            builder.userId(like.getUser().getId())
+                    .userFirstName(like.getUser().getFirstName())
+                    .userLastName(like.getUser().getLastName());
+        }
+
+        return builder.build();
     }
 }
