@@ -109,8 +109,9 @@ public class PostService {
     public static DisplayPostDTO mapToDisplayPostDTO(Post post, CommentService commentService) {
         return DisplayPostDTO.builder()
                 .id(post.getId())
-                .user(post.getUser())
-                .image(post.getImage())
+                .authorId(post.getUser() != null ? post.getUser().getId() : null)
+                .authorFirstName(post.getUser() != null ? post.getUser().getFirstName() : null)
+                .authorLastName(post.getUser() != null ? post.getUser().getLastName() : null)
                 .description(post.getDescription())
                 .title(post.getTitle())
                 .comments(new HashSet<>(commentService.getCommentsByPostId(post.getId())))

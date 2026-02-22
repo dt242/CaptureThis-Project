@@ -21,20 +21,20 @@
                     <h3>
                         <i class="fa-solid fa-thumbs-up"></i>
                         <a class="primary-text"
-                           th:href="@{/profile/{id}(id=${notification.sender.id})}"
-                           th:text="|${notification.sender.firstName} ${notification.sender.lastName}|">User</a>
+                           th:href="@{/profile/{id}(id=${notification.senderId})}"
+                           th:text="|${notification.senderFirstName} ${notification.senderLastName}|">User</a>
                         just dropped a like on
-                        <a class="primary-text" th:href="@{/post/{id}(id=${notification.post.id})}">your post</a>!
+                        <a class="primary-text" th:href="@{/post/{id}(id=${notification.postId})}">your post</a>!
                     </h3>
                 </div>
                 <div th:if="${notification.type.name() == 'COMMENT'}">
                     <h3>
                         <i class="fa-solid fa-comments"></i>
                         <a class="primary-text"
-                           th:href="@{/profile/{id}(id=${notification.sender.id})}"
-                           th:text="|${notification.sender.firstName} ${notification.sender.lastName}|">User</a>
+                           th:href="@{/profile/{id}(id=${notification.senderId})}"
+                           th:text="|${notification.senderFirstName} ${notification.senderLastName}|">User</a>
                         couldn't resist and left a comment on
-                        <a class="primary-text" th:href="@{/post/{id}(id=${notification.post.id})}">your post</a>!
+                        <a class="primary-text" th:href="@{/post/{id}(id=${notification.postId})}">your post</a>!
                     </h3>
                 </div>
                 <div th:if="${notification.type.name() == 'FOLLOW'}">
@@ -42,8 +42,8 @@
                         <i class="fa-solid fa-user-plus"></i>
                         You’ve got a new fan!
                         <a class="primary-text"
-                           th:href="@{/profile/{id}(id=${notification.sender.id})}"
-                           th:text="|${notification.sender.firstName} ${notification.sender.lastName}|">User</a>
+                           th:href="@{/profile/{id}(id=${notification.senderId})}"
+                           th:text="|${notification.senderFirstName} ${notification.senderLastName}|">User</a>
                         started following you!
                     </h3>
                 </div>

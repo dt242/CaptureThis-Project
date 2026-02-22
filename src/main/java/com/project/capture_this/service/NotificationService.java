@@ -102,17 +102,28 @@ public class NotificationService {
         }
     }
 
-
     public static DisplayNotificationDTO mapToDisplayNotificationDTO(Notification notification) {
-        return DisplayNotificationDTO.builder()
+        DisplayNotificationDTO.DisplayNotificationDTOBuilder builder = DisplayNotificationDTO.builder()
                 .id(notification.getId())
-                .receiver(notification.getReceiver())
-                .sender(notification.getSender())
-                .post(notification.getPost())
                 .type(notification.getType())
                 .isRead(notification.isRead())
-                .createdAt(notification.getCreatedAt())
-                .build();
+                .createdAt(notification.getCreatedAt());
+
+        if (notification.getReceiver() != null) {
+            builder.receiverId(notification.getReceiver().getId());
+        }
+
+        if (notification.getSender() != null) {
+            builder.senderId(notification.getSender().getId())
+                    .senderFirstName(notification.getSender().getFirstName())
+                    .senderLastName(notification.getSender().getLastName());
+        }
+
+        if (notification.getPost() != null) {
+            builder.postId(notification.getPost().getId());
+        }
+
+        return builder.build();
     }
 }
 

@@ -5,7 +5,7 @@ import com.project.capture_this.model.entity.Role;
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.model.enums.Gender;
 import com.project.capture_this.model.enums.PostStatus;
-import com.project.capture_this.model.enums.UserRoles;
+import com.project.capture_this.model.enums.UserRole;
 import com.project.capture_this.repository.LikeRepository;
 import com.project.capture_this.repository.PostRepository;
 import com.project.capture_this.repository.RoleRepository;
@@ -43,7 +43,7 @@ public class InitTestUser implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Role userRole = roleRepository.findByName(UserRoles.USER).orElseThrow();
+        Role userRole = roleRepository.findByName(UserRole.USER).orElseThrow();
 
         User user = new User();
         user.setFirstName("Test");
@@ -79,7 +79,7 @@ public class InitTestUser implements CommandLineRunner {
             postRepository.save(post);
         }
 
-        Role adminRole = roleRepository.findByName(UserRoles.ADMIN).orElseThrow();
+        Role adminRole = roleRepository.findByName(UserRole.ADMIN).orElseThrow();
 
         User admin = new User();
         admin.setFirstName("Test");

@@ -4,7 +4,7 @@ import com.project.capture_this.model.dto.AddProfilePictureDTO;
 import com.project.capture_this.model.dto.DisplayUserDTO;
 import com.project.capture_this.model.entity.Role;
 import com.project.capture_this.model.entity.User;
-import com.project.capture_this.model.enums.UserRoles;
+import com.project.capture_this.model.enums.UserRole;
 import com.project.capture_this.service.*;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
@@ -56,11 +56,7 @@ public class ProfileController {
         model.addAttribute("profilePictureData", new AddProfilePictureDTO());
         model.addAttribute("formattedBirthDate", formattedBirthDate);
         model.addAttribute("isOwnProfile", true);
-        if (loggedUser.isAdmin()) {
-            model.addAttribute("isAdmin", true);
-        } else {
-            model.addAttribute("isAdmin", false);
-        }
+        model.addAttribute("isAdmin", loggedUser.isAdmin());
 
         return "profile";
     }
@@ -88,12 +84,7 @@ public class ProfileController {
         } else {
             model.addAttribute("isAdmin", false);
         }
-        if (user.isAdmin()) {
-            model.addAttribute("userIsAdmin", true);
-        } else {
-            model.addAttribute("userIsAdmin", false);
-
-        }
+        model.addAttribute("userIsAdmin", user.isAdmin());
         return "profile";
     }
 
@@ -216,8 +207,8 @@ public class ProfileController {
             return "redirect:/profile";
         }
 
-        Role adminRole = roleService.findByName(UserRoles.ADMIN);
-        Role userRole = roleService.findByName(UserRoles.USER);
+        Role adminRole = roleService.findByName(UserRole.ADMIN);
+        Role userRole = roleService.findByName(UserRole.USER);
 
         if (targetUser.isAdmin()) {
             targetUser.getRoles().clear();

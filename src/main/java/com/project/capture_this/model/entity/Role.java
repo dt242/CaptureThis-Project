@@ -1,6 +1,6 @@
 package com.project.capture_this.model.entity;
 
-import com.project.capture_this.model.enums.UserRoles;
+import com.project.capture_this.model.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +22,7 @@ public class Role {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, unique = true)
-    private UserRoles name;
+    private UserRole name;
 
     @Override
     public boolean equals(Object o) {

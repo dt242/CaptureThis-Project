@@ -1,7 +1,7 @@
 package com.project.capture_this.service;
 
 import com.project.capture_this.model.entity.Role;
-import com.project.capture_this.model.enums.UserRoles;
+import com.project.capture_this.model.enums.UserRole;
 import com.project.capture_this.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,24 +30,24 @@ public class RoleServiceTest {
     public void setUp() {
         role = new Role();
         role.setId(1L);
-        role.setName(UserRoles.ADMIN);
+        role.setName(UserRole.ADMIN);
     }
 
     @Test
     public void testFindByNameSuccess() {
-        when(roleRepository.findByName(UserRoles.ADMIN)).thenReturn(Optional.of(role));
+        when(roleRepository.findByName(UserRole.ADMIN)).thenReturn(Optional.of(role));
 
-        Role foundRole = roleService.findByName(UserRoles.ADMIN);
+        Role foundRole = roleService.findByName(UserRole.ADMIN);
 
         assertNotNull(foundRole);
-        assertEquals(UserRoles.ADMIN, foundRole.getName());
+        assertEquals(UserRole.ADMIN, foundRole.getName());
     }
 
     @Test
     public void testFindByNameRoleNotFound() {
-        when(roleRepository.findByName(UserRoles.ADMIN)).thenReturn(Optional.empty());
+        when(roleRepository.findByName(UserRole.ADMIN)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(RuntimeException.class, () -> roleService.findByName(UserRoles.ADMIN));
+        Exception exception = assertThrows(RuntimeException.class, () -> roleService.findByName(UserRole.ADMIN));
 
         assertEquals("Role not found: ADMIN", exception.getMessage());
     }

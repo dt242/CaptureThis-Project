@@ -2,7 +2,7 @@ package com.project.capture_this.service;
 
 import com.project.capture_this.model.entity.Role;
 import com.project.capture_this.model.entity.User;
-import com.project.capture_this.model.enums.UserRoles;
+import com.project.capture_this.model.enums.UserRole;
 import com.project.capture_this.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ public class AppUserDetailsServiceTest {
         user.setUsername("testuser");
         user.setPassword("password123");
         Role role = new Role();
-        role.setName(UserRoles.USER);
+        role.setName(UserRole.USER);
         user.setRoles(Set.of(role));
     }
 

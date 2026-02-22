@@ -1,7 +1,7 @@
 package com.project.capture_this.model.entity;
 
 import com.project.capture_this.model.enums.Gender;
-import com.project.capture_this.model.enums.UserRoles;
+import com.project.capture_this.model.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -94,6 +94,6 @@ public class User {
     private LocalDateTime updatedAt;
 
     public boolean isAdmin() {
-        return roles.stream().anyMatch(role -> role.getName().equals(UserRoles.ADMIN));
+        return roles.stream().anyMatch(role -> role.getName().equals(UserRole.ADMIN));
     }
 }

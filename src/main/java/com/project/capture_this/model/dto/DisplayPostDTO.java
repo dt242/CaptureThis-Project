@@ -1,6 +1,5 @@
 package com.project.capture_this.model.dto;
 
-import com.project.capture_this.model.entity.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -12,8 +11,9 @@ import java.util.Set;
 @AllArgsConstructor
 public class DisplayPostDTO {
     private Long id;
-    private User user;
-    private byte[] image;
+    private Long authorId;
+    private String authorFirstName;
+    private String authorLastName;
     private String description;
     private String title;
     private Set<CommentDTO> comments;

@@ -5,7 +5,7 @@ import com.project.capture_this.model.dto.UserRegisterDTO;
 import com.project.capture_this.model.entity.Role;
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.model.enums.Gender;
-import com.project.capture_this.model.enums.UserRoles;
+import com.project.capture_this.model.enums.UserRole;
 import com.project.capture_this.repository.RoleRepository;
 import com.project.capture_this.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,8 +14,6 @@ import org.mockito.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +51,7 @@ class UserServiceTest {
         mockUser.setPassword("encodedPassword");
 
         mockRole = new Role();
-        mockRole.setName(UserRoles.USER);
+        mockRole.setName(UserRole.USER);
     }
 
     @Test
@@ -79,7 +77,7 @@ class UserServiceTest {
         UserRegisterDTO registerDTO = new UserRegisterDTO("John", "Doe","testuser", "john.doe@example.com", Gender.MALE, LocalDate.now(), "password", "password");
         when(userRepository.findByUsernameOrEmail("testuser", "john.doe@example.com")).thenReturn(Optional.empty());
         when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
-        when(roleRepository.findByName(UserRoles.USER)).thenReturn(Optional.of(mockRole));
+        when(roleRepository.findByName(UserRole.USER)).thenReturn(Optional.of(mockRole));
 
         boolean result = userService.register(registerDTO);
 
