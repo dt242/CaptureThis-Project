@@ -186,7 +186,17 @@
                 var userId = this.getAttribute('data-user-id');
                 var action = this.textContent.trim() === followText ? 'follow' : 'unfollow';
 
-                fetch(`/profile/${action}/${userId}`, { method: 'POST' })
+                // Взимаме токена и името на хедъра от мета таговете
+                const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+                const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+
+                fetch(`/profile/${action}/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        // Добавяме тайния печат към заявката
+                        [csrfHeader]: csrfToken
+                    }
+                })
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {

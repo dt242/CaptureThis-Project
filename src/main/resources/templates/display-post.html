@@ -121,7 +121,16 @@
             var postId = this.getAttribute('data-post-id');
             var action = likeButton.textContent.trim() === likeLabel ? 'like' : 'unlike';
 
-            fetch(`/post/${action}/${postId}`, { method: 'POST' })
+            // Взимаме тайния печат от мета таговете в хедъра
+            const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+            const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+
+            fetch(`/post/${action}/${postId}`, {
+                method: 'POST',
+                headers: {
+                    [csrfHeader]: csrfToken
+                }
+            })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {

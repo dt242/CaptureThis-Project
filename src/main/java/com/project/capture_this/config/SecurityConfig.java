@@ -1,10 +1,8 @@
 package com.project.capture_this.config;
 
-import com.project.capture_this.service.AppUserDetailsService;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -16,12 +14,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final AppUserDetailsService userDetailsService;
-
-    public SecurityConfig(AppUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
-
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -31,14 +23,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .cors(AbstractHttpConfigurer::disable)
-                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        authorizeRequest -> {
-                            authorizeRequest
-                                    .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                                    .requestMatchers("/", "/login", "/login-error", "/register", "/about", "/contacts", "/img/**").permitAll()
-                                    .anyRequest().authenticated();
-                        }
+                        authorizeRequest -> authorizeRequest
+                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                                .requestMatchers("/", "/login", "/login-error", "/register", "/about", "/contacts", "/img/**").permitAll()
+                                .anyRequest().authenticated()
                 )
                 .formLogin(
                         formLogin -> {
@@ -57,9 +46,5 @@ public class SecurityConfig {
                         }
                 )
                 .build();
-    }
-
-    public void configure(AuthenticationManagerBuilder builder) throws Exception {
-        builder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 }
