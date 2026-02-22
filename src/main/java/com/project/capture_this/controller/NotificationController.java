@@ -1,6 +1,5 @@
 package com.project.capture_this.controller;
 
-import com.project.capture_this.util.SecurityUtil;
 import com.project.capture_this.model.dto.DisplayNotificationDTO;
 import com.project.capture_this.service.NotificationService;
 import com.project.capture_this.service.UserService;
@@ -27,9 +26,6 @@ public class NotificationController {
     @GetMapping("/notifications")
     public String notifications(Model model) {
         List<DisplayNotificationDTO> allUserUnreadNotifications = notificationService.findUserUnreadNotifications();
-        if (SecurityUtil.getSessionUser() != null) {
-            model.addAttribute("user", userService.getLoggedUser());
-        }
         model.addAttribute("notifications", allUserUnreadNotifications);
         return "notifications";
     }
