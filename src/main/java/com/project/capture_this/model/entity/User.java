@@ -93,16 +93,6 @@ public class User {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
-
     public boolean isAdmin() {
         return roles.stream().anyMatch(role -> role.getName().equals(UserRoles.ADMIN));
     }
