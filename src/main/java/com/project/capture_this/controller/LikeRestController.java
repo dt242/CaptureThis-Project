@@ -1,5 +1,6 @@
 package com.project.capture_this.controller;
 
+import com.project.capture_this.model.dto.DisplayUserDTO;
 import com.project.capture_this.model.entity.Post;
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.service.LikeService;
@@ -35,10 +36,9 @@ public class LikeRestController {
             likeService.likePost(postId, loggedUser.getId());
 
             Post likedPost = postService.findById(postId);
-            if (!likedPost.getUser().equals(loggedUser)) {
+            if (!likedPost.getUser().getId().equals(loggedUser.getId())) {
                 notificationService.notifyLike(loggedUser, likedPost);
             }
-
             response.put("success", true);
         } catch (Exception e) {
             response.put("success", false);
@@ -66,8 +66,11 @@ public class LikeRestController {
         Map<String, Object> response = new HashMap<>();
         try {
             List<User> usersWhoLiked = likeService.getUsersWhoLikedPost(postId);
+            List<DisplayUserDTO> usersList = usersWhoLiked.stream()
+                    .map(UserService::mapToDisplayUserDTO)
+                    .toList();
             response.put("success", true);
-            response.put("likes", usersWhoLiked);
+            response.put("likes", usersList);
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", e.getMessage());
