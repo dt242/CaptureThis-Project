@@ -82,8 +82,9 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
-    public void markAllAsReadForUser(User user) {
-        List<Notification> notifications = notificationRepository.findByReceiverAndIsReadFalse(user);
+    public void markAllAsReadForUser() {
+        User loggedUser = userService.getLoggedUser();
+        List<Notification> notifications = notificationRepository.findByReceiverAndIsReadFalse(loggedUser);
         for (Notification notification : notifications) {
             notification.setRead(true);
         }
