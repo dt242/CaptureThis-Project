@@ -5,9 +5,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class SecurityUtil {
+    private SecurityUtil() {
+    }
     public static String getSessionUser() {
         Authentication authentication  = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+        if (authentication != null && authentication.isAuthenticated() &&
+                !(authentication instanceof AnonymousAuthenticationToken)) {
             return authentication.getName();
         }
         return null;
