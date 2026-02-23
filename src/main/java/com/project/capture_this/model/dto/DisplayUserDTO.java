@@ -25,7 +25,5 @@ public class DisplayUserDTO {
     private LocalDate birthDate;
     private Gender gender;
     private String bio;
-    private int followersCount;
-    private int followingCount;
     private LocalDateTime createdAt;
 }
