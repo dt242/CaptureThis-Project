@@ -11,8 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
-
 @Controller
 public class CommentController {
 
@@ -26,11 +24,6 @@ public class CommentController {
         this.userService = userService;
         this.notificationService = notificationService;
         this.postService = postService;
-    }
-
-    @GetMapping("/post/{postId}/comments")
-    public List<CommentDTO> getComments(@PathVariable Long postId) {
-        return commentService.getCommentsByPostId(postId);
     }
 
     @PostMapping("/post/{postId}/comment")
@@ -48,7 +41,7 @@ public class CommentController {
             commentService.addComment(commentDTO);
 
             Post commentedPost = postService.findById(postId);
-            if (!commentedPost.getUser().equals(loggedUser)) {
+            if (!commentedPost.getUser().getId().equals(loggedUser.getId())) {
                 notificationService.notifyComment(loggedUser, commentedPost);
             }
 
