@@ -2,7 +2,6 @@ package com.project.capture_this.controller;
 
 import com.project.capture_this.model.dto.DisplayNotificationDTO;
 import com.project.capture_this.service.NotificationService;
-import com.project.capture_this.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +14,10 @@ import java.util.List;
 public class NotificationController {
 
     private final NotificationService notificationService;
-    private final UserService userService;
 
-    public NotificationController(NotificationService notificationService, UserService userService) {
+    public NotificationController(NotificationService notificationService) {
 
         this.notificationService = notificationService;
-        this.userService = userService;
     }
 
     @GetMapping("/notifications")
@@ -38,7 +35,7 @@ public class NotificationController {
 
     @PostMapping("/notifications/read-all")
     public String markAllAsRead() {
-        notificationService.markAllAsReadForUser(userService.getLoggedUser());
+        notificationService.markAllAsReadForUser();
         return "redirect:/notifications";
     }
 }

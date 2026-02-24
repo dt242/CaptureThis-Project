@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,24 +35,21 @@ public class FollowController {
 
         if (!follower.getId().equals(userId)) {
             followService.followUser(follower.getId(), userId);
-
             User followedUser = userService.findById(userId);
             notificationService.notifyFollow(follower, followedUser);
         }
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(Map.of("success", true));
     }
 
 
     @PostMapping("/profile/unfollow/{userId}")
     public ResponseEntity<Map<String, Object>> unfollowUser(@PathVariable("userId") Long userId) {
         Long currentUserId = userService.getLoggedUser().getId();
-        followService.unfollowUser(currentUserId, userId);
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        return ResponseEntity.ok(response);
+        if (!currentUserId.equals(userId)) {
+            followService.unfollowUser(currentUserId, userId);
+        }
+        return ResponseEntity.ok(Map.of("success", true));
     }
 
 

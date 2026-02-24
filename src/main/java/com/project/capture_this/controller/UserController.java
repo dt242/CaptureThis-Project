@@ -40,7 +40,7 @@ public class UserController {
     ) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("registerData", data);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerData", bindingResult);
+            redirectAttributes.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "registerData", bindingResult);
             return "redirect:/register";
         }
 
@@ -49,7 +49,7 @@ public class UserController {
         if (!success) {
             bindingResult.reject("error.user", "An account already exists for this username or email.");
             redirectAttributes.addFlashAttribute("registerData", data);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerData", bindingResult);
+            redirectAttributes.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "registerData", bindingResult);
             return "redirect:/register";
         }
         return "redirect:/login";
