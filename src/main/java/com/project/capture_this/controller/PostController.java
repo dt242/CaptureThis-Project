@@ -60,7 +60,7 @@ public class PostController {
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("createPostData", data);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.createPostData", bindingResult);
+            redirectAttributes.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "createPostData", bindingResult);
             return "redirect:/create-post";
         }
 
@@ -68,7 +68,8 @@ public class PostController {
             PostStatus status = "post".equals(action) ? PostStatus.PUBLISHED : PostStatus.DRAFT;
             postService.savePost(data, status);
         } catch (IOException e) {
-            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", "Error uploading image. Please try again.");
+            return "redirect:/create-post";
         }
 
         return "redirect:/profile";
@@ -77,9 +78,7 @@ public class PostController {
     @GetMapping("/images/{postId}")
     public ResponseEntity<byte[]> getImage(@PathVariable Long postId) {
         Post post = postService.findById(postId);
-        byte[] image = post.getImage();
-
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(post.getImage());
     }
 
     @GetMapping("/drafts")
@@ -98,11 +97,7 @@ public class PostController {
                 .description(post.getDescription())
                 .build();
         model.addAttribute("editPostData", dto);
-        if (post.getStatus().equals(PostStatus.PUBLISHED)) {
-            model.addAttribute("isAlreadyPosted", true);
-        } else {
-            model.addAttribute("isAlreadyPosted", false);
-        }
+        model.addAttribute("isAlreadyPosted", post.getStatus().equals(PostStatus.PUBLISHED));
         return "edit-post";
     }
 
@@ -114,21 +109,21 @@ public class PostController {
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("editPostData", data);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.editPostData", bindingResult);
+            redirectAttributes.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "editPostData", bindingResult);
             return "redirect:/edit-post/" + data.getId();
         }
 
         try {
             PostStatus status = "post".equals(action) ? PostStatus.PUBLISHED : PostStatus.DRAFT;
             postService.updatePost(data, status);
+            return "redirect:/profile";
         } catch (IOException e) {
-            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", "Error updating post.");
+            return "redirect:/edit-post/" + data.getId();
         }
-
-        return "redirect:/profile/" + postService.findById(data.getId()).getUser().getId();
     }
 
-    @GetMapping("/delete-post/{id}")
+    @PostMapping("/delete-post/{id}")
     public String deletePost(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             long postUserId = postService.findById(id).getUser().getId();
@@ -167,5 +162,4 @@ public class PostController {
 
         return "display-post";
     }
-
 }
