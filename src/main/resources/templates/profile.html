@@ -29,14 +29,18 @@
                     <i class="fa-solid fa-users"></i>
                     <span th:text="#{profile.following}">Following</span></a>
                 <div th:if="${isOwnProfile == false && isAdmin}">
-                    <a th:href="@{/profile/make-admin/{userId}(userId=${profileData.id})}"
-                       class="btn"
-                       th:classappend="${userIsAdmin} ? 'btn-danger' : 'btn-primary'"
-                       th:onclick="${userIsAdmin} ? 'return confirm(\'Are you sure you want to remove admin rights from this user?\');'
-                               : 'return confirm(\'Are you sure you want to make this user an admin?\');'">
-                        <i th:class="${userIsAdmin} ? 'fa-solid fa-user' : 'fa-solid fa-user-tie'"></i>
-                        <span th:text="${userIsAdmin} ? #{profile.make.user} : #{profile.make.admin}">Make Admin/Make User</span>
-                    </a>
+                    <form th:action="@{/profile/make-admin/{userId}(userId=${profileData.id})}"
+                          method="post"
+                          style="display: inline;"
+                          th:onsubmit="${userIsAdmin} ? 'return confirm(\'Are you sure you want to remove admin rights from this user?\');'
+                   : 'return confirm(\'Are you sure you want to make this user an admin?\');'">
+                        <button type="submit"
+                                class="btn"
+                                th:classappend="${userIsAdmin} ? 'btn-danger' : 'btn-primary'">
+                            <i th:class="${userIsAdmin} ? 'fa-solid fa-user' : 'fa-solid fa-user-tie'"></i>
+                            <span th:text="${userIsAdmin} ? #{profile.make.user} : #{profile.make.admin}">Make Admin/Make User</span>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
