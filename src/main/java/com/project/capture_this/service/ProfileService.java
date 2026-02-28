@@ -3,6 +3,7 @@ package com.project.capture_this.service;
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -11,37 +12,36 @@ import java.io.IOException;
 public class ProfileService {
 
     private final UserRepository userRepository;
-    private final UserService userService;
 
-    public ProfileService(UserRepository userRepository, UserService userService) {
+    public ProfileService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.userService = userService;
     }
 
+    @Transactional
     public void saveProfilePicture(User user, MultipartFile profilePicture) {
         try {
             user.setProfilePicture(profilePicture.getBytes());
             userRepository.save(user);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to process profile picture", e);
         }
     }
 
+    @Transactional
     public void updateBio(Long userId, String bio) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         user.setBio(bio);
-        userRepository.save(user);
     }
 
+    @Transactional
     public void updateFirstName(Long userId, String firstName) {
-        User user = userService.findById(userId);
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         user.setFirstName(firstName);
-        userRepository.save(user);
     }
 
+    @Transactional
     public void updateLastName(Long userId, String lastName) {
-        User user = userService.findById(userId);
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         user.setLastName(lastName);
-        userRepository.save(user);
     }
 }
