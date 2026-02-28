@@ -6,6 +6,7 @@ import com.project.capture_this.model.entity.Post;
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.repository.LikeRepository;
 import com.project.capture_this.repository.PostRepository;
+import com.project.capture_this.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,24 +18,24 @@ public class LikeService {
 
     private final LikeRepository likeRepository;
     private final PostRepository postRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
-    public LikeService(LikeRepository likeRepository, PostRepository postRepository, UserService userService) {
+    public LikeService(LikeRepository likeRepository, PostRepository postRepository, UserRepository userRepository) {
         this.likeRepository = likeRepository;
         this.postRepository = postRepository;
-        this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @Transactional
     public void likePost(Long postId, Long userId) {
         if (!likeRepository.existsByPostIdAndUserId(postId, userId)) {
-            Post post = postRepository.findById(postId)
-                    .orElseThrow(() -> new RuntimeException("Post not found"));
-            User user = userService.findById(userId);
+
+            Post postProxy = postRepository.getReferenceById(postId);
+            User userProxy = userRepository.getReferenceById(userId);
 
             Like like = new Like();
-            like.setPost(post);
-            like.setUser(user);
+            like.setPost(postProxy);
+            like.setUser(userProxy);
 
             likeRepository.save(like);
         }
@@ -42,9 +43,7 @@ public class LikeService {
 
     @Transactional
     public void unlikePost(Long postId, Long userId) {
-        if (likeRepository.existsByPostIdAndUserId(postId, userId)) {
-            likeRepository.deleteByPostIdAndUserId(postId, userId);
-        }
+        likeRepository.deleteByPostIdAndUserId(postId, userId);
     }
 
     @Transactional(readOnly = true)
