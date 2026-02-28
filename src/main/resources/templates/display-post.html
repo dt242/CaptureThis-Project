@@ -41,14 +41,6 @@
                         <span th:text="#{comment.submit}">Post Comment</span>
                     </button>
                 </form>
-<!--                <button id="favoriteButton"-->
-<!--                        class="btn"-->
-<!--                        th:text="${isFavorite} ? #{favorites.remove} : #{favorites.add}"-->
-<!--                        th:attr="data-post-id=${post.id},-->
-<!--                 data-favorite-text=#{favorites.add},-->
-<!--                 data-unfavorite-text=#{favorites.remove}"-->
-<!--                        th:classappend="${isFavorite} ? 'btn-danger' : 'btn-primary'">-->
-<!--                </button>-->
             </div>
         </div>
 
@@ -109,19 +101,18 @@
 </main>
 <footer th:replace="fragments/commons::footer"></footer>
 <script th:inline="javascript">
-    var likeLabel = /*[[#{likes.like}]]*/ 'Like'; // Fallback value for like label
-    var unlikeLabel = /*[[#{likes.unlike}]]*/ 'Unlike'; // Fallback value for unlike label
+    var likeLabel = /*[[#{likes.like}]]*/ 'Like';
+    var unlikeLabel = /*[[#{likes.unlike}]]*/ 'Unlike';
 
     document.addEventListener('DOMContentLoaded', function() {
     var likeButton = document.getElementById('likeButton');
     if (likeButton) {
         likeButton.addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault();
 
             var postId = this.getAttribute('data-post-id');
             var action = likeButton.textContent.trim() === likeLabel ? 'like' : 'unlike';
 
-            // Взимаме тайния печат от мета таговете в хедъра
             const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
             const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
 
@@ -148,50 +139,5 @@
 });
 
 </script>
-<!--<script th:inline="javascript">-->
-<!--    var addFavoriteText = /*[[#{favorites.add}]]*/ 'Add Favorite';-->
-<!--    var removeFavoriteText = /*[[#{favorites.remove}]]*/ 'Remove Favorite';-->
-
-<!--    document.addEventListener('DOMContentLoaded', function () {-->
-<!--        var favoriteButton = document.getElementById('favoriteButton');-->
-<!--        if (favoriteButton) {-->
-<!--            var addText = favoriteButton.getAttribute('data-favorite-text');-->
-<!--            var removeText = favoriteButton.getAttribute('data-unfavorite-text');-->
-
-<!--            favoriteButton.addEventListener('click', function (event) {-->
-<!--                event.preventDefault();-->
-
-<!--                var postId = this.getAttribute('data-post-id');-->
-<!--                var isCurrentlyFavorite = this.textContent.trim() === removeText;-->
-<!--                var action = isCurrentlyFavorite ? 'unfavorite' : 'favorite';-->
-
-<!--                fetch(`/post/${action}/${postId}`, {-->
-<!--                    method: 'POST'-->
-<!--                })-->
-<!--                    .then(response => response.json())-->
-<!--                    .then(data => {-->
-<!--                        if (data.success) {-->
-<!--                            // Toggle button text and styling-->
-<!--                            if (action === 'favorite') {-->
-<!--                                this.textContent = removeText;-->
-<!--                                this.classList.remove('btn-primary');-->
-<!--                                this.classList.add('btn-danger');-->
-<!--                            } else {-->
-<!--                                this.textContent = addText;-->
-<!--                                this.classList.remove('btn-danger');-->
-<!--                                this.classList.add('btn-primary');-->
-<!--                            }-->
-<!--                        } else {-->
-<!--                            alert(/*[[#{favorites.error}]]*/ 'Error occurred while updating favorites.');-->
-<!--                        }-->
-<!--                    })-->
-<!--                    .catch(error => {-->
-<!--                        alert(/*[[#{favorites.error}]]*/ 'Error occurred while updating favorites.');-->
-<!--                        console.error('Error:', error);-->
-<!--                    });-->
-<!--            });-->
-<!--        }-->
-<!--    });-->
-<!--</script>-->
 </body>
 </html>
