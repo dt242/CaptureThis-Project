@@ -29,14 +29,12 @@ public class PostController {
     private final PostService postService;
     private final UserService userService;
     private final CommentService commentService;
-//    private final FavoriteService favoriteService;
     private final LikeService likeService;
 
     public PostController(PostService postService, CommentService commentService, UserService userService, LikeService likeService) {
         this.postService = postService;
         this.commentService = commentService;
         this.userService = userService;
-//        this.favoriteService = favoriteService;
         this.likeService = likeService;
     }
 
