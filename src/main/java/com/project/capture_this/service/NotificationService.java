@@ -6,24 +6,24 @@ import com.project.capture_this.model.entity.Post;
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.model.enums.NotificationType;
 import com.project.capture_this.repository.NotificationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class NotificationService {
 
-    @Autowired
-    private NotificationRepository notificationRepository;
+    private final NotificationRepository notificationRepository;
+    private final UserService userService;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private PostService postService;
+    public NotificationService(NotificationRepository notificationRepository, UserService userService) {
+        this.notificationRepository = notificationRepository;
+        this.userService = userService;
+    }
 
     public void notifyLike(User likedByUser, Post post) {
         Notification notification = new Notification();
@@ -54,15 +54,6 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
-    public List<DisplayNotificationDTO> findUserNotifications() {
-        User loggedUser = userService.getLoggedUser();
-
-        List<Notification> notifications = notificationRepository.findByReceiverOrderByCreatedAtDesc(loggedUser);
-        return notifications.stream()
-                .map(NotificationService::mapToDisplayNotificationDTO)
-                .collect(Collectors.toList());
-    }
-
     public List<DisplayNotificationDTO> findUserUnreadNotifications() {
         User loggedUser = userService.getLoggedUser();
 
@@ -71,36 +62,41 @@ public class NotificationService {
                 .map(NotificationService::mapToDisplayNotificationDTO)
                 .collect(Collectors.toList());
     }
+
     public long getUnreadNotificationCount(User user) {
         return notificationRepository.countByReceiverAndIsReadFalse(user);
     }
 
+    @Transactional
     public void markAsRead(Long id) {
         Notification notification = notificationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Notification not found"));
         notification.setRead(true);
-        notificationRepository.save(notification);
     }
 
+    @Transactional
     public void markAllAsReadForUser() {
         User loggedUser = userService.getLoggedUser();
         List<Notification> notifications = notificationRepository.findByReceiverAndIsReadFalse(loggedUser);
         for (Notification notification : notifications) {
             notification.setRead(true);
         }
-        notificationRepository.saveAll(notifications);
     }
 
     @Scheduled(cron = "0 0 10 * * *")
     public void sendEngagementNotifications() {
         List<User> allUsers = userService.findAllUsers();
 
+        List<Notification> notificationsToSave = new ArrayList<>();
+
         for (User user : allUsers) {
             Notification notification = new Notification();
             notification.setReceiver(user);
             notification.setType(NotificationType.ENGAGE);
-            notificationRepository.save(notification);
+            notificationsToSave.add(notification);
         }
+
+        notificationRepository.saveAll(notificationsToSave);
     }
 
     public static DisplayNotificationDTO mapToDisplayNotificationDTO(Notification notification) {
@@ -127,4 +123,3 @@ public class NotificationService {
         return builder.build();
     }
 }
-
