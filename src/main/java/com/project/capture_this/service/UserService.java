@@ -6,32 +6,32 @@ import com.project.capture_this.model.dto.UserRegisterDTO;
 import com.project.capture_this.model.entity.Role;
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.model.enums.UserRole;
-import com.project.capture_this.repository.RoleRepository;
 import com.project.capture_this.repository.UserRepository;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
+    private final RoleService roleService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleService roleService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.roleRepository = roleRepository;
+        this.roleService = roleService;
     }
 
     public User getLoggedUser() {
-        return userRepository.findByUsername(SecurityUtil.getSessionUser()).get();
+        return userRepository.findByUsername(SecurityUtil.getSessionUser()).orElseThrow(() -> new RuntimeException("Logged user not found in database"));
     }
 
     public User findById(Long userId) {
@@ -39,7 +39,7 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-
+    @Transactional
     public boolean register(UserRegisterDTO data) {
         Optional<User> existingUser = userRepository
                 .findByUsernameOrEmail(data.getUsername(), data.getEmail());
@@ -57,8 +57,7 @@ public class UserService {
         user.setEmail(data.getEmail());
         user.setBirthDate(data.getBirthDate());
         user.setPassword(passwordEncoder.encode(data.getPassword()));
-        Role role = roleRepository.findByName(UserRole.USER)
-                .orElseThrow(() -> new RuntimeException("Role not found"));
+        Role role = roleService.findByName(UserRole.USER);
 
         user.setRoles(Set.of(role));
         user.setProfilePicture(getDefaultProfilePicture());
@@ -73,63 +72,48 @@ public class UserService {
         return users.stream().map(UserService::mapToDisplayUserDTO).collect(Collectors.toList());
     }
 
-    public byte[] getDefaultProfilePicture() {
-        try {
-            Path path = Paths.get("src/main/resources/static/img/default-profile-picture.jpg");
-            return Files.readAllBytes(path);
+    private byte[] readResourceFile(String filePath) {
+        try (InputStream is = new ClassPathResource(filePath).getInputStream()) {
+            return is.readAllBytes();
         } catch (IOException e) {
-            throw new RuntimeException("Failed to load default profile picture", e);
+            throw new RuntimeException("Failed to load resource file: " + filePath, e);
         }
+    }
+
+    public byte[] getDefaultProfilePicture() {
+        return readResourceFile("static/img/default-profile-picture.jpg");
     }
 
     public List<byte[]> getPostPictures() {
-        try {
-            List<byte[]> postPictures = new ArrayList<>();
+        List<byte[]> postPictures = new ArrayList<>();
+        List<String> fileNames = List.of(
+                "rand1.avif", "rand2.avif", "rand3.avif", "rand4.avif", "rand5.avif",
+                "rand6.avif", "rand7.avif", "rand8.avif", "rand9.avif", "rand10.avif",
+                "rand11.avif", "rand12.avif", "rand13.avif", "rand14.avif", "rand15.avif",
+                "rand16.avif", "rand17.avif", "rand18.avif", "rand19.avif", "rand20.avif",
+                "rand21.avif", "rand22.avif", "rand23.avif", "rand24.avif", "rand25.avif",
+                "rand26.avif", "rand27.avif", "rand28.avif", "rand29.avif", "rand30.avif",
+                "rand31.avif", "rand32.avif", "rand33.avif", "rand34.avif", "rand35.avif"
+        );
 
-            // List of file names
-            List<String> fileNames = List.of(
-                    "rand1.avif", "rand2.avif", "rand3.avif", "rand4.avif", "rand5.avif",
-                    "rand6.avif", "rand7.avif", "rand8.avif", "rand9.avif", "rand10.avif",
-                    "rand11.avif", "rand12.avif", "rand13.avif", "rand14.avif", "rand15.avif",
-                    "rand16.avif", "rand17.avif", "rand18.avif", "rand19.avif", "rand20.avif",
-                    "rand21.avif", "rand22.avif", "rand23.avif", "rand24.avif", "rand25.avif",
-                    "rand26.avif", "rand27.avif", "rand28.avif", "rand29.avif", "rand30.avif",
-                    "rand31.avif", "rand32.avif", "rand33.avif", "rand34.avif", "rand35.avif"
-            );
-
-            // Loop through file names and read them into the list
-            for (String fileName : fileNames) {
-                Path filePath = Paths.get("src/main/resources/static/img/" + fileName);
-                postPictures.add(Files.readAllBytes(filePath));
-            }
-
-            return postPictures;
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load post pictures", e);
+        for (String fileName : fileNames) {
+            postPictures.add(readResourceFile("static/img/" + fileName));
         }
+        return postPictures;
     }
 
     public List<byte[]> getProfilePictures() {
-        try {
-            List<byte[]> profilePictures = new ArrayList<>();
+        List<byte[]> profilePictures = new ArrayList<>();
+        List<String> fileNames = List.of(
+                "pfp1.avif", "pfp2.avif", "pfp3.avif", "pfp4.avif", "pfp5.avif",
+                "pfp6.avif", "pfp7.avif", "pfp8.avif", "pfp9.avif", "pfp10.avif",
+                "pfp11.avif", "pfp12.avif"
+        );
 
-            // List of file names
-            List<String> fileNames = List.of(
-                    "pfp1.avif", "pfp2.avif", "pfp3.avif", "pfp4.avif", "pfp5.avif",
-                    "pfp6.avif", "pfp7.avif", "pfp8.avif", "pfp9.avif", "pfp10.avif",
-                    "pfp11.avif", "pfp12.avif"
-            );
-
-            // Loop through file names and read them into the list
-            for (String fileName : fileNames) {
-                Path filePath = Paths.get("src/main/resources/static/img/" + fileName);
-                profilePictures.add(Files.readAllBytes(filePath));
-            }
-
-            return profilePictures;
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load post pictures", e);
+        for (String fileName : fileNames) {
+            profilePictures.add(readResourceFile("static/img/" + fileName));
         }
+        return profilePictures;
     }
 
     public static DisplayUserDTO mapToDisplayUserDTO(User user) {
@@ -147,6 +131,7 @@ public class UserService {
                 .build();
     }
 
+    @Transactional
     public void save(User user) {
         userRepository.save(user);
     }
