@@ -84,10 +84,8 @@ function previewNewImage(event) {
         var newImagePreview = document.getElementById('newImagePreview');
         var currentImage = document.getElementById('currentImage');
 
-        // Hide the current image
         currentImage.style.display = 'none';
 
-        // Show the new image preview
         newImagePreview.src = dataURL;
         newImagePreview.style.display = 'block';
     };
