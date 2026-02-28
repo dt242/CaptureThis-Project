@@ -16,7 +16,7 @@ public class EditPostDTO {
     private Long id;
 
     @NotBlank(message = "Title is mandatory")
-    @Size(max = 20, message = "Title must be less than 20 characters")
+    @Size(max = 40, message = "Title must be less than 40 characters")
     private String title;
 
     @Size(max = 300, message = "Description must be less than 300 characters")
