@@ -131,7 +131,7 @@
 
         <section class="posts-summary">
             <div class="posts-summary-item" th:if="${isOwnProfile || isAdmin}">
-                <a class="btn btn-info" th:href="@{/drafts}" style="margin: 1rem;">
+                <a class="btn btn-info" th:href="@{/drafts/{id}(id=${profileData.id})}" style="margin: 1rem;">
                     <i class="fa-solid fa-pen-ruler"></i>
                     <span th:text="#{profile.draftPosts}">Draft Posts</span></a>
             </div>

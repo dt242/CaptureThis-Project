@@ -64,9 +64,9 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<DisplayPostDTO> findDraftPosts() {
-        User loggedUser = userService.getLoggedUser();
-        return postRepository.findByUserAndStatus(loggedUser, PostStatus.DRAFT).stream()
+    public List<DisplayPostDTO> findDraftPostsByUser(Long userId) {
+        User user = userService.findById(userId);
+        return postRepository.findByUserAndStatus(user, PostStatus.DRAFT).stream()
                 .map(this::mapToDisplayPostDTO)
                 .collect(Collectors.toList());
     }
