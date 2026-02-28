@@ -181,8 +181,8 @@
 <footer th:replace="fragments/commons::footer"></footer>
 
 <script th:inline="javascript">
-    var followText = /*[[#{profile.follow}]]*/ 'Follow'; // Fallback value for follow text
-    var unfollowText = /*[[#{profile.unfollow}]]*/ 'Unfollow'; // Fallback value for unfollow text
+    var followText = /*[[#{profile.follow}]]*/ 'Follow';
+    var unfollowText = /*[[#{profile.unfollow}]]*/ 'Unfollow';
 
     document.addEventListener('DOMContentLoaded', function() {
         var followButton = document.getElementById('followButton');
@@ -196,14 +196,12 @@
                 var userId = this.getAttribute('data-user-id');
                 var action = this.textContent.trim() === followText ? 'follow' : 'unfollow';
 
-                // Взимаме токена и името на хедъра от мета таговете
                 const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
                 const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
 
                 fetch(`/profile/${action}/${userId}`, {
                     method: 'POST',
                     headers: {
-                        // Добавяме тайния печат към заявката
                         [csrfHeader]: csrfToken
                     }
                 })
