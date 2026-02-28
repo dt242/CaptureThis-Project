@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Service
 public class PostService {
     private final PostRepository postRepository;
@@ -33,49 +32,46 @@ public class PostService {
         return postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
     }
 
-    public List<DisplayPostDTO> findAllPosts() {
-        return postRepository
-                .findAll()
-                .stream()
-                .map(post -> mapToDisplayPostDTO(post, commentService))
-                .collect(Collectors.toList());
-    }
-
-    @Transactional
+    @Transactional(readOnly = true)
     public List<DisplayPostDTO> findFollowedPosts() {
         User loggedUser = userService.getLoggedUser();
         List<User> followedUsers = new ArrayList<>(loggedUser.getFollowing());
+        if (followedUsers.isEmpty()) {
+            return new ArrayList<>();
+        }
+
         List<Post> posts = postRepository.findByUserInAndStatusOrderByCreatedAtDesc(followedUsers, PostStatus.PUBLISHED);
         return posts.stream()
-                .map(post -> mapToDisplayPostDTO(post, commentService))
+                .map(this::mapToDisplayPostDTO)
                 .collect(Collectors.toList());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<DisplayPostDTO> findPostsByUser(User user) {
         List<Post> posts = postRepository.findByUserAndStatusOrderByCreatedAtDesc(user, PostStatus.PUBLISHED);
         return posts.stream()
-                .map(post -> mapToDisplayPostDTO(post, commentService))
+                .map(this::mapToDisplayPostDTO)
                 .collect(Collectors.toList());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<DisplayPostDTO> findPublishedPosts() {
         User loggedUser = userService.getLoggedUser();
         return postRepository.findByUserAndStatusOrderByCreatedAtDesc(loggedUser, PostStatus.PUBLISHED)
                 .stream()
-                .map(post -> mapToDisplayPostDTO(post, commentService))
+                .map(this::mapToDisplayPostDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<DisplayPostDTO> findDraftPosts() {
+        User loggedUser = userService.getLoggedUser();
+        return postRepository.findByUserAndStatus(loggedUser, PostStatus.DRAFT).stream()
+                .map(this::mapToDisplayPostDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public List<DisplayPostDTO> findDraftPosts() {
-        User loggedUser = userService.getLoggedUser();
-        return postRepository.findByUserAndStatus(loggedUser, PostStatus.DRAFT).stream()
-                .map(post -> mapToDisplayPostDTO(post, commentService))
-                .collect(Collectors.toList());
-    }
-
     public void savePost(CreatePostDTO data, PostStatus status) throws IOException {
         Post post = new Post();
         post.setTitle(data.getTitle());
@@ -95,8 +91,10 @@ public class PostService {
         if (data.hasImage()) {
             post.setImage(data.getImageFile().getBytes());
         }
-        if (!post.getStatus().equals(PostStatus.PUBLISHED)) post.setStatus(status);
-        postRepository.save(post);
+
+        if (!post.getStatus().equals(PostStatus.PUBLISHED)) {
+            post.setStatus(status);
+        }
     }
 
     @Transactional
@@ -106,7 +104,7 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    public static DisplayPostDTO mapToDisplayPostDTO(Post post, CommentService commentService) {
+    private DisplayPostDTO mapToDisplayPostDTO(Post post) {
         return DisplayPostDTO.builder()
                 .id(post.getId())
                 .authorId(post.getUser() != null ? post.getUser().getId() : null)
