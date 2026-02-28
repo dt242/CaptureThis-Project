@@ -115,8 +115,8 @@ public class PostController {
 
         try {
             PostStatus status = "post".equals(action) ? PostStatus.PUBLISHED : PostStatus.DRAFT;
-            postService.updatePost(data, status);
-            return "redirect:/profile";
+            Long authorId = postService.updatePost(data, status);
+            return "redirect:/profile/" + authorId;
         } catch (IOException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error updating post.");
             return "redirect:/edit-post/" + data.getId();

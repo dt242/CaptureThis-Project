@@ -83,7 +83,7 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(EditPostDTO data, PostStatus status) throws IOException {
+    public Long updatePost(EditPostDTO data, PostStatus status) throws IOException {
         Post post = postRepository.findById(data.getId())
                 .orElseThrow(() -> new RuntimeException("Post not found"));
         post.setTitle(data.getTitle());
@@ -95,6 +95,7 @@ public class PostService {
         if (!post.getStatus().equals(PostStatus.PUBLISHED)) {
             post.setStatus(status);
         }
+        return post.getUser().getId();
     }
 
     @Transactional
