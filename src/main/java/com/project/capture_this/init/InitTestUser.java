@@ -6,10 +6,9 @@ import com.project.capture_this.model.entity.User;
 import com.project.capture_this.model.enums.Gender;
 import com.project.capture_this.model.enums.PostStatus;
 import com.project.capture_this.model.enums.UserRole;
-import com.project.capture_this.repository.LikeRepository;
 import com.project.capture_this.repository.PostRepository;
-import com.project.capture_this.repository.RoleRepository;
 import com.project.capture_this.repository.UserRepository;
+import com.project.capture_this.service.RoleService;
 import com.project.capture_this.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,25 +25,26 @@ public class InitTestUser implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
     private final PostRepository postRepository;
-    private final LikeRepository likeRepository;
     private final UserService userService;
+    private final RoleService roleService;
 
-
-    public InitTestUser(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, PostRepository postRepository, LikeRepository likeRepository, UserService userService) {
+    public InitTestUser(UserRepository userRepository, PasswordEncoder passwordEncoder, PostRepository postRepository, UserService userService, RoleService roleService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.roleRepository = roleRepository;
         this.postRepository = postRepository;
-        this.likeRepository = likeRepository;
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @Override
     public void run(String... args) {
-        Role userRole = roleRepository.findByName(UserRole.USER).orElseThrow();
+        List<byte[]> profilePictures = userService.getProfilePictures();
+        List<byte[]> postPictures = userService.getPostPictures();
+        byte[] defaultPostPicture = userService.getDefaultProfilePicture();
+        byte[] pfpToUse = profilePictures.get(3);
 
+        Role userRole = roleService.findByName(UserRole.USER);
         User user = new User();
         user.setFirstName("Test");
         user.setLastName("User");
@@ -55,7 +55,7 @@ public class InitTestUser implements CommandLineRunner {
         user.setRoles(Set.of(userRole));
         user.setGender(Gender.MALE);
         user.setBirthDate(LocalDate.of(1990, 11, 15));
-        user.setProfilePicture(userService.getProfilePictures().get(3));
+        user.setProfilePicture(pfpToUse);
         userRepository.save(user);
 
         List<Post> posts = new ArrayList<>();
@@ -67,20 +67,13 @@ public class InitTestUser implements CommandLineRunner {
         posts.add(createPost(user, "Tech Meetups and Networking", "The importance of attending tech meetups and building a network.", LocalDateTime.of(2025, 4, 10, 18, 0), PostStatus.PUBLISHED));
         posts.add(createPost(user, "Tech Meetups and Networking", "Not finished either", LocalDateTime.of(2025, 4, 10, 18, 0), PostStatus.DRAFT));
 
-        List<byte[]> postPictures = userService.getPostPictures();
-        byte[] defaultPostPicture = userService.getDefaultProfilePicture();
-
         for (int i = 0; i < posts.size(); i++) {
-            Post post = posts.get(i);
-
             byte[] imageToSet = (i < 7) ? postPictures.get(i % 35) : defaultPostPicture;
-
-            post.setImage(imageToSet);
-            postRepository.save(post);
+            posts.get(i).setImage(imageToSet);
         }
+        postRepository.saveAll(posts);
 
-        Role adminRole = roleRepository.findByName(UserRole.ADMIN).orElseThrow();
-
+        Role adminRole = roleService.findByName(UserRole.ADMIN);
         User admin = new User();
         admin.setFirstName("Test");
         admin.setLastName("Admin");
@@ -91,7 +84,7 @@ public class InitTestUser implements CommandLineRunner {
         admin.setRoles(Set.of(adminRole));
         admin.setGender(Gender.MALE);
         admin.setBirthDate(LocalDate.of(1990, 11, 15));
-        admin.setProfilePicture(userService.getProfilePictures().get(3));
+        admin.setProfilePicture(pfpToUse);
         userRepository.save(admin);
 
         List<Post> postsAdmin = new ArrayList<>();
@@ -104,13 +97,10 @@ public class InitTestUser implements CommandLineRunner {
         postsAdmin.add(createPost(admin, "Tech Meetups and Networking", "Not finished either", LocalDateTime.of(2025, 4, 10, 18, 0), PostStatus.DRAFT));
 
         for (int i = 0; i < postsAdmin.size(); i++) {
-            Post post = postsAdmin.get(i);
-
             byte[] imageToSet = (i < 7) ? postPictures.get(i % 35) : defaultPostPicture;
-
-            post.setImage(imageToSet);
-            postRepository.save(post);
+            postsAdmin.get(i).setImage(imageToSet);
         }
+        postRepository.saveAll(postsAdmin);
     }
 
     private Post createPost(User user, String title, String description, LocalDateTime createdAt, PostStatus status) {
