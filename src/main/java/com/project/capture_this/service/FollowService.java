@@ -27,8 +27,6 @@ public class FollowService {
         if (!follower.getFollowing().contains(followee)) {
             follower.getFollowing().add(followee);
             followee.getFollowers().add(follower);
-            userRepository.save(follower);
-            userRepository.save(followee);
         }
     }
 
@@ -42,8 +40,6 @@ public class FollowService {
         if (follower.getFollowing().contains(followee)) {
             follower.getFollowing().remove(followee);
             followee.getFollowers().remove(follower);
-            userRepository.save(follower);
-            userRepository.save(followee);
         }
     }
 
