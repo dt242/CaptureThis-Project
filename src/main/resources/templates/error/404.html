@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"></head>
+<body>
+<header th:replace="fragments/commons::header"></header>
+<main>
+    <div class="error-container">
+        <h1 class="error-code">404</h1>
+        <h2 th:text="#{error.404.title}"></h2>
+        <p th:text="#{error.404.message}"></p>
+
+        <p th:if="${errorMessage}" style="margin-top: 10px;">
+            <i th:text="${errorMessage}" style="color: #333"></i>
+        </p>
+
+        <a th:href="@{/home}" class="btn btn-primary" style="margin-top: 20px;">
+            <i class="fa-solid fa-house"></i> <span th:text="#{error.goBack}"></span>
+        </a>
+    </div>
+</main>
+<footer th:replace="~{fragments/commons::footer}"></footer>
+</body>
+</html>

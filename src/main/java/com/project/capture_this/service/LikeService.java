@@ -7,6 +7,7 @@ import com.project.capture_this.model.entity.User;
 import com.project.capture_this.repository.LikeRepository;
 import com.project.capture_this.repository.PostRepository;
 import com.project.capture_this.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,12 +30,12 @@ public class LikeService {
     @Transactional
     public void likePost(Long postId, Long userId) {
         if (!likeRepository.existsByPostIdAndUserId(postId, userId)) {
-
-            Post postProxy = postRepository.getReferenceById(postId);
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> new EntityNotFoundException("Post not found with ID: " + postId));
             User userProxy = userRepository.getReferenceById(userId);
 
             Like like = new Like();
-            like.setPost(postProxy);
+            like.setPost(post);
             like.setUser(userProxy);
 
             likeRepository.save(like);

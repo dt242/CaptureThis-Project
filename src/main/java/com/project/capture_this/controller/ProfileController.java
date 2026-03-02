@@ -100,7 +100,7 @@ public class ProfileController {
         profileService.saveProfilePicture(targetUser, profilePictureDTO.getProfilePicture());
 
         redirectAttributes.addFlashAttribute("message", "Profile picture updated successfully");
-        return "redirect:/profile/" + (userId != null ? userId : "");
+        return userId != null ? "redirect:/profile/" + userId : "redirect:/profile";
     }
 
     @PostMapping("/profile/change-bio")

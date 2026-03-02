@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"></head>
+<body>
+<header th:replace="fragments/commons::header"></header>
+<main>
+    <div class="error-container">
+        <h1 class="error-code">500</h1>
+        <h2 th:text="#{error.500.title}"></h2>
+        <p th:text="#{error.500.message}"></p>
+
+        <p th:if="${errorMessage}" class="text-danger error-details">
+            <strong th:text="#{error.details}"></strong> <span th:text="${errorMessage}"></span>
+        </p>
+
+        <br/>
+        <a th:href="@{/home}" class="btn btn-primary" style="margin-top: 20px;">
+            <i class="fa-solid fa-house"></i> <span th:text="#{error.goBack}"></span>
+        </a>
+    </div>
+</main>
+<footer th:replace="~{fragments/commons::footer}"></footer>
+</body>
+</html>
