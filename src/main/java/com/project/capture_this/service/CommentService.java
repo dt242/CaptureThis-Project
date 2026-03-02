@@ -1,8 +1,10 @@
 package com.project.capture_this.service;
 
 import com.project.capture_this.model.dto.CommentDTO;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -21,6 +23,12 @@ public class CommentService {
                 .get()
                 .uri("/post/{postId}", postId)
                 .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
+                    throw new EntityNotFoundException("Comments for post " + postId + " not found");
+                })
+                .onStatus(HttpStatusCode::is5xxServerError, (request, response) -> {
+                    throw new IllegalStateException("Comments microservice is currently unavailable");
+                })
                 .body(new ParameterizedTypeReference<>() {});
     }
 
@@ -29,6 +37,9 @@ public class CommentService {
                 .post()
                 .body(commentDTO)
                 .retrieve()
+                .onStatus(HttpStatusCode::is5xxServerError, (request, response) -> {
+                    throw new IllegalStateException("Could not add comment. Service unavailable.");
+                })
                 .toBodilessEntity();
     }
 
@@ -37,6 +48,12 @@ public class CommentService {
                 .delete()
                 .uri("/{commentId}", commentId)
                 .retrieve()
+                .onStatus(status -> status.value() == 404, (request, response) -> {
+                    throw new EntityNotFoundException("Comment with ID " + commentId + " not found");
+                })
+                .onStatus(HttpStatusCode::is5xxServerError, (request, response) -> {
+                    throw new IllegalStateException("Comments microservice is currently unavailable");
+                })
                 .toBodilessEntity();
     }
 }
