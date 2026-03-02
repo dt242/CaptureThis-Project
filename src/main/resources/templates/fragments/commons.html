@@ -4,7 +4,6 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title th:text="#{app.title}">CaptureThis</title>
-    <!--    <link rel="stylesheet" th:href="@{/css/reset-css.css}">-->
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
@@ -40,10 +39,9 @@
                     <a th:href="@{/notifications}">
                         <i class="fa-solid fa-bell"></i>
                         <span th:text="#{nav.notifications}">Notifications</span>
-                        <span th:if="${unreadCount != 0}" style="font-style: italic;"> (</span><span
-                            th:if="${unreadCount == 0 ? 0 : unreadCount}" th:text="${unreadCount}"
-                            style="font-style: italic;">0</span><span
-                            th:if="${unreadCount != 0}" style="font-style: italic;">)</span>
+                        <span th:if="${unreadCount != null and unreadCount > 0}"
+                              th:text="' (' + ${unreadCount} + ')'"
+                              style="font-style: italic;"></span>
                     </a>
                 </li>
                 <li><a th:href="@{/about}"><i class="fa-solid fa-address-card icon-space"></i><span th:text="#{nav.aboutUs}">About Us</span></a>
