@@ -7,6 +7,7 @@ import com.project.capture_this.model.entity.Role;
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.model.enums.UserRole;
 import com.project.capture_this.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,12 +33,13 @@ public class UserService {
     }
 
     public User getLoggedUser() {
-        return userRepository.findByUsername(SecurityUtil.getSessionUser()).orElseThrow(() -> new RuntimeException("Logged user not found in database"));
+        return userRepository.findByUsername(SecurityUtil.getSessionUser())
+                .orElseThrow(() -> new EntityNotFoundException("Logged user not found in database"));
     }
 
     public User findById(Long userId) {
         return userRepository.findByIdWithRoles(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
     }
 
     @Transactional
@@ -76,7 +79,7 @@ public class UserService {
         try (InputStream is = new ClassPathResource(filePath).getInputStream()) {
             return is.readAllBytes();
         } catch (IOException e) {
-            throw new RuntimeException("Failed to load resource file: " + filePath, e);
+            throw new UncheckedIOException("Failed to load resource file: " + filePath, e);
         }
     }
 
