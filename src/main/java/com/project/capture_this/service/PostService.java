@@ -7,6 +7,7 @@ import com.project.capture_this.model.entity.Post;
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.model.enums.PostStatus;
 import com.project.capture_this.repository.PostRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,8 @@ public class PostService {
     }
 
     public Post findById(Long postId) {
-        return postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Post not found with ID: " + postId));
     }
 
     @Transactional(readOnly = true)
@@ -85,7 +87,7 @@ public class PostService {
     @Transactional
     public Long updatePost(EditPostDTO data, PostStatus status) throws IOException {
         Post post = postRepository.findById(data.getId())
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Post not found with ID: " + data.getId()));
         post.setTitle(data.getTitle());
         post.setDescription(data.getDescription());
         if (data.hasImage()) {
@@ -101,7 +103,7 @@ public class PostService {
     @Transactional
     public void deletePost(Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Post not found with ID: " + postId));
         postRepository.delete(post);
     }
 
