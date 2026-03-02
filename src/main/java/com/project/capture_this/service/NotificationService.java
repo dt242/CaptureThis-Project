@@ -6,6 +6,7 @@ import com.project.capture_this.model.entity.Post;
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.model.enums.NotificationType;
 import com.project.capture_this.repository.NotificationRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,7 +71,7 @@ public class NotificationService {
     @Transactional
     public void markAsRead(Long id) {
         Notification notification = notificationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Notification not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Notification not found with ID: " + id));
         notification.setRead(true);
     }
 
