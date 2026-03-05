@@ -67,6 +67,10 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public List<DisplayPostDTO> findDraftPostsByUser(Long userId) {
+        User loggedUser = userService.getLoggedUser();
+        if (!loggedUser.getId().equals(userId) && !loggedUser.isAdmin()) {
+            throw new EntityNotFoundException("Drafts not found.");
+        }
         User user = userService.findById(userId);
         return postRepository.findByUserAndStatus(user, PostStatus.DRAFT).stream()
                 .map(this::mapToDisplayPostDTO)
