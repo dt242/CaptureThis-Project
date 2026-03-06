@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class FollowService {
 
     private final UserRepository userRepository;
@@ -52,21 +53,18 @@ public class FollowService {
         }
     }
 
-    @Transactional
     public List<User> getFollowers(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
         return new ArrayList<>(user.getFollowers());
     }
 
-    @Transactional
     public List<User> getFollowing(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
         return new ArrayList<>(user.getFollowing());
     }
 
-    @Transactional
     public boolean isFollowing(Long followerId, Long followeeId) {
         User follower = userRepository.findById(followerId)
                 .orElseThrow(() -> new EntityNotFoundException("Follower not found with ID: " + followerId));

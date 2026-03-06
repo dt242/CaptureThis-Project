@@ -32,11 +32,13 @@ public class UserService {
         this.roleService = roleService;
     }
 
+    @Transactional(readOnly = true)
     public User getLoggedUser() {
         return userRepository.findByUsername(SecurityUtil.getSessionUser())
                 .orElseThrow(() -> new EntityNotFoundException("Logged user not found in database"));
     }
 
+    @Transactional(readOnly = true)
     public User findById(Long userId) {
         return userRepository.findByIdWithRoles(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
@@ -70,6 +72,7 @@ public class UserService {
         return true;
     }
 
+    @Transactional(readOnly = true)
     public List<DisplayUserDTO> searchUsers(String query) {
         List<User> users = userRepository.findByFirstNameContainingOrLastNameContaining(query, query);
         return users.stream().map(UserService::mapToDisplayUserDTO).collect(Collectors.toList());
@@ -139,6 +142,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional(readOnly = true)
     public List<User> findAllUsers() {
         return userRepository.findAll();
     }

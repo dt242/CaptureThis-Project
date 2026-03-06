@@ -26,6 +26,7 @@ public class NotificationService {
         this.userService = userService;
     }
 
+    @Transactional
     public void notifyLike(User likedByUser, Post post) {
         Notification notification = new Notification();
         notification.setSender(likedByUser);
@@ -36,6 +37,7 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
+    @Transactional
     public void notifyComment(User commentedByUser, Post post) {
         Notification notification = new Notification();
         notification.setSender(commentedByUser);
@@ -46,6 +48,7 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
+    @Transactional
     public void notifyFollow(User followedByUser, User followedUser) {
         Notification notification = new Notification();
         notification.setSender(followedByUser);
@@ -55,6 +58,7 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
+    @Transactional(readOnly = true)
     public List<DisplayNotificationDTO> findUserUnreadNotifications() {
         User loggedUser = userService.getLoggedUser();
 
@@ -64,6 +68,7 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public long getUnreadNotificationCount(User user) {
         return notificationRepository.countByReceiverAndIsReadFalse(user);
     }
@@ -84,6 +89,7 @@ public class NotificationService {
         }
     }
 
+    @Transactional
     @Scheduled(cron = "0 0 10 * * *")
     public void sendEngagementNotifications() {
         List<User> allUsers = userService.findAllUsers();
