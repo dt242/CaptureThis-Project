@@ -2,15 +2,18 @@ package com.project.capture_this.service;
 
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,89 +25,83 @@ public class ProfileServiceTest {
     @Mock
     private UserRepository userRepository;
 
-    @Mock
-    private UserService userService;
-
     @InjectMocks
     private ProfileService profileService;
 
-    private User user;
-    private MultipartFile profilePicture;
+    private User mockUser;
 
     @BeforeEach
     public void setUp() {
-        user = new User();
-        user.setId(1L);
-        user.setUsername("testUser");
-        profilePicture = mock(MultipartFile.class);
+        mockUser = new User();
+        mockUser.setId(1L);
+        mockUser.setFirstName("Daniel");
+        mockUser.setLastName("Boss");
+        mockUser.setBio("Old bio");
     }
 
     @Test
-    public void testSaveProfilePictureSuccess() throws IOException {
-        byte[] pictureBytes = new byte[]{1, 2, 3};
-        when(profilePicture.getBytes()).thenReturn(pictureBytes);
-        when(userRepository.save(any(User.class))).thenReturn(user);
+    void testSaveProfilePicture_Success() throws IOException {
+        byte[] bytes = new byte[]{1, 2, 3};
+        MultipartFile file = new MockMultipartFile("pic", "test.jpg", "image/jpeg", bytes);
+        profileService.saveProfilePicture(mockUser, file);
 
-        profileService.saveProfilePicture(user, profilePicture);
-
-        assertArrayEquals(pictureBytes, user.getProfilePicture());
-
-        verify(userRepository, times(1)).save(user);
+        assertArrayEquals(bytes, mockUser.getProfilePicture());
+        verify(userRepository, times(1)).save(mockUser);
     }
 
     @Test
-    public void testSaveProfilePictureIOException() throws IOException {
-        when(profilePicture.getBytes()).thenThrow(IOException.class);
+    void testSaveProfilePicture_WhenFileIsEmpty_ShouldThrowException() {
+        MultipartFile emptyFile = new MockMultipartFile("pic", new byte[0]);
 
-        profileService.saveProfilePicture(user, profilePicture);
-
-        verify(userRepository, times(0)).save(user);
+        assertThrows(IllegalArgumentException.class, () ->
+                profileService.saveProfilePicture(mockUser, emptyFile)
+        );
     }
 
     @Test
-    public void testUpdateBioSuccess() {
-        String newBio = "This is a new bio";
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(userRepository.save(user)).thenReturn(user);
+    void testSaveProfilePicture_WhenIOException_ShouldThrowUncheckedIOException() throws IOException {
+        MultipartFile spyFile = spy(new MockMultipartFile("pic", "test.jpg", "image/jpeg", new byte[]{1}));
+        when(spyFile.getBytes()).thenThrow(new IOException("Disk error"));
 
-        profileService.updateBio(1L, newBio);
-
-        assertEquals(newBio, user.getBio());
-        verify(userRepository, times(1)).save(user);
+        assertThrows(UncheckedIOException.class, () ->
+                profileService.saveProfilePicture(mockUser, spyFile)
+        );
     }
 
     @Test
-    public void testUpdateBioUserNotFound() {
-        String newBio = "This is a new bio";
+    void testUpdateBio_Success() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
+        profileService.updateBio(1L, "New amazing bio");
+
+        assertEquals("New amazing bio", mockUser.getBio());
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void testUpdateBio_UserNotFound_ShouldThrowException() {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        EntityNotFoundException ex = assertThrows(EntityNotFoundException.class, () ->
+                profileService.updateBio(1L, "Bio")
+        );
 
-        Exception exception = assertThrows(RuntimeException.class, () -> profileService.updateBio(1L, newBio));
-
-        assertEquals("User not found", exception.getMessage());
-        verify(userRepository, times(0)).save(any(User.class));
+        assertTrue(ex.getMessage().contains("ID: 1"));
     }
 
     @Test
-    public void testUpdateFirstNameSuccess() {
-        String newFirstName = "NewFirstName";
-        when(userService.findById(1L)).thenReturn(user);
-        when(userRepository.save(user)).thenReturn(user);
+    void testUpdateFirstName_Success() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
+        profileService.updateFirstName(1L, "NewName");
 
-        profileService.updateFirstName(1L, newFirstName);
-
-        assertEquals(newFirstName, user.getFirstName());
-        verify(userRepository, times(1)).save(user);
+        assertEquals("NewName", mockUser.getFirstName());
+        verify(userRepository, never()).save(any());
     }
 
     @Test
-    public void testUpdateLastNameSuccess() {
-        String newLastName = "NewLastName";
-        when(userService.findById(1L)).thenReturn(user);
-        when(userRepository.save(user)).thenReturn(user);
+    void testUpdateLastName_Success() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
+        profileService.updateLastName(1L, "NewLastName");
 
-        profileService.updateLastName(1L, newLastName);
-
-        assertEquals(newLastName, user.getLastName());
-        verify(userRepository, times(1)).save(user);
+        assertEquals("NewLastName", mockUser.getLastName());
+        verify(userRepository, never()).save(any());
     }
 }

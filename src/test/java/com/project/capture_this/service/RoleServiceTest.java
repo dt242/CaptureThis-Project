@@ -3,6 +3,7 @@ package com.project.capture_this.service;
 import com.project.capture_this.model.entity.Role;
 import com.project.capture_this.model.enums.UserRole;
 import com.project.capture_this.repository.RoleRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,31 +25,34 @@ public class RoleServiceTest {
     @InjectMocks
     private RoleService roleService;
 
-    private Role role;
+    private Role mockRole;
 
     @BeforeEach
     public void setUp() {
-        role = new Role();
-        role.setId(1L);
-        role.setName(UserRole.ADMIN);
+        mockRole = new Role();
+        mockRole.setId(1L);
+        mockRole.setName(UserRole.ADMIN);
     }
 
     @Test
-    public void testFindByNameSuccess() {
-        when(roleRepository.findByName(UserRole.ADMIN)).thenReturn(Optional.of(role));
+    void testFindByName_WhenRoleExists_ShouldReturnRole() {
+        when(roleRepository.findByName(UserRole.ADMIN)).thenReturn(Optional.of(mockRole));
+        Role result = roleService.findByName(UserRole.ADMIN);
 
-        Role foundRole = roleService.findByName(UserRole.ADMIN);
-
-        assertNotNull(foundRole);
-        assertEquals(UserRole.ADMIN, foundRole.getName());
+        assertNotNull(result);
+        assertEquals(UserRole.ADMIN, result.getName());
+        assertEquals(1L, result.getId());
+        verify(roleRepository, times(1)).findByName(UserRole.ADMIN);
     }
 
     @Test
-    public void testFindByNameRoleNotFound() {
-        when(roleRepository.findByName(UserRole.ADMIN)).thenReturn(Optional.empty());
+    void testFindByName_WhenRoleDoesNotExist_ShouldThrowEntityNotFoundException() {
+        when(roleRepository.findByName(UserRole.USER)).thenReturn(Optional.empty());
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
+                roleService.findByName(UserRole.USER)
+        );
 
-        Exception exception = assertThrows(RuntimeException.class, () -> roleService.findByName(UserRole.ADMIN));
-
-        assertEquals("Role not found: ADMIN", exception.getMessage());
+        assertEquals("Role not found: USER", exception.getMessage());
+        verify(roleRepository, times(1)).findByName(UserRole.USER);
     }
 }

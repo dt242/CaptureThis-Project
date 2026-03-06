@@ -6,20 +6,23 @@ import com.project.capture_this.service.LikeService;
 import com.project.capture_this.service.NotificationService;
 import com.project.capture_this.service.PostService;
 import com.project.capture_this.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.http.MediaType;
+
+import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.util.Arrays;
-import java.util.List;
-
+@ExtendWith(MockitoExtension.class)
 class LikeRestControllerTest {
 
     @Mock
@@ -39,91 +42,111 @@ class LikeRestControllerTest {
 
     private MockMvc mockMvc;
 
-    private User mockUser;
+    private User loggedInUser;
+    private User otherUser;
     private Post mockPost;
 
     @BeforeEach
     void setup() {
-        MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(likeRestController).build();
 
-        mockUser = new User();
-        mockUser.setId(1L);
-        mockUser.setUsername("mockUser");
+        loggedInUser = new User();
+        loggedInUser.setId(1L);
+        loggedInUser.setUsername("loggedInUser");
+
+        otherUser = new User();
+        otherUser.setId(2L);
+        otherUser.setUsername("otherUser");
 
         mockPost = new Post();
-        mockPost.setId(1L);
-        mockPost.setUser(mockUser);
+        mockPost.setId(100L);
+        mockPost.setUser(otherUser);
     }
 
     @Test
-    void testLikePost() throws Exception {
-        when(userService.getLoggedUser()).thenReturn(mockUser);
-        when(postService.findById(1L)).thenReturn(mockPost);
-
-        User postOwner = new User();
-        postOwner.setId(2L);
-        mockPost.setUser(postOwner);
-
-        doNothing().when(likeService).likePost(1L, mockUser.getId());
-
-        mockMvc.perform(post("/post/like/{postId}", 1L))
+    void testLikePost_Success() throws Exception {
+        when(userService.getLoggedUser()).thenReturn(loggedInUser);
+        when(postService.findById(100L)).thenReturn(mockPost);
+        mockMvc.perform(post("/post/like/{postId}", 100L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true));
 
-        verify(likeService).likePost(1L, mockUser.getId());
-        verify(notificationService).notifyLike(mockUser, mockPost);
+        verify(likeService).likePost(100L, loggedInUser.getId());
+        verify(notificationService).notifyLike(loggedInUser, mockPost);
     }
 
     @Test
-    void testLikePostWhenPostOwnerIsUser() throws Exception {
-        mockPost.setUser(mockUser);
-        when(userService.getLoggedUser()).thenReturn(mockUser);
-        when(postService.findById(1L)).thenReturn(mockPost);
-        doNothing().when(likeService).likePost(1L, mockUser.getId());
+    void testLikePost_WhenPostOwnerIsSelf_ShouldNotNotify() throws Exception {
+        mockPost.setUser(loggedInUser);
 
-        mockMvc.perform(post("/post/like/{postId}", 1L))
+        when(userService.getLoggedUser()).thenReturn(loggedInUser);
+        when(postService.findById(100L)).thenReturn(mockPost);
+
+        mockMvc.perform(post("/post/like/{postId}", 100L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true));
 
-        verify(likeService).likePost(1L, mockUser.getId());
+        verify(likeService).likePost(100L, loggedInUser.getId());
         verify(notificationService, never()).notifyLike(any(), any());
     }
 
     @Test
-    void testUnlikePost() throws Exception {
-        when(userService.getLoggedUser()).thenReturn(mockUser);
-        doNothing().when(likeService).unlikePost(1L, mockUser.getId());
+    void testLikePost_WhenPostNotFound_ShouldReturnErrorJson() throws Exception {
+        when(userService.getLoggedUser()).thenReturn(loggedInUser);
+        when(postService.findById(100L)).thenThrow(new EntityNotFoundException("Post not found"));
 
-        mockMvc.perform(post("/post/unlike/{postId}", 1L))
+        mockMvc.perform(post("/post/like/{postId}", 100L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true));
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.message").value("Post not found"));
 
-        verify(likeService).unlikePost(1L, mockUser.getId());
+        verify(notificationService, never()).notifyLike(any(), any());
     }
 
     @Test
-    void testGetLikes() throws Exception {
-        List<User> mockUsers = Arrays.asList(mockUser);
-        when(likeService.getUsersWhoLikedPost(1L)).thenReturn(mockUsers);
+    void testUnlikePost_Success() throws Exception {
+        when(userService.getLoggedUser()).thenReturn(loggedInUser);
 
-        mockMvc.perform(get("/post/likes/{postId}", 1L))
+        mockMvc.perform(post("/post/unlike/{postId}", 100L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true));
+
+        verify(likeService).unlikePost(100L, loggedInUser.getId());
+    }
+
+    @Test
+    void testUnlikePost_WhenExceptionThrown_ShouldReturnErrorJson() throws Exception {
+        when(userService.getLoggedUser()).thenReturn(loggedInUser);
+        doThrow(new RuntimeException("Database down")).when(likeService).unlikePost(100L, loggedInUser.getId());
+
+        mockMvc.perform(post("/post/unlike/{postId}", 100L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.message").value("Database down"));
+    }
+
+    @Test
+    void testGetLikes_Success() throws Exception {
+        List<User> mockUsers = List.of(loggedInUser);
+        when(likeService.getUsersWhoLikedPost(100L)).thenReturn(mockUsers);
+
+        mockMvc.perform(get("/post/likes/{postId}", 100L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.likes.length()").value(1));
 
-        verify(likeService).getUsersWhoLikedPost(1L);
+        verify(likeService).getUsersWhoLikedPost(100L);
     }
 
     @Test
-    void testGetLikesWhenNoLikes() throws Exception {
-        when(likeService.getUsersWhoLikedPost(1L)).thenReturn(Arrays.asList());
+    void testGetLikes_WhenNoLikes_ShouldReturnEmptyList() throws Exception {
+        when(likeService.getUsersWhoLikedPost(100L)).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/post/likes/{postId}", 1L))
+        mockMvc.perform(get("/post/likes/{postId}", 100L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.likes.length()").value(0));
 
-        verify(likeService).getUsersWhoLikedPost(1L);
+        verify(likeService).getUsersWhoLikedPost(100L);
     }
 }
