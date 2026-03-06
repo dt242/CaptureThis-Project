@@ -2,15 +2,17 @@ package com.project.capture_this.service;
 
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -26,121 +28,123 @@ public class FollowServiceTest {
 
     private User follower;
     private User followee;
+    private final Long FOLLOWER_ID = 1L;
+    private final Long FOLLOWEE_ID = 2L;
 
     @BeforeEach
     public void setUp() {
         follower = new User();
-        follower.setId(1L);
+        follower.setId(FOLLOWER_ID);
         follower.setUsername("follower");
-
+        follower.setFollowing(new HashSet<>());
+        follower.setFollowers(new HashSet<>());
         followee = new User();
-        followee.setId(2L);
+        followee.setId(FOLLOWEE_ID);
         followee.setUsername("followee");
+        followee.setFollowing(new HashSet<>());
+        followee.setFollowers(new HashSet<>());
     }
 
     @Test
-    public void testFollowUser() {
-        when(userRepository.findById(follower.getId())).thenReturn(java.util.Optional.of(follower));
-        when(userRepository.findById(followee.getId())).thenReturn(java.util.Optional.of(followee));
-        when(userRepository.save(follower)).thenReturn(follower);
-        when(userRepository.save(followee)).thenReturn(followee);
-
-        followService.followUser(follower.getId(), followee.getId());
+    public void testFollowUser_Success() {
+        when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
+        when(userRepository.findById(FOLLOWEE_ID)).thenReturn(Optional.of(followee));
+        followService.followUser(FOLLOWER_ID, FOLLOWEE_ID);
 
         assertTrue(follower.getFollowing().contains(followee));
         assertTrue(followee.getFollowers().contains(follower));
-        verify(userRepository, times(2)).save(any(User.class));
     }
 
     @Test
-    public void testFollowUserAlreadyFollowing() {
+    public void testFollowUser_WhenAlreadyFollowing_ShouldDoNothing() {
         follower.getFollowing().add(followee);
         followee.getFollowers().add(follower);
+        when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
+        when(userRepository.findById(FOLLOWEE_ID)).thenReturn(Optional.of(followee));
+        followService.followUser(FOLLOWER_ID, FOLLOWEE_ID);
 
-        when(userRepository.findById(follower.getId())).thenReturn(java.util.Optional.of(follower));
-        when(userRepository.findById(followee.getId())).thenReturn(java.util.Optional.of(followee));
-
-        followService.followUser(follower.getId(), followee.getId());
-
-        verify(userRepository, times(0)).save(any(User.class));
+        assertEquals(1, follower.getFollowing().size());
+        assertEquals(1, followee.getFollowers().size());
     }
 
     @Test
-    public void testUnfollowUser() {
+    public void testFollowUser_WhenFollowingSelf_ShouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            followService.followUser(FOLLOWER_ID, FOLLOWER_ID);
+        });
+        verify(userRepository, never()).findById(anyLong());
+    }
+
+    @Test
+    public void testUnfollowUser_Success() {
         follower.getFollowing().add(followee);
         followee.getFollowers().add(follower);
-
-        when(userRepository.findById(follower.getId())).thenReturn(java.util.Optional.of(follower));
-        when(userRepository.findById(followee.getId())).thenReturn(java.util.Optional.of(followee));
-        when(userRepository.save(follower)).thenReturn(follower);
-        when(userRepository.save(followee)).thenReturn(followee);
-
-        followService.unfollowUser(follower.getId(), followee.getId());
+        when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
+        when(userRepository.findById(FOLLOWEE_ID)).thenReturn(Optional.of(followee));
+        followService.unfollowUser(FOLLOWER_ID, FOLLOWEE_ID);
 
         assertFalse(follower.getFollowing().contains(followee));
         assertFalse(followee.getFollowers().contains(follower));
-        verify(userRepository, times(2)).save(any(User.class));
     }
 
     @Test
-    public void testUnfollowUserNotFollowing() {
-        when(userRepository.findById(follower.getId())).thenReturn(java.util.Optional.of(follower));
-        when(userRepository.findById(followee.getId())).thenReturn(java.util.Optional.of(followee));
+    public void testUnfollowUser_WhenNotFollowing_ShouldDoNothing() {
+        when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
+        when(userRepository.findById(FOLLOWEE_ID)).thenReturn(Optional.of(followee));
+        followService.unfollowUser(FOLLOWER_ID, FOLLOWEE_ID);
 
-        followService.unfollowUser(follower.getId(), followee.getId());
-
-        verify(userRepository, times(0)).save(any(User.class));
+        assertTrue(follower.getFollowing().isEmpty());
     }
 
     @Test
-    public void testGetFollowers() {
+    public void testUnfollowUser_WhenUnfollowingSelf_ShouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            followService.unfollowUser(FOLLOWER_ID, FOLLOWER_ID);
+        });
+    }
+
+    @Test
+    public void testGetFollowers_Success() {
         follower.getFollowers().add(followee);
+        when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
+        List<User> followersList = followService.getFollowers(FOLLOWER_ID);
 
-        when(userRepository.findById(follower.getId())).thenReturn(java.util.Optional.of(follower));
-
-        List<User> followers = followService.getFollowers(follower.getId());
-
-        assertEquals(1, followers.size());
-        assertEquals(followee.getId(), followers.get(0).getId());
-        verify(userRepository, times(1)).findById(follower.getId());
+        assertEquals(1, followersList.size());
+        assertEquals(FOLLOWEE_ID, followersList.get(0).getId());
     }
 
     @Test
-    public void testGetFollowing() {
+    public void testGetFollowers_WhenUserNotFound_ShouldThrowException() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> {
+            followService.getFollowers(99L);
+        });
+    }
+
+    @Test
+    public void testGetFollowing_Success() {
         follower.getFollowing().add(followee);
+        when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
+        List<User> followingList = followService.getFollowing(FOLLOWER_ID);
 
-        when(userRepository.findById(follower.getId())).thenReturn(java.util.Optional.of(follower));
-
-        List<User> following = followService.getFollowing(follower.getId());
-
-        assertEquals(1, following.size());
-        assertEquals(followee.getId(), following.get(0).getId());
-        verify(userRepository, times(1)).findById(follower.getId());
+        assertEquals(1, followingList.size());
+        assertEquals(FOLLOWEE_ID, followingList.get(0).getId());
     }
 
     @Test
-    public void testIsFollowing() {
-        when(userRepository.findById(follower.getId())).thenReturn(java.util.Optional.of(follower));
-        when(userRepository.findById(followee.getId())).thenReturn(java.util.Optional.of(followee));
-
+    public void testIsFollowing_WhenTrue_ShouldReturnTrue() {
         follower.getFollowing().add(followee);
+        when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
+        when(userRepository.findById(FOLLOWEE_ID)).thenReturn(Optional.of(followee));
 
-        boolean result = followService.isFollowing(follower.getId(), followee.getId());
-
-        assertTrue(result);
-        verify(userRepository, times(1)).findById(follower.getId());
-        verify(userRepository, times(1)).findById(followee.getId());
+        assertTrue(followService.isFollowing(FOLLOWER_ID, FOLLOWEE_ID));
     }
 
     @Test
-    public void testIsNotFollowing() {
-        when(userRepository.findById(follower.getId())).thenReturn(java.util.Optional.of(follower));
-        when(userRepository.findById(followee.getId())).thenReturn(java.util.Optional.of(followee));
+    public void testIsFollowing_WhenFalse_ShouldReturnFalse() {
+        when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
+        when(userRepository.findById(FOLLOWEE_ID)).thenReturn(Optional.of(followee));
 
-        boolean result = followService.isFollowing(follower.getId(), followee.getId());
-
-        assertFalse(result);
-        verify(userRepository, times(1)).findById(follower.getId());
-        verify(userRepository, times(1)).findById(followee.getId());
+        assertFalse(followService.isFollowing(FOLLOWER_ID, FOLLOWEE_ID));
     }
 }

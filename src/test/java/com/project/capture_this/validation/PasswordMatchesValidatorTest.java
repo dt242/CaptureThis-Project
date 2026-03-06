@@ -1,29 +1,66 @@
 package com.project.capture_this.validation;
 
 import com.project.capture_this.model.dto.UserRegisterDTO;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
+import jakarta.validation.ConstraintValidatorContext;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
-public class PasswordMatchesValidatorTest {
+class PasswordMatchesValidatorTest {
 
-    private final Validator validator;
+    private PasswordMatchesValidator validator;
+    private ConstraintValidatorContext mockContext;
 
-    public PasswordMatchesValidatorTest() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        this.validator = factory.getValidator();
+    @BeforeEach
+    void setUp() {
+        validator = new PasswordMatchesValidator();
+        mockContext = mock(ConstraintValidatorContext.class);
     }
 
     @Test
-    public void testPasswordMatchesInvalid() {
+    void isValid_WhenPasswordsMatch_ShouldReturnTrue() {
         UserRegisterDTO dto = new UserRegisterDTO();
-        dto.setPassword("password123");
-        dto.setConfirmPassword("password456");
+        dto.setPassword("Secret123!");
+        dto.setConfirmPassword("Secret123!");
 
-        var violations = validator.validate(dto);
-        assertFalse(violations.isEmpty());
+        assertTrue(validator.isValid(dto, mockContext));
+    }
+
+    @Test
+    void isValid_WhenPasswordsDoNotMatch_ShouldReturnFalse() {
+        UserRegisterDTO dto = new UserRegisterDTO();
+        dto.setPassword("Secret123!");
+        dto.setConfirmPassword("WrongPassword!");
+
+        assertFalse(validator.isValid(dto, mockContext));
+    }
+
+    @Test
+    void isValid_WhenPasswordIsNull_ShouldReturnFalse() {
+        UserRegisterDTO dto = new UserRegisterDTO();
+        dto.setPassword(null);
+        dto.setConfirmPassword("Secret123!");
+
+        assertFalse(validator.isValid(dto, mockContext));
+    }
+
+    @Test
+    void isValid_WhenConfirmPasswordIsNull_ShouldReturnFalse() {
+        UserRegisterDTO dto = new UserRegisterDTO();
+        dto.setPassword("Secret123!");
+        dto.setConfirmPassword(null);
+
+        assertFalse(validator.isValid(dto, mockContext));
+    }
+
+    @Test
+    void isValid_WhenBothAreNull_ShouldReturnFalse() {
+        UserRegisterDTO dto = new UserRegisterDTO();
+        dto.setPassword(null);
+        dto.setConfirmPassword(null);
+
+        assertFalse(validator.isValid(dto, mockContext));
     }
 }

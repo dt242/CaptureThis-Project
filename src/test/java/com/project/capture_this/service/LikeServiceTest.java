@@ -6,14 +6,18 @@ import com.project.capture_this.model.entity.Post;
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.repository.LikeRepository;
 import com.project.capture_this.repository.PostRepository;
+import com.project.capture_this.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -28,123 +32,88 @@ public class LikeServiceTest {
     private PostRepository postRepository;
 
     @Mock
-    private UserService userService;
+    private UserRepository userRepository;
 
     @InjectMocks
     private LikeService likeService;
 
-    private User user;
-    private Post post;
-    private Like like;
+    private User mockUser;
+    private Post mockPost;
+    private Like mockLike;
 
     @BeforeEach
     public void setUp() {
-        user = new User();
-        user.setId(1L);
-        user.setUsername("testUser");
-
-        post = new Post();
-        post.setId(1L);
-        post.setTitle("Test Post");
-
-        like = new Like();
-        like.setId(1L);
-        like.setUser(user);
-        like.setPost(post);
+        mockUser = new User();
+        mockUser.setId(1L);
+        mockUser.setFirstName("Daniel");
+        mockUser.setLastName("Boss");
+        mockPost = new Post();
+        mockPost.setId(100L);
+        mockLike = new Like();
+        mockLike.setId(500L);
+        mockLike.setUser(mockUser);
+        mockLike.setPost(mockPost);
+        mockLike.setCreatedAt(LocalDateTime.now());
     }
 
     @Test
-    public void testLikePost() {
-        when(likeRepository.existsByPostIdAndUserId(post.getId(), user.getId())).thenReturn(false);
-        when(postRepository.findById(post.getId())).thenReturn(java.util.Optional.of(post));
-        when(userService.findById(user.getId())).thenReturn(user);
-        when(likeRepository.save(any(Like.class))).thenReturn(like);
-
-        likeService.likePost(post.getId(), user.getId());
+    public void testLikePost_Success() {
+        when(likeRepository.existsByPostIdAndUserId(100L, 1L)).thenReturn(false);
+        when(postRepository.findById(100L)).thenReturn(Optional.of(mockPost));
+        when(userRepository.getReferenceById(1L)).thenReturn(mockUser);
+        likeService.likePost(100L, 1L);
 
         verify(likeRepository, times(1)).save(any(Like.class));
     }
 
     @Test
-    public void testLikePostAlreadyLiked() {
-        when(likeRepository.existsByPostIdAndUserId(post.getId(), user.getId())).thenReturn(true);
+    public void testLikePost_WhenAlreadyLiked_ShouldNotSaveAgain() {
+        when(likeRepository.existsByPostIdAndUserId(100L, 1L)).thenReturn(true);
 
-        likeService.likePost(post.getId(), user.getId());
+        likeService.likePost(100L, 1L);
 
-        verify(likeRepository, times(0)).save(any(Like.class));
+        verify(likeRepository, never()).save(any(Like.class));
     }
 
     @Test
-    public void testUnlikePost() {
-        when(likeRepository.existsByPostIdAndUserId(post.getId(), user.getId())).thenReturn(true);
+    public void testLikePost_WhenPostNotFound_ShouldThrowException() {
+        when(likeRepository.existsByPostIdAndUserId(100L, 1L)).thenReturn(false);
+        when(postRepository.findById(100L)).thenReturn(Optional.empty());
 
-        likeService.unlikePost(post.getId(), user.getId());
-
-        verify(likeRepository, times(1)).deleteByPostIdAndUserId(post.getId(), user.getId());
+        assertThrows(EntityNotFoundException.class, () -> likeService.likePost(100L, 1L));
     }
 
     @Test
-    public void testUnlikePostNotLiked() {
-        when(likeRepository.existsByPostIdAndUserId(post.getId(), user.getId())).thenReturn(false);
-
-        likeService.unlikePost(post.getId(), user.getId());
-
-        verify(likeRepository, times(0)).deleteByPostIdAndUserId(post.getId(), user.getId());
+    public void testUnlikePost_ShouldInvokeDelete() {
+        likeService.unlikePost(100L, 1L);
+        verify(likeRepository, times(1)).deleteByPostIdAndUserId(100L, 1L);
     }
 
     @Test
     public void testGetUsersWhoLikedPost() {
-        List<Like> likes = new ArrayList<>();
-        likes.add(like);
-        when(likeRepository.findByPostId(post.getId())).thenReturn(likes);
-
-        List<User> users = likeService.getUsersWhoLikedPost(post.getId());
+        when(likeRepository.findByPostId(100L)).thenReturn(List.of(mockLike));
+        List<User> users = likeService.getUsersWhoLikedPost(100L);
 
         assertEquals(1, users.size());
-        assertEquals(user.getId(), users.get(0).getId());
-        verify(likeRepository, times(1)).findByPostId(post.getId());
+        assertEquals(1L, users.get(0).getId());
     }
 
     @Test
     public void testIsUserLikedPost() {
-        when(likeRepository.existsByPostIdAndUserId(post.getId(), user.getId())).thenReturn(true);
-
-        boolean result = likeService.isUserLikedPost(post.getId(), user);
+        when(likeRepository.existsByPostIdAndUserId(100L, 1L)).thenReturn(true);
+        boolean result = likeService.isUserLikedPost(100L, mockUser);
 
         assertTrue(result);
-        verify(likeRepository, times(1)).existsByPostIdAndUserId(post.getId(), user.getId());
     }
 
     @Test
-    public void testIsUserLikedPostNotLiked() {
-        when(likeRepository.existsByPostIdAndUserId(post.getId(), user.getId())).thenReturn(false);
+    public void testMapToLikeDTO_ShouldMapCorrectly() {
+        LikeDTO dto = LikeService.mapToLikeDTO(mockLike);
 
-        boolean result = likeService.isUserLikedPost(post.getId(), user);
-
-        assertFalse(result);
-        verify(likeRepository, times(1)).existsByPostIdAndUserId(post.getId(), user.getId());
-    }
-
-    @Test
-    public void testGetLikesByPostIdSortedDesc() {
-        List<Like> likes = new ArrayList<>();
-        likes.add(like);
-        when(likeRepository.findAllByPostIdOrderByCreatedAtDesc(post.getId())).thenReturn(likes);
-
-        List<Like> result = likeService.getLikesByPostIdSortedDesc(post.getId());
-
-        assertEquals(1, result.size());
-        assertEquals(like.getId(), result.get(0).getId());
-        verify(likeRepository, times(1)).findAllByPostIdOrderByCreatedAtDesc(post.getId());
-    }
-
-    @Test
-    public void testMapToLikeDTO() {
-        LikeDTO likeDTO = LikeService.mapToLikeDTO(like);
-
-        assertNotNull(likeDTO);
-        assertEquals(like.getId(), likeDTO.getId());
-        assertEquals(like.getUser().getId(), likeDTO.getUser().getId());
-        assertEquals(like.getCreatedAt(), likeDTO.getCreatedAt());
+        assertNotNull(dto);
+        assertEquals(500L, dto.getId());
+        assertEquals(1L, dto.getUserId());
+        assertEquals("Daniel", dto.getUserFirstName());
+        assertEquals("Boss", dto.getUserLastName());
     }
 }

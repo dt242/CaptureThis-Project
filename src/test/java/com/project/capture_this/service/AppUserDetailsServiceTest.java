@@ -9,14 +9,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AppUserDetailsServiceTest {
@@ -27,36 +28,43 @@ public class AppUserDetailsServiceTest {
     @InjectMocks
     private AppUserDetailsService appUserDetailsService;
 
-    private User user;
+    private User mockUser;
 
     @BeforeEach
     public void setUp() {
-        user = new User();
-        user.setUsername("testuser");
-        user.setPassword("password123");
+        mockUser = new User();
+        mockUser.setUsername("testuser");
+        mockUser.setPassword("password123");
+
         Role role = new Role();
         role.setName(UserRole.USER);
-        user.setRoles(Set.of(role));
+        mockUser.setRoles(Set.of(role));
     }
 
     @Test
-    public void testLoadUserByUsername_UserFound() {
-        Mockito.when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
+    public void testLoadUserByUsername_UserFound_ShouldReturnUserDetails() {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(mockUser));
 
-        var userDetails = appUserDetailsService.loadUserByUsername("testuser");
+        UserDetails userDetails = appUserDetailsService.loadUserByUsername("testuser");
 
         assertNotNull(userDetails);
         assertEquals("testuser", userDetails.getUsername());
         assertEquals("password123", userDetails.getPassword());
         assertFalse(userDetails.getAuthorities().isEmpty());
+        assertEquals(1, userDetails.getAuthorities().size());
+        assertEquals("USER", userDetails.getAuthorities().iterator().next().getAuthority());
+
+        verify(userRepository, times(1)).findByUsername("testuser");
     }
 
     @Test
-    public void testLoadUserByUsername_UserNotFound() {
-        Mockito.when(userRepository.findByUsername("nonexistentuser")).thenReturn(Optional.empty());
+    public void testLoadUserByUsername_UserNotFound_ShouldThrowException() {
+        when(userRepository.findByUsername("nonexistentuser")).thenReturn(Optional.empty());
 
         assertThrows(UsernameNotFoundException.class, () -> {
             appUserDetailsService.loadUserByUsername("nonexistentuser");
         });
+
+        verify(userRepository, times(1)).findByUsername("nonexistentuser");
     }
 }

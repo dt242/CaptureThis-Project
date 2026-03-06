@@ -7,7 +7,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 class CaptureThisApplicationTests {
 
 	@Test
-	void contextLoads() {
-	}
+	void contextLoads() {}
 
+	@Test
+	void mainMethodTest() {
+		CaptureThisApplication.main(new String[]{});
+	}
 }
