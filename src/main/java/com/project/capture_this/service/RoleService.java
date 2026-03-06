@@ -5,8 +5,10 @@ import com.project.capture_this.model.enums.UserRole;
 import com.project.capture_this.repository.RoleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class RoleService {
     private final RoleRepository roleRepository;
 

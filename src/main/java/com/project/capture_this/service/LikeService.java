@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class LikeService {
 
     private final LikeRepository likeRepository;
@@ -47,7 +48,6 @@ public class LikeService {
         likeRepository.deleteByPostIdAndUserId(postId, userId);
     }
 
-    @Transactional(readOnly = true)
     public List<User> getUsersWhoLikedPost(Long postId) {
         List<Like> likes = likeRepository.findByPostId(postId);
         return likes.stream()

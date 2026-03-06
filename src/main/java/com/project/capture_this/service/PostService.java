@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class PostService {
     private final PostRepository postRepository;
     private final UserService userService;
@@ -34,7 +35,6 @@ public class PostService {
                 .orElseThrow(() -> new EntityNotFoundException("Post not found with ID: " + postId));
     }
 
-    @Transactional(readOnly = true)
     public List<DisplayPostDTO> findFollowedPosts() {
         User loggedUser = userService.getLoggedUser();
         List<User> followedUsers = new ArrayList<>(loggedUser.getFollowing());
@@ -48,7 +48,6 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public List<DisplayPostDTO> findPostsByUser(User user) {
         List<Post> posts = postRepository.findByUserAndStatusOrderByCreatedAtDesc(user, PostStatus.PUBLISHED);
         return posts.stream()
@@ -56,7 +55,6 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public List<DisplayPostDTO> findPublishedPosts() {
         User loggedUser = userService.getLoggedUser();
         return postRepository.findByUserAndStatusOrderByCreatedAtDesc(loggedUser, PostStatus.PUBLISHED)
@@ -65,7 +63,6 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public List<DisplayPostDTO> findDraftPostsByUser(Long userId) {
         User loggedUser = userService.getLoggedUser();
         if (!loggedUser.getId().equals(userId) && !loggedUser.isAdmin()) {
