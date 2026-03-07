@@ -45,16 +45,15 @@ public class UserService {
     }
 
     @Transactional
-    public boolean register(UserRegisterDTO data) {
+    public void register(UserRegisterDTO data) {
         Optional<User> existingUser = userRepository
                 .findByUsernameOrEmail(data.getUsername(), data.getEmail());
 
         if (existingUser.isPresent()) {
-            return false;
+            throw new IllegalArgumentException("An account already exists for this username or email.");
         }
 
         User user = new User();
-
         user.setFirstName(data.getFirstName());
         user.setLastName(data.getLastName());
         user.setUsername(data.getUsername());
@@ -68,12 +67,14 @@ public class UserService {
         user.setProfilePicture(getDefaultProfilePicture());
 
         this.userRepository.save(user);
-
-        return true;
     }
 
     @Transactional(readOnly = true)
     public List<DisplayUserDTO> searchUsers(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+
         List<User> users = userRepository.findByFirstNameContainingOrLastNameContaining(query, query);
         return users.stream().map(UserService::mapToDisplayUserDTO).collect(Collectors.toList());
     }
