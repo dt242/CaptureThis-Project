@@ -3,6 +3,7 @@ package com.project.capture_this.service;
 import com.project.capture_this.model.dto.CommentDTO;
 import com.project.capture_this.model.entity.Post;
 import com.project.capture_this.model.entity.User;
+import com.project.capture_this.repository.PostRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -18,17 +19,17 @@ public class CommentService {
     private final RestClient restClient;
     private final UserService userService;
     private final NotificationService notificationService;
-    private final PostService postService;
+    private final PostRepository postRepository;
 
     public CommentService(RestClient.Builder restClientBuilder,
                           @Value("${app.services.comments.url}") String commentsServiceUrl,
                           UserService userService,
                           NotificationService notificationService,
-                          PostService postService) {
+                          PostRepository postRepository) {
         this.restClient = restClientBuilder.baseUrl(commentsServiceUrl).build();
         this.userService = userService;
         this.notificationService = notificationService;
-        this.postService = postService;
+        this.postRepository = postRepository;
     }
 
     public List<CommentDTO> getCommentsByPostId(Long postId) {
@@ -61,7 +62,8 @@ public class CommentService {
                 })
                 .toBodilessEntity();
 
-        Post commentedPost = postService.findById(postId);
+        Post commentedPost = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Post not found with ID: " + postId));
         if (!commentedPost.getUser().getId().equals(loggedUser.getId())) {
             notificationService.notifyComment(loggedUser, commentedPost);
         }
