@@ -1,12 +1,6 @@
 package com.project.capture_this.controller;
 
-import com.project.capture_this.model.dto.CommentDTO;
-import com.project.capture_this.model.entity.Post;
-import com.project.capture_this.model.entity.User;
 import com.project.capture_this.service.CommentService;
-import com.project.capture_this.service.NotificationService;
-import com.project.capture_this.service.PostService;
-import com.project.capture_this.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -15,36 +9,18 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class CommentController {
 
     private final CommentService commentService;
-    private final UserService userService;
-    private final NotificationService notificationService;
-    private final PostService postService;
 
-    public CommentController(CommentService commentService, UserService userService, NotificationService notificationService, PostService postService) {
+    public CommentController(CommentService commentService) {
         this.commentService = commentService;
-        this.userService = userService;
-        this.notificationService = notificationService;
-        this.postService = postService;
     }
 
     @PostMapping("/post/{postId}/comment")
     public String addComment(@PathVariable Long postId,
                              @RequestParam("commentText") String commentText,
                              RedirectAttributes redirectAttributes) {
-        CommentDTO commentDTO = new CommentDTO();
-        User loggedUser = userService.getLoggedUser();
-
-        commentDTO.setPostId(postId);
-        commentDTO.setUserId(loggedUser.getId());
-        commentDTO.setContent(commentText);
 
         try {
-            commentService.addComment(commentDTO);
-
-            Post commentedPost = postService.findById(postId);
-            if (!commentedPost.getUser().getId().equals(loggedUser.getId())) {
-                notificationService.notifyComment(loggedUser, commentedPost);
-            }
-
+            commentService.addComment(postId, commentText);
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Could not add comment: " + e.getMessage());
         }
