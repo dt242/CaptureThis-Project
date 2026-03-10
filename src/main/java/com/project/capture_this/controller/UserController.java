@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -44,10 +43,10 @@ public class UserController {
             return "redirect:/register";
         }
 
-        boolean success = userService.register(data);
-
-        if (!success) {
-            bindingResult.reject("error.user", "An account already exists for this username or email.");
+        try {
+            userService.register(data);
+        } catch (IllegalArgumentException e) {
+            bindingResult.reject("error.user", e.getMessage());
             redirectAttributes.addFlashAttribute("registerData", data);
             redirectAttributes.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "registerData", bindingResult);
             return "redirect:/register";
@@ -74,11 +73,7 @@ public class UserController {
 
     @GetMapping("/search")
     public String searchUsers(@RequestParam(value = "query", required = false) String query, Model model) {
-        List<DisplayUserDTO> results = new ArrayList<>();
-        if (query != null && !query.isEmpty()) {
-            results = userService.searchUsers(query);
-        }
-
+        List<DisplayUserDTO> results = userService.searchUsers(query);
         model.addAttribute("query", query);
         model.addAttribute("results", results);
         return "search";

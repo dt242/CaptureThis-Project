@@ -1,6 +1,9 @@
 package com.project.capture_this.service;
 
 import com.project.capture_this.model.dto.CommentDTO;
+import com.project.capture_this.model.entity.Post;
+import com.project.capture_this.model.entity.User;
+import com.project.capture_this.repository.PostRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,8 +17,19 @@ import java.util.List;
 public class CommentService {
 
     private final RestClient restClient;
-    public CommentService(RestClient.Builder restClientBuilder, @Value("${app.services.comments.url}") String commentsServiceUrl) {
+    private final UserService userService;
+    private final NotificationService notificationService;
+    private final PostRepository postRepository;
+
+    public CommentService(RestClient.Builder restClientBuilder,
+                          @Value("${app.services.comments.url}") String commentsServiceUrl,
+                          UserService userService,
+                          NotificationService notificationService,
+                          PostRepository postRepository) {
         this.restClient = restClientBuilder.baseUrl(commentsServiceUrl).build();
+        this.userService = userService;
+        this.notificationService = notificationService;
+        this.postRepository = postRepository;
     }
 
     public List<CommentDTO> getCommentsByPostId(Long postId) {
@@ -32,7 +46,13 @@ public class CommentService {
                 .body(new ParameterizedTypeReference<>() {});
     }
 
-    public void addComment(CommentDTO commentDTO) {
+    public void addComment(Long postId, String content) {
+        User loggedUser = userService.getLoggedUser();
+        CommentDTO commentDTO = new CommentDTO();
+        commentDTO.setPostId(postId);
+        commentDTO.setUserId(loggedUser.getId());
+        commentDTO.setContent(content);
+
         restClient
                 .post()
                 .body(commentDTO)
@@ -41,6 +61,12 @@ public class CommentService {
                     throw new IllegalStateException("Could not add comment. Service unavailable.");
                 })
                 .toBodilessEntity();
+
+        Post commentedPost = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Post not found with ID: " + postId));
+        if (!commentedPost.getUser().getId().equals(loggedUser.getId())) {
+            notificationService.notifyComment(loggedUser, commentedPost);
+        }
     }
 
     public void deleteComment(Long commentId) {

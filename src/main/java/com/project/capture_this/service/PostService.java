@@ -1,8 +1,10 @@
 package com.project.capture_this.service;
 
+import com.project.capture_this.model.dto.CommentDTO;
 import com.project.capture_this.model.dto.CreatePostDTO;
 import com.project.capture_this.model.dto.DisplayPostDTO;
 import com.project.capture_this.model.dto.EditPostDTO;
+import com.project.capture_this.model.entity.Like;
 import com.project.capture_this.model.entity.Post;
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.model.enums.PostStatus;
@@ -12,9 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,16 +23,22 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserService userService;
     private final CommentService commentService;
+    private final LikeService likeService;
 
-    public PostService(PostRepository postRepository, UserService userService, CommentService commentService) {
+    public PostService(PostRepository postRepository, UserService userService, CommentService commentService, LikeService likeService) {
         this.postRepository = postRepository;
         this.userService = userService;
         this.commentService = commentService;
+        this.likeService = likeService;
     }
 
     public Post findById(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("Post not found with ID: " + postId));
+    }
+
+    public byte[] findImageByPostId(Long postId) {
+        return findById(postId).getImage();
     }
 
     public List<DisplayPostDTO> findFollowedPosts() {
@@ -74,19 +80,63 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
+    public PostStatus getPostStatus(String action) {
+        return "post".equals(action) ? PostStatus.PUBLISHED : PostStatus.DRAFT;
+    }
+
+    public EditPostDTO getPostForEditing(Long postId) {
+        Post post = findById(postId);
+        return EditPostDTO.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .description(post.getDescription())
+                .build();
+    }
+
+    public boolean isPostStatusPublished(Long postId) {
+        Post post = findById(postId);
+        return post.getStatus().equals(PostStatus.PUBLISHED);
+    }
+
+    public Map<String, Object> getFullPostDetails(Long postId) {
+        Post post = this.findById(postId);
+        User loggedUser = userService.getLoggedUser();
+
+        List<CommentDTO> comments = commentService.getCommentsByPostId(postId).stream()
+                .sorted(Comparator.comparing(CommentDTO::getCreatedAt).reversed())
+                .peek(comment -> comment.setOwnComment(comment.getUserId().equals(loggedUser.getId())))
+                .toList();
+
+        Map<Long, List<User>> commentAuthors = comments.stream()
+                .map(comment -> userService.findById(comment.getUserId()))
+                .collect(Collectors.groupingBy(User::getId));
+
+        List<Like> likes = likeService.getLikesByPostIdSortedDesc(postId);
+        boolean isLiked = likeService.isUserLikedPost(postId, loggedUser);
+
+        return Map.of(
+                "post", post,
+                "comments", comments,
+                "commentAuthors", commentAuthors,
+                "likes", likes,
+                "isLiked", isLiked,
+                "isAdmin", loggedUser.isAdmin()
+        );
+    }
+
     @Transactional
-    public void savePost(CreatePostDTO data, PostStatus status) throws IOException {
+    public void savePost(CreatePostDTO data, String action) throws IOException {
         Post post = new Post();
         post.setTitle(data.getTitle());
         post.setDescription(data.getDescription());
         post.setImage(data.getImageFile().getBytes());
         post.setUser(userService.getLoggedUser());
-        post.setStatus(status);
+        post.setStatus(getPostStatus(action));
         postRepository.save(post);
     }
 
     @Transactional
-    public Long updatePost(EditPostDTO data, PostStatus status) throws IOException {
+    public Long updatePost(EditPostDTO data, String action) throws IOException {
         Post post = postRepository.findById(data.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Post not found with ID: " + data.getId()));
         post.setTitle(data.getTitle());
@@ -96,16 +146,17 @@ public class PostService {
         }
 
         if (!post.getStatus().equals(PostStatus.PUBLISHED)) {
-            post.setStatus(status);
+            post.setStatus(getPostStatus(action));
         }
         return post.getUser().getId();
     }
 
     @Transactional
-    public void deletePost(Long postId) {
+    public Long deletePost(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("Post not found with ID: " + postId));
         postRepository.delete(post);
+        return post.getUser().getId();
     }
 
     private DisplayPostDTO mapToDisplayPostDTO(Post post) {
