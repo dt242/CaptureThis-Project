@@ -1,6 +1,5 @@
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css');
 
-/* General Styles */
 * {
     padding: 0;
     margin: 0;
@@ -21,7 +20,6 @@ body {
 
 html, body {
     background: lightblue;
-    /*background: linear-gradient(135deg, rgba(171,233,165,1) 0%, rgba(38,212,160,1) 100%);*/
     height: 100%;
 }
 
@@ -29,7 +27,6 @@ button {
     line-height: inherit;
 }
 
-/* Centering the welcome content */
 main {
     display: flex;
     align-items: center;
@@ -59,10 +56,10 @@ main {
     color: #333;
     border-radius: 10px;
     padding: 30px;
-    max-width: 100%; /* Responsive sizing */
-    width: 90vw; /* Adjust width to be responsive */
-    max-width: 800px; /* Maximum width to prevent it from getting too large */
-    text-align: center; /* Center text inside */
+    max-width: 100%;
+    width: 90vw;
+    max-width: 800px;
+    text-align: center;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
@@ -75,9 +72,8 @@ main {
     margin: 1rem 0;
 }
 
-/* Styling for headings and links */
 .welcome h1, .welcome h3, .notification-feed {
-    color: #333; /* Ensure text is readable on dark background */
+    color: #333;
 }
 
 .contact-section p,
@@ -101,12 +97,12 @@ main {
 }
 
 .primary-text {
-    color: #333; /* Main color for links */
+    color: #333;
     text-decoration: underline;
 }
 
 .primary-text:hover {
-    color: lightblue; /* Accent color for link hover */
+    color: lightblue;
 }
 
 .text-center {
@@ -116,11 +112,10 @@ main {
 
 .form-row {
     display: flex;
-    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+    flex-wrap: wrap;
 }
 .form-group {
     flex: 1;
-    /*margin-right: 15px;*/
 }
 
 .reg {
@@ -213,7 +208,7 @@ main {
 }
 
 header {
-    background-color: #333; /* Dark background for the header */
+    background-color: #333;
     color: white;
 }
 
@@ -222,8 +217,8 @@ nav {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 999; /* Ensure it's above other elements */
-    background-color: #333; /* Or whatever background your nav has */
+    z-index: 999;
+    background-color: #333;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -231,17 +226,17 @@ nav {
 }
 
 .logo img {
-    max-width: 100%; /* Make sure it doesn't exceed the container's width */
-    height: auto; /* Maintain aspect ratio */
-    width: auto; /* Allows the logo to scale properly */
-    display: block; /* Ensure no extra spacing around the image */
-    margin: 0 auto; /* Center the logo horizontally if needed */
+    max-width: 100%;
+    height: auto;
+    width: auto;
+    display: block;
+    margin: 0 auto;
 }
 
 .logo a {
     text-decoration: none;
     color: white;
-    font-size: 1.5rem; /* Adjust font size as needed */
+    font-size: 1.5rem;
 }
 
 .nav-links {
@@ -257,7 +252,7 @@ nav {
 
 .nav-links a {
     text-decoration: none;
-    color: #fff; /* White color for links */
+    color: #fff;
     font-size: 1rem;
     padding: 8px 15px;
     border-radius: 4px;
@@ -265,16 +260,15 @@ nav {
 }
 
 .nav-links a:hover {
-    background-color: lightblue; /* Hover effect matching main theme */
+    background-color: lightblue;
     color: #333;
 }
 .nav-links a:hover i{
     color: #333;
 }
 
-/* Button Styles */
 .logout-button {
-    background-color: transparent; /* Button color matching main theme */
+    background-color: transparent;
     border: none;
     color: white;
     padding: 8px 15px;
@@ -284,7 +278,7 @@ nav {
 }
 
 .logout-button:hover{
-    background-color: lightblue; /* Slightly darker green on hover */
+    background-color: lightblue;
     color: #333;
 }
 
@@ -292,12 +286,11 @@ nav {
     color: #333;
 }
 
-/* Footer Styles */
 .footer {
-    background-color: #333; /* Background color for the footer */
-        color: #fff; /* Text color */
-        text-align: center; /* Center text */
-        padding: 10px; /* Padding */
+    background-color: #333;
+        color: #fff;
+        text-align: center;
+        padding: 10px;
         width: 100%;
 
 }
@@ -310,115 +303,106 @@ nav {
     list-style-type: none;
 }
 
-/* Styles for the display-post page */
 .display-post-container {
     display: flex;
-    flex-direction: column; /* Ensures everything is stacked vertically on small screens */
-    border: 1px solid #ccc; /* Border around the entire container */
-    border-radius: 10px; /* Rounded corners */
+    flex-direction: column;
+    border: 1px solid #ccc;
+    border-radius: 10px;
     padding: 20px;
 }
 
 .full-post {
-    border: 1px solid #ccc; /* Border around post details */
+    border: 1px solid #ccc;
     border-radius: 10px;
     margin-bottom: 20px;
 }
 
 .post-details {
     display: flex;
-    flex-direction: column; /* Stacked layout for smaller screens */
-    align-items: center; /* Center content horizontally */
-    margin-bottom: 5px; /* Space between post details and actions */
-    border-bottom: 1px solid #ccc; /* Border around post details */
-    /*border-radius: 10px; Rounded corners */
-    padding: 20px; /* Padding inside the border */
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #ccc;
+    padding: 20px;
 }
 
 .post-header {
     display: flex;
-    flex-direction: column; /* Stacked layout for smaller screens */
-    align-items: center; /* Center content horizontally */
+    flex-direction: column;
+    align-items: center;
     width: 100%;
 }
 
 .post-image {
-    max-width: 100%; /* Ensure image does not exceed its container */
-    max-width: 50%; /* Ensure image does not exceed half the container width */
-    height: auto; /* Maintain aspect ratio */
-    border-radius: 10px; /* Rounded corners */
+    max-width: 100%;
+    max-width: 50%;
+    height: auto;
+    border-radius: 10px;
     border: 1px solid #ccc;
-    margin-bottom: 20px; /* Space between image and post info */
+    margin-bottom: 20px;
 }
 
 .post-info {
     display: flex;
-    flex-direction: column; /* Ensure title and description are stacked vertically */
-    align-items: center; /* Center content horizontally */
-    text-align: center; /* Center text inside */
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     width: 100%;
 }
 
 .post-info h1 {
-    margin-bottom: 10px; /* Space between title and description */
+    margin-bottom: 10px;
 }
 
 .post-actions {
     display: flex;
-    justify-content: center; /* Center actions horizontally */
+    justify-content: center;
     align-items: center;
     gap: 2rem;
     margin: 0.5rem 0;
 }
 
 .post-sidebar {
-    margin-top: 20px; /* Space between post details and sidebar */
-    border: 1px solid #ccc; /* Border around the sidebar */
-    border-radius: 10px; /* Rounded corners */
-    padding: 20px; /* Padding inside the border */
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
     flex: 1;
 }
 
 .likes-section {
-    margin-bottom: 20px; /* Space between likes and comments sections */
+    margin-bottom: 20px;
 }
 
 .likes-section h2 {
-    margin-bottom: 10px; /* Space between heading and likes list */
+    margin-bottom: 10px;
 }
 
 .user-like {
     display: flex;
-    align-items: center; /* Align user images and names horizontally */
+    align-items: center;
     justify-content: center;
-    margin-bottom: 10px; /* Space between users */
+    margin-bottom: 10px;
     flex-direction: column;
     border-top: 1px solid #ccc;
     padding-top: 10px;
     margin-top: 10px;
 }
 
-/*.user-like img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-}*/
-
 .comments-section {
-    margin-top: 20px; /* Space between sidebar and comments section */
-    border: 1px solid #ccc; /* Border around comments section */
-    border-radius: 10px; /* Rounded corners */
-    padding: 20px; /* Padding inside the border */
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
     flex: 1;
 }
 
 .comments-section h2 {
-    margin-bottom: 10px; /* Space between heading and comments list */
+    margin-bottom: 10px;
 }
 
 .comment, .notification {
-    margin-bottom: 20px; /* Space between comments */
+    margin-bottom: 20px;
     border-top: 1px solid #ccc;
     padding-top: 10px;
     margin-top: 10px;
@@ -431,18 +415,22 @@ nav {
 .post-header-details {
     display: flex;
     justify-content: center;
-    align-items: center; /* Align comment images and names horizontally */
-    margin-bottom: 10px; /* Space between header and comment content */
+    align-items: center;
+    margin-bottom: 10px;
 }
 
-.comment-header img,
-.user-like-header img,
-.result-header img,
-.post-header-details img {
-    max-width: 50px; /* Fixed size for profile pictures */
-    max-height: 50px; /* Fixed size for profile pictures */
-    border-radius: 50%; /* Circular profile pictures */
-    margin-right: 10px; /* Space between image and name */
+.comment-header .img_img,
+.user-like-header .img_img,
+.result-header .img_img,
+.post-header-details .img_img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
     border: 1px solid #ccc;
 }
 
@@ -495,33 +483,32 @@ nav {
 
 .profile-picture {
 overflow: hidden;
-    max-width: 200px; /* Fixed size for profile pictures */
-    max-height: 200px; /* Fixed size for profile pictures */
-    border-radius: 50%; /* Circular profile pictures */
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 50%;
     border: 5px solid #ccc;
 }
 
 .add-comment-form {
-    margin-top: 20px; /* Space between comments and form */
-    /* display: flex; */
+    margin-top: 20px;
 }
 
 .add-comment-form .form-group {
     display: flex;
-    flex-direction: column; /* Stacked layout for form fields */
-    align-items: center; /* Center content horizontally */
+    flex-direction: column;
+    align-items: center;
     width: 100%;
 }
 
 .add-comment-form textarea {
-    width: 100%; /* Ensure textarea takes full width */
-    margin-bottom: 10px; /* Space between textarea and label */
+    width: 100%;
+    margin-bottom: 10px;
 }
 
 .personal-info,
 .edit-form {
-    border: 1px solid #ccc; /* Border around comments section */
-    border-radius: 10px; /* Rounded corners */
+    border: 1px solid #ccc;
+    border-radius: 10px;
     padding: 1em;
 }
 
@@ -541,16 +528,21 @@ overflow: hidden;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    max-width: 200px;
-    max-height: 200px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
     border: 5px solid #ccc;
 }
 
-.profile-picture img {
-    max-width: 100%;
-    max-height: 100%;
+.profile-picture img,
+.comment-header img,
+.user-like-header img,
+.result-header img,
+.post-header-details img{
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
+    object-fit: cover;
 }
 
 button {
@@ -584,33 +576,36 @@ i {
     margin-right: 6px;
 }
 
-.error-code {
-    font-size: 100px;
-    color: red;
-}
-
-.error-details {
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px solid red;
-    display: inline-block;
-    border-radius: 5px;
-}
-
-/* Responsive Styles */
 @media (max-width: 600px) {
     nav {
         flex-direction: column;
         align-items: flex-start;
     }
 
-    .logo {
-        margin-bottom: 10px;
+    .nav-links {
+        display: none;
+        flex-direction: column;
     }
 
-    .nav-links {
+    .nav-links.active {
+        display: flex;
+        width: 100%;
+        padding-top: 0.5em;
+    }
+
+    .menu-toggle {
+        display: block;
+        font-size: 1.5rem;
+        color: white;
+        cursor: pointer;
+        padding: 5px 15px;
+    }
+
+    .nav-links ul {
         display: flex;
         flex-direction: column;
+        gap: 0.2em;
+        align-items: flex-end;
     }
 
     .nav-links li {
@@ -629,14 +624,80 @@ i {
         display: block;
     }
 
-        .logo img {
-            width: 150px; /* Set a fixed width for smaller screens */
-            height: auto; /* Maintain aspect ratio */
-        }
+    .logo img {
+        width: 150px;
+        height: auto;
+    }
 
+    .post-image {
+        max-width: 100%;
+    }
+
+    .post > .post-actions > a > span,
+    .full-post > .post-actions > a > span,
+    .comment .btn span {
+        display: none;
+    }
+
+    .post-actions {
+        flex-wrap: wrap;
+    }
+
+    .profile-header > .post-actions {
+        gap: 1rem;
+        flex-direction: column;
+        width: 200px
+    }
+
+    .profile-header > .post-actions > div,
+    .profile-header > .post-actions > div:nth-child(1) > button,
+    .profile-header > .post-actions > div,
+    .profile-header > .post-actions > div:nth-child(4) > a,
+    .profile-header > .post-actions > a,
+    .profile-header > .post-actions > a {
+        width: 100%;
+    }
+
+    .post-sidebar,
+    .comments-section {
+        padding: 10px;
+    }
+
+    #like-comment {
+        font-size: small;
+    }
+
+    .display-post-container #like-comment h2 {
+        font-size: 1.2em;
+    }
+
+    nav .idk{
+        display: flex;
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between
+    }
+
+    nav div:nth-child(2) {
+        align-self: end;
+    }
+
+    #editProfileBtn,
+    .posts-summary-item > a {
+        width: 200px;
+    }
+
+    .posts-summary-item {
+        width: 100%;
+    }
 }
 
 @media (min-width: 601px) {
+    .menu-toggle {
+        display: none;
+    }
+
     nav {
         flex-direction: row;
         align-items: center;
@@ -652,28 +713,27 @@ i {
     }
 
     .logo img {
-            width: 200px; /* Adjust for larger screens */
-            height: auto; /* Maintain aspect ratio */
+            width: 200px;
+            height: auto;
         }
 
         .post-details {
-                flex-direction: row; /* Side-by-side layout for larger screens */
-                align-items: flex-start; /* Align content to the top */
+                flex-direction: row;
+                align-items: flex-start;
             }
 
             .post-header {
-                flex-direction: row; /* Side-by-side layout for larger screens */
-                align-items: flex-start; /* Align content to the top */
+                flex-direction: row;
+                align-items: flex-start;
             }
 
             .post-image {
-                margin-right: 20px; /* Space between image and post info */
-                margin-bottom: 0; /* Remove bottom margin for side-by-side layout */
+                margin-right: 20px;
+                margin-bottom: 0;
             }
 
-
             .post-info {
-                align-items: flex-start; /* Align content to the top */
-                text-align: left; /* Left-align text inside */
+                align-items: flex-start;
+                text-align: left;
             }
 }

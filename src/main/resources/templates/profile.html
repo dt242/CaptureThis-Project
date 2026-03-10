@@ -7,8 +7,9 @@
     <div class="profile-container">
         <div class="profile-header">
             <div class="profile-picture">
-                <img th:src="@{/profile-picture/{userId}(userId=${profileData.id})}" alt="Profile Picture"
-                     class="profile-picture-big"/>
+                <a th:href="@{/profile-picture/{userId}(userId=${profileData.id})}">
+                    <img th:src="@{/profile-picture/{userId}(userId=${profileData.id})}" alt="Profile Picture" class="profile-picture-big"/>
+                </a>
             </div>
             <h1 class="name" th:text="${profileData.firstName} + ' ' + ${profileData.lastName}">Full name</h1>
 
@@ -254,8 +255,7 @@
         };
         reader.readAsDataURL(input.files[0]);
     }
-
-
 </script>
+<script th:replace="fragments/commons::script"></script>
 </body>
 </html>

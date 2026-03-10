@@ -12,7 +12,10 @@
         <section class="posts">
             <div th:each="post : ${posts}" class="post">
                 <div class="post-header-details" style="justify-content: flex-start; margin-top: 2rem">
-                    <img th:src="@{/profile-picture/{userId}(userId=${post.authorId})}" alt="Profile Picture" class="profile-picture-small"/>
+                    <div class="img_img">
+                        <img th:src="@{/profile-picture/{userId}(userId=${post.authorId})}" alt="Profile Picture"
+                             class="profile-picture-small"/>
+                    </div>
                     <span class="result-username">
                         <a th:href="@{/profile/{userId}(userId=${post.authorId})}"
                             th:text="${post.authorFirstName} + ' ' + ${post.authorLastName}"
@@ -40,5 +43,6 @@
     </div>
 </main>
 <footer th:replace="fragments/commons::footer"></footer>
+<script th:replace="fragments/commons::script"></script>
 </body>
 </html>

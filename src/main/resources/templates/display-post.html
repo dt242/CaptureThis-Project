@@ -53,8 +53,10 @@
                     </div>
                     <div th:each="like : ${likes}" class="user-like">
                         <div class="user-like-header">
-                            <img th:src="@{/profile-picture/{userId}(userId=${like.user.id})}"
-                                 class="profile-picture-small"/>
+                            <div class="img_img">
+                                <img th:src="@{/profile-picture/{userId}(userId=${like.user.id})}"
+                                     class="profile-picture-small"/>
+                            </div>
                             <span class="user-name">
                                 <a th:href="@{/profile/{userId}(userId=${like.user.id})}"
                                    th:text="${like.user.firstName} + ' ' + ${like.user.lastName}"
@@ -73,8 +75,10 @@
                 </div>
                 <div th:each="comment, commentStat : ${comments}" class="comment">
                     <div class="comment-header">
-                        <img th:src="@{/profile-picture/{userId}(userId=${comment.userId})}" alt="User Profile Picture"
-                             class="profile-picture-small"/>
+                        <div class="img_img">
+                            <img th:src="@{/profile-picture/{userId}(userId=${comment.userId})}" alt="User Profile Picture"
+                                 class="profile-picture-small"/>
+                        </div>
                         <span class="comment-author">
             <a th:href="@{/profile/{userId}(userId=${comment.userId})}"
                th:text="${#lists.isEmpty(commentAuthors[comment.userId]) ? 'Unknown User' : commentAuthors[comment.userId].get(0).firstName + ' ' + commentAuthors[comment.userId].get(0).lastName}"
@@ -139,5 +143,6 @@
 });
 
 </script>
+<script th:replace="fragments/commons::script"></script>
 </body>
 </html>
