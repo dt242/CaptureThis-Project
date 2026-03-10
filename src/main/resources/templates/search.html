@@ -31,8 +31,10 @@
                 </div>
                 <div th:each="result : ${results}" class="search-result">
                     <div class="result-header">
-                        <img th:src="@{/profile-picture/{userId}(userId=${result.id})}" alt="Profile Picture"
-                             class="profile-picture-small"/>
+                        <div class="img_img">
+                            <img th:src="@{/profile-picture/{userId}(userId=${result.id})}" alt="Profile Picture"
+                                 class="profile-picture-small"/>
+                        </div>
                         <span class="result-username">
                                 <a th:href="@{/profile/{userId}(userId=${result.id})}"
                                    th:text="${result.firstName} + ' ' + ${result.lastName}"
@@ -46,5 +48,6 @@
     </div>
 </main>
 <footer th:replace="fragments/commons::footer"></footer>
+<script th:replace="fragments/commons::script"></script>
 </body>
 </html>
