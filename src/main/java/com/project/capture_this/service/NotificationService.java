@@ -76,7 +76,11 @@ public class NotificationService {
     @Transactional
     public void markAsRead(Long id) {
         Notification notification = notificationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Notification not found with ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Notification not found."));
+        User loggedUser = userService.getLoggedUser();
+        if (!notification.getReceiver().getId().equals(loggedUser.getId()) && !loggedUser.isAdmin()) {
+            throw new EntityNotFoundException("Notification not found.");
+        }
         notification.setRead(true);
     }
 
