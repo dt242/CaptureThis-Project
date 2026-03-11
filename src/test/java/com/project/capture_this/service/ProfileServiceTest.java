@@ -1,6 +1,8 @@
 package com.project.capture_this.service;
 
+import com.project.capture_this.model.entity.Role;
 import com.project.capture_this.model.entity.User;
+import com.project.capture_this.model.enums.UserRole;
 import com.project.capture_this.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -25,83 +29,143 @@ public class ProfileServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private PostService postService;
+
+    @Mock
+    private FollowService followService;
+
+    @Mock
+    private RoleService roleService;
+
     @InjectMocks
     private ProfileService profileService;
 
-    private User mockUser;
+    private User loggedUser;
+    private User targetUser;
+    private User adminUser;
 
     @BeforeEach
     public void setUp() {
-        mockUser = new User();
-        mockUser.setId(1L);
-        mockUser.setFirstName("Daniel");
-        mockUser.setLastName("Boss");
-        mockUser.setBio("Old bio");
+        loggedUser = new User();
+        loggedUser.setId(1L);
+        loggedUser.setUsername("dani_regular");
+        loggedUser.setRoles(new HashSet<>());
+        targetUser = new User();
+        targetUser.setId(2L);
+        targetUser.setUsername("target_user");
+        targetUser.setRoles(new HashSet<>());
+        adminUser = new User();
+        adminUser.setId(3L);
+        adminUser.setUsername("dani_admin");
+        Role adminRole = new Role();
+        adminRole.setName(UserRole.ADMIN);
+        adminUser.setRoles(new HashSet<>(Set.of(adminRole)));
     }
 
     @Test
-    void testSaveProfilePicture_Success() throws IOException {
+    void testUpdateProfilePicture_Success() throws IOException {
+        when(userService.getLoggedUser()).thenReturn(loggedUser);
         byte[] bytes = new byte[]{1, 2, 3};
         MultipartFile file = new MockMultipartFile("pic", "test.jpg", "image/jpeg", bytes);
-        profileService.saveProfilePicture(mockUser, file);
+        profileService.updateProfilePicture(null, file);
 
-        assertArrayEquals(bytes, mockUser.getProfilePicture());
-        verify(userRepository, times(1)).save(mockUser);
+        assertArrayEquals(bytes, loggedUser.getProfilePicture());
+        verify(userRepository, times(1)).save(loggedUser);
     }
 
     @Test
-    void testSaveProfilePicture_WhenFileIsEmpty_ShouldThrowException() {
+    void testUpdateProfilePicture_WhenFileIsEmpty_ShouldThrowException() {
         MultipartFile emptyFile = new MockMultipartFile("pic", new byte[0]);
 
         assertThrows(IllegalArgumentException.class, () ->
-                profileService.saveProfilePicture(mockUser, emptyFile)
+                profileService.updateProfilePicture(null, emptyFile)
         );
     }
 
     @Test
-    void testSaveProfilePicture_WhenIOException_ShouldThrowUncheckedIOException() throws IOException {
+    void testUpdateProfilePicture_WhenIOException_ShouldThrowUncheckedIOException() throws IOException {
+        when(userService.getLoggedUser()).thenReturn(loggedUser);
         MultipartFile spyFile = spy(new MockMultipartFile("pic", "test.jpg", "image/jpeg", new byte[]{1}));
         when(spyFile.getBytes()).thenThrow(new IOException("Disk error"));
 
         assertThrows(UncheckedIOException.class, () ->
-                profileService.saveProfilePicture(mockUser, spyFile)
+                profileService.updateProfilePicture(null, spyFile)
         );
     }
 
     @Test
-    void testUpdateBio_Success() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
-        profileService.updateBio(1L, "New amazing bio");
+    void testUpdateBio_AsRegularUser_UpdatingSelf() {
+        when(userService.getLoggedUser()).thenReturn(loggedUser);
+        profileService.updateBio(null, "New amazing bio");
 
-        assertEquals("New amazing bio", mockUser.getBio());
+        assertEquals("New amazing bio", loggedUser.getBio());
         verify(userRepository, never()).save(any());
     }
 
     @Test
-    void testUpdateBio_UserNotFound_ShouldThrowException() {
-        when(userRepository.findById(1L)).thenReturn(Optional.empty());
-        EntityNotFoundException ex = assertThrows(EntityNotFoundException.class, () ->
-                profileService.updateBio(1L, "Bio")
-        );
+    void testUpdateBio_AsAdmin_UpdatingOtherUser() {
+        when(userService.getLoggedUser()).thenReturn(adminUser);
+        when(userRepository.findById(2L)).thenReturn(Optional.of(targetUser));
+        profileService.updateBio(2L, "Admin edited bio");
 
-        assertTrue(ex.getMessage().contains("ID: 1"));
+        assertEquals("Admin edited bio", targetUser.getBio());
     }
 
     @Test
     void testUpdateFirstName_Success() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
-        profileService.updateFirstName(1L, "NewName");
+        when(userService.getLoggedUser()).thenReturn(loggedUser);
+        profileService.updateFirstName(null, "NewName");
 
-        assertEquals("NewName", mockUser.getFirstName());
-        verify(userRepository, never()).save(any());
+        assertEquals("NewName", loggedUser.getFirstName());
     }
 
     @Test
     void testUpdateLastName_Success() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
-        profileService.updateLastName(1L, "NewLastName");
+        when(userService.getLoggedUser()).thenReturn(loggedUser);
+        profileService.updateLastName(null, "NewLastName");
 
-        assertEquals("NewLastName", mockUser.getLastName());
-        verify(userRepository, never()).save(any());
+        assertEquals("NewLastName", loggedUser.getLastName());
+    }
+
+    @Test
+    void testToggleAdmin_WhenLoggedUserIsRegular_ShouldThrowSecurityException() {
+        when(userService.getLoggedUser()).thenReturn(loggedUser);
+
+        assertThrows(SecurityException.class, () -> profileService.toggleAdmin(2L));
+    }
+
+    @Test
+    void testToggleAdmin_AsAdmin_WhenTargetIsRegular_ShouldMakeAdmin() {
+        when(userService.getLoggedUser()).thenReturn(adminUser);
+        when(userRepository.findById(2L)).thenReturn(Optional.of(targetUser));
+        Role adminRole = new Role();
+        adminRole.setName(UserRole.ADMIN);
+        when(roleService.findByName(UserRole.ADMIN)).thenReturn(adminRole);
+        String result = profileService.toggleAdmin(2L);
+
+        assertTrue(targetUser.isAdmin());
+        assertEquals("target_user is now an admin.", result);
+    }
+
+    @Test
+    void testToggleAdmin_AsAdmin_WhenTargetIsAdmin_ShouldMakeRegularUser() {
+        Role adminRole = new Role();
+        adminRole.setName(UserRole.ADMIN);
+        targetUser.getRoles().add(adminRole);
+        when(userService.getLoggedUser()).thenReturn(adminUser);
+        when(userRepository.findById(2L)).thenReturn(Optional.of(targetUser));
+        when(roleService.findByName(UserRole.ADMIN)).thenReturn(adminRole);
+        Role userRole = new Role();
+        userRole.setName(UserRole.USER);
+        when(roleService.findByName(UserRole.USER)).thenReturn(userRole);
+
+        String result = profileService.toggleAdmin(2L);
+
+        assertFalse(targetUser.isAdmin());
+        assertEquals("target_user is now a regular user.", result);
     }
 }

@@ -7,8 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.ui.Model;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.servlet.NoHandlerFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -33,17 +31,8 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void testHandleTypeMismatch_ShouldReturn404() {
-        MethodArgumentTypeMismatchException exception = mock(MethodArgumentTypeMismatchException.class);
-        String viewName = globalExceptionHandler.handleTypeMismatch(exception);
-
-        assertEquals("error/404", viewName);
-    }
-
-    @Test
-    void testHandleNoFound404Errors_ShouldReturn404() {
-        Exception exception = new NoHandlerFoundException("GET", "/missing-page", null);
-        String viewName = globalExceptionHandler.handleNoFound404Errors(exception);
+    void testHandleRouting404Errors_ShouldReturn404() {
+        String viewName = globalExceptionHandler.handleRouting404Errors();
 
         assertEquals("error/404", viewName);
     }

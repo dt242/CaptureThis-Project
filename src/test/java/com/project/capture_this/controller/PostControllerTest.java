@@ -1,15 +1,8 @@
 package com.project.capture_this.controller;
 
-import com.project.capture_this.model.dto.CommentDTO;
 import com.project.capture_this.model.dto.CreatePostDTO;
 import com.project.capture_this.model.dto.EditPostDTO;
-import com.project.capture_this.model.entity.Post;
-import com.project.capture_this.model.entity.User;
-import com.project.capture_this.model.enums.PostStatus;
-import com.project.capture_this.service.CommentService;
-import com.project.capture_this.service.LikeService;
 import com.project.capture_this.service.PostService;
-import com.project.capture_this.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,9 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -38,19 +29,7 @@ class PostControllerTest {
     @Mock
     private PostService postService;
 
-    @Mock
-    private CommentService commentService;
-
-    @Mock
-    private UserService userService;
-
-    @Mock
-    private LikeService likeService;
-
     private MockMvc mockMvc;
-
-    private Post mockPost;
-    private User mockUser;
 
     @BeforeEach
     void setup() {
@@ -61,14 +40,6 @@ class PostControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(postController)
                 .setViewResolvers(viewResolver)
                 .build();
-
-        mockUser = new User();
-        mockUser.setId(1L);
-
-        mockPost = new Post();
-        mockPost.setId(1L);
-        mockPost.setStatus(PostStatus.DRAFT);
-        mockPost.setUser(mockUser);
     }
 
     @Test
@@ -85,12 +56,14 @@ class PostControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/profile"));
 
-        verify(postService, times(1)).savePost(any(CreatePostDTO.class), eq(PostStatus.PUBLISHED));
+        verify(postService, times(1)).savePost(any(CreatePostDTO.class), eq("post"));
     }
 
     @Test
     void testViewEditPost() throws Exception {
-        when(postService.findById(1L)).thenReturn(mockPost);
+        EditPostDTO mockDto = EditPostDTO.builder().id(1L).build();
+        when(postService.getPostForEditing(1L)).thenReturn(mockDto);
+        when(postService.isPostStatusPublished(1L)).thenReturn(true);
 
         mockMvc.perform(get("/edit-post/{id}", 1L))
                 .andExpect(status().isOk())
@@ -106,8 +79,7 @@ class PostControllerTest {
                 .title("Updated Post")
                 .description("Updated Description")
                 .build();
-
-        when(postService.updatePost(any(EditPostDTO.class), eq(PostStatus.PUBLISHED))).thenReturn(1L);
+        when(postService.updatePost(any(EditPostDTO.class), eq("post"))).thenReturn(1L);
 
         mockMvc.perform(post("/edit-post")
                         .param("action", "post")
@@ -115,12 +87,12 @@ class PostControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/profile/1"));
 
-        verify(postService, times(1)).updatePost(any(EditPostDTO.class), eq(PostStatus.PUBLISHED));
+        verify(postService, times(1)).updatePost(any(EditPostDTO.class), eq("post"));
     }
 
     @Test
     void testDeletePost_Success() throws Exception {
-        when(postService.findById(1L)).thenReturn(mockPost);
+        when(postService.deletePost(1L)).thenReturn(1L);
 
         mockMvc.perform(post("/delete-post/{id}", 1L))
                 .andExpect(status().is3xxRedirection())
@@ -132,26 +104,18 @@ class PostControllerTest {
 
     @Test
     void testViewPost() throws Exception {
-        when(postService.findById(1L)).thenReturn(mockPost);
-        when(userService.getLoggedUser()).thenReturn(mockUser);
-
-        CommentDTO mockComment = new CommentDTO();
-        mockComment.setUserId(2L);
-        mockComment.setCreatedAt(LocalDateTime.now());
-        when(commentService.getCommentsByPostId(1L)).thenReturn(List.of(mockComment));
-        User commentAuthor = new User();
-        commentAuthor.setId(2L);
-        when(userService.findById(2L)).thenReturn(commentAuthor);
-        when(likeService.getLikesByPostIdSortedDesc(1L)).thenReturn(Collections.emptyList());
-        when(likeService.isUserLikedPost(1L, mockUser)).thenReturn(true);
+        Map<String, Object> mockDetails = Map.of(
+                "post", new Object(),
+                "comments", new Object(),
+                "isLiked", true
+        );
+        when(postService.getFullPostDetails(1L)).thenReturn(mockDetails);
 
         mockMvc.perform(get("/post/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(view().name("display-post"))
-                .andExpect(model().attributeExists("post", "comments", "commentAuthors", "likes", "isLiked", "isAdmin"))
-                .andExpect(model().attribute("isLiked", true));
+                .andExpect(model().attributeExists("post", "comments", "isLiked"));
 
-        verify(postService).findById(1L);
-        verify(commentService).getCommentsByPostId(1L);
+        verify(postService, times(1)).getFullPostDetails(1L);
     }
 }
