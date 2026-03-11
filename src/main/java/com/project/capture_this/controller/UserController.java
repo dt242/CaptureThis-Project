@@ -73,7 +73,12 @@ public class UserController {
 
     @GetMapping("/search")
     public String searchUsers(@RequestParam(value = "query", required = false) String query, Model model) {
-        List<DisplayUserDTO> results = userService.searchUsers(query);
+        List<DisplayUserDTO> results;
+        if (query == null || query.trim().isEmpty()) {
+            results = List.of();
+        } else {
+            results = userService.searchUsers(query);
+        }
         model.addAttribute("query", query);
         model.addAttribute("results", results);
         return "search";
