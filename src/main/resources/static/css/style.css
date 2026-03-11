@@ -576,6 +576,19 @@ i {
     margin-right: 6px;
 }
 
+.error-code {
+    font-size: 100px;
+    color: red;
+}
+
+.error-details {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid red;
+    display: inline-block;
+    border-radius: 5px;
+}
+
 @media (max-width: 600px) {
     nav {
         flex-direction: column;
