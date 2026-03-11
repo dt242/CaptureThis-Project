@@ -84,8 +84,16 @@ public class PostService {
         return "post".equals(action) ? PostStatus.PUBLISHED : PostStatus.DRAFT;
     }
 
+    private void checkPostOwnership(Post post) {
+        User loggedUser = userService.getLoggedUser();
+        if (!post.getUser().getId().equals(loggedUser.getId()) && !loggedUser.isAdmin()) {
+            throw new SecurityException("You do not have permission to modify or view this private post.");
+        }
+    }
+
     public EditPostDTO getPostForEditing(Long postId) {
         Post post = findById(postId);
+        checkPostOwnership(post);
         return EditPostDTO.builder()
                 .id(post.getId())
                 .title(post.getTitle())
@@ -139,6 +147,7 @@ public class PostService {
     public Long updatePost(EditPostDTO data, String action) throws IOException {
         Post post = postRepository.findById(data.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Post not found with ID: " + data.getId()));
+        checkPostOwnership(post);
         post.setTitle(data.getTitle());
         post.setDescription(data.getDescription());
         if (data.hasImage()) {
@@ -155,6 +164,7 @@ public class PostService {
     public Long deletePost(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("Post not found with ID: " + postId));
+        checkPostOwnership(post);
         postRepository.delete(post);
         return post.getUser().getId();
     }
