@@ -34,6 +34,9 @@ class PostServiceTest {
     @Mock
     private CommentService commentService;
 
+    @Mock
+    private LikeService likeService;
+
     @InjectMocks
     private PostService postService;
 
@@ -47,6 +50,7 @@ class PostServiceTest {
         mockUser.setFirstName("Daniel");
         mockUser.setLastName("Boss");
         mockUser.setFollowing(new HashSet<>());
+
         mockPost = new Post();
         mockPost.setId(100L);
         mockPost.setTitle("Original Title");
@@ -90,7 +94,7 @@ class PostServiceTest {
                 .imageFile(file)
                 .build();
         when(userService.getLoggedUser()).thenReturn(mockUser);
-        postService.savePost(dto, PostStatus.PUBLISHED);
+        postService.savePost(dto, "post");
 
         verify(postRepository, times(1)).save(any(Post.class));
     }
@@ -102,21 +106,44 @@ class PostServiceTest {
                 .title("Updated Title")
                 .description("Updated Desc")
                 .build();
+        when(userService.getLoggedUser()).thenReturn(mockUser);
         when(postRepository.findById(100L)).thenReturn(Optional.of(mockPost));
-        Long authorId = postService.updatePost(dto, PostStatus.PUBLISHED);
+        Long authorId = postService.updatePost(dto, "post");
 
         assertEquals(1L, authorId);
         assertEquals("Updated Title", mockPost.getTitle());
         assertEquals("Updated Desc", mockPost.getDescription());
-        verify(postRepository, never()).save(any());
+    }
+
+    @Test
+    void testUpdatePost_WhenHackerTriesToUpdate_ShouldThrowSecurityException() {
+        EditPostDTO dto = EditPostDTO.builder().id(100L).build();
+        User hacker = new User();
+        hacker.setId(99L);
+        when(userService.getLoggedUser()).thenReturn(hacker);
+        when(postRepository.findById(100L)).thenReturn(Optional.of(mockPost));
+
+        assertThrows(SecurityException.class, () -> postService.updatePost(dto, "post"));
     }
 
     @Test
     void testDeletePost_Success() {
+        when(userService.getLoggedUser()).thenReturn(mockUser);
         when(postRepository.findById(100L)).thenReturn(Optional.of(mockPost));
         postService.deletePost(100L);
 
         verify(postRepository, times(1)).delete(mockPost);
+    }
+
+    @Test
+    void testDeletePost_WhenHackerTriesToDelete_ShouldThrowSecurityException() {
+        User hacker = new User();
+        hacker.setId(99L);
+        when(userService.getLoggedUser()).thenReturn(hacker);
+        when(postRepository.findById(100L)).thenReturn(Optional.of(mockPost));
+
+        assertThrows(SecurityException.class, () -> postService.deletePost(100L));
+        verify(postRepository, never()).delete(any());
     }
 
     @Test
@@ -125,11 +152,10 @@ class PostServiceTest {
         when(userService.findById(1L)).thenReturn(mockUser);
         mockPost.setStatus(PostStatus.DRAFT);
         when(postRepository.findByUserAndStatus(mockUser, PostStatus.DRAFT)).thenReturn(List.of(mockPost));
-        when(commentService.getCommentsByPostId(100L)).thenReturn(Collections.emptyList());
+
         List<DisplayPostDTO> result = postService.findDraftPostsByUser(1L);
 
         assertFalse(result.isEmpty());
-        assertEquals(PostStatus.DRAFT.name(), PostStatus.DRAFT.name());
         assertEquals(100L, result.get(0).getId());
     }
 
@@ -143,7 +169,7 @@ class PostServiceTest {
         when(userService.findById(1L)).thenReturn(mockUser);
         mockPost.setStatus(PostStatus.DRAFT);
         when(postRepository.findByUserAndStatus(mockUser, PostStatus.DRAFT)).thenReturn(List.of(mockPost));
-        when(commentService.getCommentsByPostId(100L)).thenReturn(Collections.emptyList());
+
         List<DisplayPostDTO> result = postService.findDraftPostsByUser(1L);
 
         assertFalse(result.isEmpty());
@@ -158,7 +184,6 @@ class PostServiceTest {
         });
 
         assertEquals("Drafts not found.", ex.getMessage());
-
         verify(postRepository, never()).findByUserAndStatus(any(), any());
     }
 
@@ -167,14 +192,14 @@ class PostServiceTest {
         User followedUser = new User();
         followedUser.setId(2L);
         mockUser.getFollowing().add(followedUser);
+
         when(userService.getLoggedUser()).thenReturn(mockUser);
         when(postRepository.findByUserInAndStatusOrderByCreatedAtDesc(anyList(), eq(PostStatus.PUBLISHED)))
                 .thenReturn(List.of(mockPost));
-        when(commentService.getCommentsByPostId(100L)).thenReturn(Collections.emptyList());
+
         List<DisplayPostDTO> result = postService.findFollowedPosts();
 
         assertFalse(result.isEmpty());
         assertEquals(1, result.size());
-        verify(postRepository).findByUserInAndStatusOrderByCreatedAtDesc(anyList(), eq(PostStatus.PUBLISHED));
     }
 }

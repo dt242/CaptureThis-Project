@@ -1,5 +1,6 @@
 package com.project.capture_this.service;
 
+import com.project.capture_this.model.dto.DisplayUserDTO;
 import com.project.capture_this.model.entity.User;
 import com.project.capture_this.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,6 +23,12 @@ public class FollowServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private NotificationService notificationService;
 
     @InjectMocks
     private FollowService followService;
@@ -47,31 +54,36 @@ public class FollowServiceTest {
 
     @Test
     public void testFollowUser_Success() {
-        when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
+        when(userService.getLoggedUser()).thenReturn(follower);
         when(userRepository.findById(FOLLOWEE_ID)).thenReturn(Optional.of(followee));
-        followService.followUser(FOLLOWER_ID, FOLLOWEE_ID);
+        followService.followUser(FOLLOWEE_ID);
 
         assertTrue(follower.getFollowing().contains(followee));
         assertTrue(followee.getFollowers().contains(follower));
+        verify(notificationService, times(1)).notifyFollow(follower, followee);
     }
 
     @Test
     public void testFollowUser_WhenAlreadyFollowing_ShouldDoNothing() {
         follower.getFollowing().add(followee);
         followee.getFollowers().add(follower);
-        when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
+        when(userService.getLoggedUser()).thenReturn(follower);
         when(userRepository.findById(FOLLOWEE_ID)).thenReturn(Optional.of(followee));
-        followService.followUser(FOLLOWER_ID, FOLLOWEE_ID);
+        followService.followUser(FOLLOWEE_ID);
 
         assertEquals(1, follower.getFollowing().size());
         assertEquals(1, followee.getFollowers().size());
+        verify(notificationService, never()).notifyFollow(any(), any());
     }
 
     @Test
     public void testFollowUser_WhenFollowingSelf_ShouldThrowException() {
+        when(userService.getLoggedUser()).thenReturn(follower);
+
         assertThrows(IllegalArgumentException.class, () -> {
-            followService.followUser(FOLLOWER_ID, FOLLOWER_ID);
+            followService.followUser(FOLLOWER_ID);
         });
+
         verify(userRepository, never()).findById(anyLong());
     }
 
@@ -79,9 +91,9 @@ public class FollowServiceTest {
     public void testUnfollowUser_Success() {
         follower.getFollowing().add(followee);
         followee.getFollowers().add(follower);
-        when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
+        when(userService.getLoggedUser()).thenReturn(follower);
         when(userRepository.findById(FOLLOWEE_ID)).thenReturn(Optional.of(followee));
-        followService.unfollowUser(FOLLOWER_ID, FOLLOWEE_ID);
+        followService.unfollowUser(FOLLOWEE_ID);
 
         assertFalse(follower.getFollowing().contains(followee));
         assertFalse(followee.getFollowers().contains(follower));
@@ -89,43 +101,46 @@ public class FollowServiceTest {
 
     @Test
     public void testUnfollowUser_WhenNotFollowing_ShouldDoNothing() {
-        when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
+        when(userService.getLoggedUser()).thenReturn(follower);
         when(userRepository.findById(FOLLOWEE_ID)).thenReturn(Optional.of(followee));
-        followService.unfollowUser(FOLLOWER_ID, FOLLOWEE_ID);
+        followService.unfollowUser(FOLLOWEE_ID);
 
         assertTrue(follower.getFollowing().isEmpty());
     }
 
     @Test
     public void testUnfollowUser_WhenUnfollowingSelf_ShouldThrowException() {
+        when(userService.getLoggedUser()).thenReturn(follower);
+
         assertThrows(IllegalArgumentException.class, () -> {
-            followService.unfollowUser(FOLLOWER_ID, FOLLOWER_ID);
+            followService.unfollowUser(FOLLOWER_ID);
         });
     }
 
     @Test
-    public void testGetFollowers_Success() {
+    public void testGetFollowersDTOs_Success() {
         follower.getFollowers().add(followee);
         when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
-        List<User> followersList = followService.getFollowers(FOLLOWER_ID);
+        List<DisplayUserDTO> followersList = followService.getFollowersDTOs(FOLLOWER_ID);
 
         assertEquals(1, followersList.size());
         assertEquals(FOLLOWEE_ID, followersList.get(0).getId());
     }
 
     @Test
-    public void testGetFollowers_WhenUserNotFound_ShouldThrowException() {
+    public void testGetFollowersDTOs_WhenUserNotFound_ShouldThrowException() {
         when(userRepository.findById(99L)).thenReturn(Optional.empty());
+
         assertThrows(EntityNotFoundException.class, () -> {
-            followService.getFollowers(99L);
+            followService.getFollowersDTOs(99L);
         });
     }
 
     @Test
-    public void testGetFollowing_Success() {
+    public void testGetFollowingDTOs_Success() {
         follower.getFollowing().add(followee);
         when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
-        List<User> followingList = followService.getFollowing(FOLLOWER_ID);
+        List<DisplayUserDTO> followingList = followService.getFollowingDTOs(FOLLOWER_ID);
 
         assertEquals(1, followingList.size());
         assertEquals(FOLLOWEE_ID, followingList.get(0).getId());

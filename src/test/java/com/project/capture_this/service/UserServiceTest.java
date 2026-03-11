@@ -54,22 +54,23 @@ class UserServiceTest {
         mockUser.setFirstName("John");
         mockUser.setLastName("Doe");
         mockUser.setEmail("john.doe@example.com");
-
         mockRole = new Role();
         mockRole.setName(UserRole.USER);
-
-        mockedSecurityUtil = Mockito.mockStatic(SecurityUtil.class);
     }
 
     @AfterEach
     void tearDown() {
-        mockedSecurityUtil.close();
+        if (mockedSecurityUtil != null && !mockedSecurityUtil.isClosed()) {
+            mockedSecurityUtil.close();
+        }
     }
 
     @Test
     void testGetLoggedUser_Success() {
+        mockedSecurityUtil = Mockito.mockStatic(SecurityUtil.class);
         mockedSecurityUtil.when(SecurityUtil::getSessionUser).thenReturn("testuser");
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(mockUser));
+
         User result = userService.getLoggedUser();
 
         assertNotNull(result);
@@ -78,6 +79,7 @@ class UserServiceTest {
 
     @Test
     void testGetLoggedUser_NotFound_ShouldThrowException() {
+        mockedSecurityUtil = Mockito.mockStatic(SecurityUtil.class);
         mockedSecurityUtil.when(SecurityUtil::getSessionUser).thenReturn("ghost");
         when(userRepository.findByUsername("ghost")).thenReturn(Optional.empty());
 
@@ -108,19 +110,18 @@ class UserServiceTest {
         when(roleService.findByName(UserRole.USER)).thenReturn(mockRole);
         UserService spyService = spy(userService);
         doReturn(new byte[]{1, 2, 3}).when(spyService).getDefaultProfilePicture();
-        boolean result = spyService.register(dto);
+        spyService.register(dto);
 
-        assertTrue(result);
         verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
-    void testRegister_WhenUserExists_ShouldReturnFalse() {
+    void testRegister_WhenUserExists_ShouldThrowException() {
         UserRegisterDTO dto = new UserRegisterDTO("John", "Doe", "testuser", "john@example.com", Gender.MALE, LocalDate.now(), "pass", "pass");
         when(userRepository.findByUsernameOrEmail("testuser", "john@example.com")).thenReturn(Optional.of(mockUser));
-        boolean result = userService.register(dto);
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> userService.register(dto));
 
-        assertFalse(result);
+        assertEquals("An account already exists for this username or email.", ex.getMessage());
         verify(userRepository, never()).save(any(User.class));
     }
 
@@ -132,6 +133,14 @@ class UserServiceTest {
 
         assertFalse(result.isEmpty());
         assertEquals("John", result.get(0).getFirstName());
+    }
+
+    @Test
+    void testSearchUsers_WithEmptyQuery_ShouldReturnEmptyList() {
+        List<DisplayUserDTO> result = userService.searchUsers("   ");
+
+        assertTrue(result.isEmpty());
+        verify(userRepository, never()).findByFirstNameContainingOrLastNameContaining(anyString(), anyString());
     }
 
     @Test

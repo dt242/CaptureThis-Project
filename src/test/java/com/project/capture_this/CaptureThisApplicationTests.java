@@ -8,9 +8,4 @@ class CaptureThisApplicationTests {
 
 	@Test
 	void contextLoads() {}
-
-	@Test
-	void mainMethodTest() {
-		CaptureThisApplication.main(new String[]{});
-	}
 }

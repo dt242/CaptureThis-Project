@@ -90,11 +90,39 @@ public class NotificationServiceTest {
 
     @Test
     void testMarkAsRead_Success() {
+        when(userService.getLoggedUser()).thenReturn(receiver);
         when(notificationRepository.findById(100L)).thenReturn(Optional.of(notification));
+
         notificationService.markAsRead(100L);
 
         assertTrue(notification.isRead());
         verify(notificationRepository, never()).save(any());
+    }
+
+    @Test
+    void testMarkAsRead_WhenHackerTriesToRead_ShouldThrowException() {
+        User hacker = new User();
+        hacker.setId(99L);
+        when(notificationRepository.findById(100L)).thenReturn(Optional.of(notification));
+        when(userService.getLoggedUser()).thenReturn(hacker);
+
+        EntityNotFoundException ex = assertThrows(EntityNotFoundException.class, () -> notificationService.markAsRead(100L));
+        assertEquals("Notification not found.", ex.getMessage());
+    }
+
+    @Test
+    void testMarkAsRead_WhenAdminTriesToRead_ShouldSucceed() {
+        User admin = new User();
+        admin.setId(99L);
+        User spyAdmin = spy(admin);
+        when(spyAdmin.isAdmin()).thenReturn(true);
+
+        when(notificationRepository.findById(100L)).thenReturn(Optional.of(notification));
+        when(userService.getLoggedUser()).thenReturn(spyAdmin);
+
+        notificationService.markAsRead(100L);
+
+        assertTrue(notification.isRead());
     }
 
     @Test

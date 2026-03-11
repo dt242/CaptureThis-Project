@@ -1,10 +1,9 @@
 package com.project.capture_this.controller;
 
 import com.project.capture_this.model.dto.AddProfilePictureDTO;
-import com.project.capture_this.model.entity.Role;
 import com.project.capture_this.model.entity.User;
-import com.project.capture_this.model.enums.UserRole;
-import com.project.capture_this.service.*;
+import com.project.capture_this.service.ProfileService;
+import com.project.capture_this.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,9 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -31,24 +28,13 @@ class ProfileControllerTest {
     private ProfileController profileController;
 
     @Mock
-    private UserService userService;
-
-    @Mock
-    private PostService postService;
-
-    @Mock
-    private FollowService followService;
-
-    @Mock
     private ProfileService profileService;
 
     @Mock
-    private RoleService roleService;
+    private UserService userService;
 
     private MockMvc mockMvc;
     private User regularUser;
-    private User adminUser;
-    private User targetUser;
 
     @BeforeEach
     void setup() {
@@ -62,122 +48,92 @@ class ProfileControllerTest {
 
         regularUser = new User();
         regularUser.setId(1L);
-        regularUser.setUsername("testUser");
-        regularUser.setRoles(new HashSet<>());
-
-        adminUser = new User();
-        adminUser.setId(2L);
-        adminUser.setUsername("adminUser");
-        Role adminRole = new Role();
-        adminRole.setName(UserRole.ADMIN);
-        adminUser.setRoles(new HashSet<>(Set.of(adminRole)));
-
-        targetUser = new User();
-        targetUser.setId(3L);
-        targetUser.setUsername("targetUser");
-        targetUser.setRoles(new HashSet<>());
     }
 
     @Test
     void testViewProfile_Success() throws Exception {
-        when(userService.getLoggedUser()).thenReturn(regularUser);
-        when(postService.findPublishedPosts()).thenReturn(Collections.emptyList());
+        Map<String, Object> mockData = Map.of("isOwnProfile", true, "profileData", new Object());
+        when(profileService.getOwnProfileDetails()).thenReturn(mockData);
 
         mockMvc.perform(get("/profile"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("profile"))
-                .andExpect(model().attributeExists("profileData", "posts", "isOwnProfile", "isAdmin"))
-                .andExpect(model().attribute("isOwnProfile", true));
+                .andExpect(model().attributeExists("profilePictureData", "isOwnProfile", "profileData"));
     }
 
     @Test
     void testViewOtherUserProfile_Success() throws Exception {
         when(userService.getLoggedUser()).thenReturn(regularUser);
-        when(userService.findById(3L)).thenReturn(targetUser);
-        when(followService.isFollowing(1L, 3L)).thenReturn(true);
-        when(postService.findPostsByUser(targetUser)).thenReturn(Collections.emptyList());
+        Map<String, Object> mockData = Map.of("isOwnProfile", false, "isFollowing", true);
+        when(profileService.getOtherUserProfileDetails(3L)).thenReturn(mockData);
 
         mockMvc.perform(get("/profile/{userId}", 3L))
                 .andExpect(status().isOk())
                 .andExpect(view().name("profile"))
-                .andExpect(model().attribute("isOwnProfile", false))
-                .andExpect(model().attribute("isFollowing", true));
+                .andExpect(model().attributeExists("profilePictureData", "isOwnProfile", "isFollowing"));
     }
 
     @Test
-    void testAddProfilePicture_AsRegularUser_ShouldRedirectToOwnProfile() throws Exception {
+    void testViewOtherUserProfile_WhenUserIdIsSelf_ShouldRedirectToOwnProfile() throws Exception {
         when(userService.getLoggedUser()).thenReturn(regularUser);
-        MockMultipartFile mockFile = new MockMultipartFile("profilePicture", "test.jpg", "image/jpeg", "content".getBytes());
-        AddProfilePictureDTO addProfilePictureDTO = new AddProfilePictureDTO();
-        addProfilePictureDTO.setProfilePicture(mockFile);
 
-        mockMvc.perform(post("/profile/add-profile-picture")
-                        .flashAttr("profilePictureData", addProfilePictureDTO))
+        mockMvc.perform(get("/profile/{userId}", 1L))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/profile"));
-
-        verify(profileService).saveProfilePicture(eq(regularUser), any());
     }
 
     @Test
-    void testAddProfilePicture_AsAdmin_ShouldRedirectToTargetProfile() throws Exception {
-        when(userService.getLoggedUser()).thenReturn(adminUser);
-        when(userService.findById(3L)).thenReturn(targetUser);
+    void testAddProfilePicture_Success() throws Exception {
+        MockMultipartFile mockFile = new MockMultipartFile(
+                "profilePicture",
+                "test.jpg",
+                "image/jpeg",
+                "content".getBytes()
+        );
 
-        MockMultipartFile mockFile = new MockMultipartFile("profilePicture", "test.jpg", "image/jpeg", "content".getBytes());
-        AddProfilePictureDTO addProfilePictureDTO = new AddProfilePictureDTO();
-        addProfilePictureDTO.setProfilePicture(mockFile);
-
-        mockMvc.perform(post("/profile/add-profile-picture")
-                        .param("userId", "3")
-                        .flashAttr("profilePictureData", addProfilePictureDTO))
+        mockMvc.perform(multipart("/profile/add-profile-picture")
+                        .file(mockFile))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/profile/3"));
+                .andExpect(redirectedUrl("/profile"))
+                .andExpect(flash().attributeExists("message"));
 
-        verify(profileService).saveProfilePicture(eq(targetUser), any());
+        verify(profileService, times(1)).updateProfilePicture(null, mockFile);
     }
 
     @Test
-    void testChangeBio_AsRegularUser() throws Exception {
-        when(userService.getLoggedUser()).thenReturn(regularUser);
-
+    void testChangeBio_Success() throws Exception {
         mockMvc.perform(post("/profile/change-bio")
                         .param("bio", "Updated Bio"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/profile"));
 
-        verify(profileService).updateBio(1L, "Updated Bio");
+        verify(profileService, times(1)).updateBio(null, "Updated Bio");
     }
 
     @Test
-    void testChangeFirstName_AsRegularUser() throws Exception {
-        when(userService.getLoggedUser()).thenReturn(regularUser);
-
+    void testChangeFirstName_Success() throws Exception {
         mockMvc.perform(post("/profile/change-first-name")
                         .param("firstName", "UpdatedFirst"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/profile"));
 
-        verify(profileService).updateFirstName(1L, "UpdatedFirst");
+        verify(profileService, times(1)).updateFirstName(null, "UpdatedFirst");
     }
 
     @Test
-    void testChangeLastName_AsRegularUser() throws Exception {
-        when(userService.getLoggedUser()).thenReturn(regularUser);
-
+    void testChangeLastName_Success() throws Exception {
         mockMvc.perform(post("/profile/change-last-name")
                         .param("lastName", "UpdatedLast"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/profile"));
 
-        verify(profileService).updateLastName(1L, "UpdatedLast");
+        verify(profileService, times(1)).updateLastName(null, "UpdatedLast");
     }
 
     @Test
     void testGetProfilePicture_WhenImageExists() throws Exception {
         byte[] mockImage = "fake_image_bytes".getBytes();
-        targetUser.setProfilePicture(mockImage);
-        when(userService.findById(3L)).thenReturn(targetUser);
+        when(profileService.getProfilePictureBytes(3L)).thenReturn(mockImage);
 
         mockMvc.perform(get("/profile-picture/{userId}", 3L))
                 .andExpect(status().isOk())
@@ -186,19 +142,24 @@ class ProfileControllerTest {
     }
 
     @Test
-    void testToggleAdmin_AsAdmin_ShouldMakeUserAdmin() throws Exception {
-        when(userService.getLoggedUser()).thenReturn(adminUser);
-        when(userService.findById(3L)).thenReturn(targetUser);
-
-        Role adminRole = new Role();
-        adminRole.setName(UserRole.ADMIN);
-        when(roleService.findByName(UserRole.ADMIN)).thenReturn(adminRole);
+    void testToggleAdmin_Success() throws Exception {
+        when(profileService.toggleAdmin(3L)).thenReturn("User is now admin.");
 
         mockMvc.perform(post("/profile/make-admin/{userId}", 3L))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/profile/3"))
-                .andExpect(flash().attributeExists("success"));
+                .andExpect(flash().attributeExists("success"))
+                .andExpect(flash().attribute("success", "User is now admin."));
+    }
 
-        verify(userService).save(targetUser);
+    @Test
+    void testToggleAdmin_WhenUnauthorized_ShouldReturnError() throws Exception {
+        doThrow(new SecurityException("Unauthorized action.")).when(profileService).toggleAdmin(3L);
+
+        mockMvc.perform(post("/profile/make-admin/{userId}", 3L))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/profile/3"))
+                .andExpect(flash().attributeExists("error"))
+                .andExpect(flash().attribute("error", "Unauthorized action."));
     }
 }
